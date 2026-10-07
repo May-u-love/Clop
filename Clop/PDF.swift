@@ -344,7 +344,7 @@ func isPDFValid(path: FilePath) -> Bool {
         optimiser.progress = Progress(totalUnitCount: pageCount?.i64 ?? 100)
         optimiser.progress.fileURL = url
         optimiser.progress.localizedDescription = optimiser.operation
-        optimiser.progress.localizedAdditionalDescription = "Calculating progress"
+        optimiser.progress.localizedAdditionalDescription = "正在计算进度"
         optimiser.publishProgress()
     }
 

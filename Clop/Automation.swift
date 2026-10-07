@@ -149,7 +149,7 @@ private func installedApps() -> InstalledAppsInfo {
 
 let ALL_STEP_TEMPLATES: [StepTemplate] = [
     StepTemplate(
-        name: "optimise", description: "Optimise file size",
+        name: "optimise", description: "优化文件体积",
         mandatoryParams: [],
         optionalParams: [
             ParamTemplate(
@@ -157,13 +157,13 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
                 description: "compression quality preset",
                 suggestions: ["aggressive", "medium", "lossless"],
                 freeText: false,
-                valueDescriptions: ["aggressive": "smallest file size", "medium": "balanced quality/size", "lossless": "no quality loss"],
+                valueDescriptions: ["aggressive": "最小文件体积", "medium": "画质/体积均衡", "lossless": "无损"],
                 valueDescriptionsForType: [
-                    .video: ["fast": "hardware encoder, quick and battery efficient", "slowHighQuality": "slow software encoder, smaller files", "visuallyLossless": "no perceptible quality loss (CRF 17)"],
+                    .video: ["fast": "硬件编码,快且省电", "slowHighQuality": "slow software encoder, smaller files", "visuallyLossless": "无可感知画质损失(CRF 17)"],
                     .pdf: [
                         "aggressive": "lossy + downsample images to 100 DPI",
-                        "medium": "adaptive downsampling, picks DPI per PDF based on embedded image resolutions",
-                        "lossless": "no downsampling, preserves embedded image resolution",
+                        "medium": "自适应降采样:按 PDF 内嵌图像分辨率选择 DPI",
+                        "lossless": "不降采样,保留内嵌图像分辨率",
                     ],
                 ],
                 suggestionsForType: [
@@ -183,10 +183,10 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
             ),
             ParamTemplate(
                 name: "adaptive",
-                description: "auto-pick best format",
+                description: "自动选最佳格式",
                 suggestions: ["true", "false"],
                 freeText: false,
-                valueDescriptions: ["true": "may change file extension", "false": "keep original format"],
+                valueDescriptions: ["true": "可能更改扩展名", "false": "保留原格式"],
                 applicableTypes: [.image]
             ),
             ParamTemplate(
@@ -195,25 +195,25 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
                 suggestions: ["300", "250", "200", "150", "100", "72", "48"],
                 freeText: true,
                 valueDescriptions: [
-                    "300": "no downsampling, preserves embedded image resolution",
-                    "250": "lightly downsample, near print quality",
-                    "200": "lightly downsample, good for screen reading",
-                    "150": "downsample for screen reading",
-                    "100": "smaller, readable but visibly degraded",
+                    "300": "不降采样,保留内嵌图像分辨率",
+                    "250": "轻度降采样,接近打印质量",
+                    "200": "轻度降采样,适合屏幕阅读",
+                    "150": "为屏幕阅读降采样",
+                    "100": "更小,可读但明显劣化",
                     "72": "screen quality",
-                    "48": "smallest, very low quality",
+                    "48": "最小,画质很低",
                 ],
                 applicableTypes: [.pdf]
             ),
             ParamTemplate(
                 name: "location",
-                description: "where to save the result",
+                description: "结果保存位置",
                 suggestions: ["inPlace", "sameFolder", "temporaryFolder", "template"],
                 freeText: true,
                 valueDescriptions: [
-                    "inPlace": "replace original file",
-                    "sameFolder": "save next to original",
-                    "temporaryFolder": "save in temp directory",
+                    "inPlace": "替换原始文件",
+                    "sameFolder": "存到原件旁",
+                    "temporaryFolder": "存到临时文件夹",
                     "template": "custom path with %f (filename), %y (year), etc. Output extension is added automatically",
                 ]
             ),
@@ -222,20 +222,20 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         create: { .optimise() }
     ),
     StepTemplate(
-        name: "downscale", description: "Scale down by a factor, always keeps aspect ratio (lowers audio bitrate for audio files)",
+        name: "downscale", description: "按系数缩小,始终保持宽高比(音频降低码率)",
         mandatoryParams: [
             ParamTemplate(name: "factor", description: "0.0 to 1.0 (e.g. 0.5 = half size, 0.75 = 75%)", suggestions: ["0.5", "0.75", "0.25"], freeText: true),
         ],
         optionalParams: [
             ParamTemplate(
                 name: "location",
-                description: "where to save the result",
+                description: "结果保存位置",
                 suggestions: ["inPlace", "sameFolder", "temporaryFolder", "template"],
                 freeText: true,
                 valueDescriptions: [
-                    "inPlace": "replace original file",
-                    "sameFolder": "save next to original",
-                    "temporaryFolder": "save in temp directory",
+                    "inPlace": "替换原始文件",
+                    "sameFolder": "存到原件旁",
+                    "temporaryFolder": "存到临时文件夹",
                     "template": "custom path with %f (filename), %y (year), etc. Output extension is added automatically",
                 ]
             ),
@@ -246,18 +246,18 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
     StepTemplate(
         name: "lowerBitrate", description: "Lower the audio bitrate (never upscales, snaps to allowed bitrates)",
         mandatoryParams: [
-            ParamTemplate(name: "kbps", description: "target bitrate in kbps", suggestions: ["192", "160", "128", "96", "64"], freeText: true),
+            ParamTemplate(name: "kbps", description: "目标码率(kbps)", suggestions: ["192", "160", "128", "96", "64"], freeText: true),
         ],
         optionalParams: [
             ParamTemplate(
                 name: "location",
-                description: "where to save the result",
+                description: "结果保存位置",
                 suggestions: ["inPlace", "sameFolder", "temporaryFolder", "template"],
                 freeText: true,
                 valueDescriptions: [
-                    "inPlace": "replace original file",
-                    "sameFolder": "save next to original",
-                    "temporaryFolder": "save in temp directory",
+                    "inPlace": "替换原始文件",
+                    "sameFolder": "存到原件旁",
+                    "temporaryFolder": "存到临时文件夹",
                     "template": "custom path with %f (filename), %y (year), etc. Output extension is added automatically",
                 ]
             ),
@@ -266,31 +266,31 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         create: { .lowerBitrate(kbps: 128) }
     ),
     StepTemplate(
-        name: "convert", description: "Convert to a different format",
+        name: "convert", description: "转换为其他格式",
         mandatoryParams: [
             ParamTemplate(
-                name: "to", description: "target format extension",
+                name: "to", description: "目标格式扩展名",
                 suggestions: ["webp", "avif", "heic", "jxl", "jpeg", "png", "gif", "mp4", "webm", "m4a", "mp3", "ogg", "flac"],
                 freeText: true,
                 valueDescriptions: [
-                    "webp": "WebP image format",
-                    "avif": "AV1 image format",
-                    "heic": "HEIC image format",
-                    "jxl": "JPEG XL image format",
-                    "jpeg": "JPEG image format",
-                    "png": "PNG image format",
+                    "webp": "WebP 图像格式",
+                    "avif": "AV1 图像格式",
+                    "heic": "HEIC 图像格式",
+                    "jxl": "JPEG XL 图像格式",
+                    "jpeg": "JPEG 图像格式",
+                    "png": "PNG 图像格式",
                     "gif": "animated GIF",
-                    "webm": "WebM video (VP9)",
-                    "hevc": "MP4 encoded with HEVC/H.265 hardware encoder (fast, battery efficient)",
-                    "x265": "MP4 encoded with x265 software encoder (better compression, but slower)",
-                    "av1": "AV1 video (libsvtav1)",
-                    "mp4": "MP4 video (H.264)",
+                    "webm": "WebM 视频(VP9)",
+                    "hevc": "HEVC/H.265 硬件编码的 MP4(快,省电)",
+                    "x265": "x265 软件编码的 MP4(压缩更好,较慢)",
+                    "av1": "AV1 视频(libsvtav1)",
+                    "mp4": "MP4 视频(H.264)",
                     "m4a": "AAC audio",
                     "mp3": "MP3 audio",
-                    "ogg": "Ogg Vorbis audio",
-                    "flac": "FLAC lossless audio",
-                    "wav": "WAV uncompressed audio",
-                    "aiff": "AIFF uncompressed audio",
+                    "ogg": "Ogg Vorbis 音频",
+                    "flac": "FLAC 无损音频",
+                    "wav": "WAV 未压缩音频",
+                    "aiff": "AIFF 未压缩音频",
                 ],
                 suggestionsForType: [
                     .image: ["webp", "avif", "heic", "jxl", "jpeg", "png", "gif"],
@@ -302,13 +302,13 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         optionalParams: [
             ParamTemplate(
                 name: "location",
-                description: "where to save the result",
+                description: "结果保存位置",
                 suggestions: ["sameFolder", "inPlace", "temporaryFolder", "template"],
                 freeText: true,
                 valueDescriptions: [
-                    "sameFolder": "save next to original",
-                    "inPlace": "replace original file",
-                    "temporaryFolder": "save in temp directory",
+                    "sameFolder": "存到原件旁",
+                    "inPlace": "替换原始文件",
+                    "temporaryFolder": "存到临时文件夹",
                     "template": "custom path with %f (filename), %y (year), etc. Output extension is added automatically",
                 ]
             ),
@@ -317,16 +317,16 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         create: { .convert(to: "webp") }
     ),
     StepTemplate(
-        name: "crop", description: "Resize to exact pixel dimensions",
+        name: "crop", description: "缩放到精确像素尺寸",
         mandatoryParams: [
-            ParamTemplate(name: "width", description: "max width in pixels, height is computed if not set", suggestions: ["1920", "1600", "1280", "1024", "96"], freeText: true),
+            ParamTemplate(name: "width", description: "最大宽度(像素);不设则自动算高", suggestions: ["1920", "1600", "1280", "1024", "96"], freeText: true),
         ],
         optionalParams: [
-            ParamTemplate(name: "height", description: "max height in pixels, width is computed if not set", suggestions: ["1080", "900", "720", "1024", "96"], freeText: true),
-            ParamTemplate(name: "longEdge", description: "target size for longest dimension (use instead of width/height)", suggestions: ["1920", "1600", "1280", "1024", "512"], freeText: true),
+            ParamTemplate(name: "height", description: "最大高度(像素);不设则自动算宽", suggestions: ["1080", "900", "720", "1024", "96"], freeText: true),
+            ParamTemplate(name: "longEdge", description: "最长边的目标尺寸(代替宽/高)", suggestions: ["1920", "1600", "1280", "1024", "512"], freeText: true),
             ParamTemplate(
                 name: "aspectRatio",
-                description: "crop to a shape instead of pixel dimensions (use instead of width/height)",
+                description: "按形状裁剪而非像素尺寸(代替宽/高)",
                 suggestions: ["16:9", "4:3", "3:2", "1:1", "9:16"],
                 freeText: true,
                 valueDescriptions: [
@@ -339,19 +339,19 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
             ),
             ParamTemplate(
                 name: "smartCrop",
-                description: "keep the most interesting part of the frame instead of the centre",
+                description: "保留画面最有趣的部分而非中心",
                 suggestions: ["true", "false"],
                 freeText: false
             ),
             ParamTemplate(
                 name: "location",
-                description: "where to save the result",
+                description: "结果保存位置",
                 suggestions: ["inPlace", "sameFolder", "temporaryFolder", "template"],
                 freeText: true,
                 valueDescriptions: [
-                    "inPlace": "replace original file",
-                    "sameFolder": "save next to original",
-                    "temporaryFolder": "save in temp directory",
+                    "inPlace": "替换原始文件",
+                    "sameFolder": "存到原件旁",
+                    "temporaryFolder": "存到临时文件夹",
                     "template": "custom path with %f (filename), %y (year), etc. Output extension is added automatically",
                 ]
             ),
@@ -360,31 +360,31 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         create: { .crop(width: 1920) }
     ),
     StepTemplate(
-        name: "extractPagesAsImages", description: "Extract PDF pages as images",
+        name: "extractPagesAsImages", description: "将 PDF 页面导出为图像",
         mandatoryParams: [],
         optionalParams: [
             ParamTemplate(
                 name: "format",
-                description: "image format for extracted pages",
+                description: "提取页面的图像格式",
                 suggestions: ["jpeg", "png"],
                 freeText: false,
-                valueDescriptions: ["jpeg": "JPEG (smaller, white background)", "png": "PNG (transparency preserved)"]
+                valueDescriptions: ["jpeg": "JPEG(更小,白底)", "png": "PNG(保留透明)"]
             ),
             ParamTemplate(
                 name: "quality",
-                description: "render resolution",
+                description: "渲染分辨率",
                 suggestions: ["low", "medium", "high"],
                 freeText: false,
                 valueDescriptions: ["low": "1x scale (72 DPI)", "medium": "2x scale (144 DPI)", "high": "3x scale (216 DPI)"]
             ),
             ParamTemplate(
                 name: "location",
-                description: "where to save extracted images",
+                description: "提取图像的保存位置",
                 suggestions: ["sameFolder", "temporaryFolder", "template"],
                 freeText: true,
                 valueDescriptions: [
-                    "sameFolder": "save next to original PDF",
-                    "temporaryFolder": "save in temp directory",
+                    "sameFolder": "存到原件旁",
+                    "temporaryFolder": "存到临时文件夹",
                     "template": "custom path with %f (filename), %y (year), etc.",
                 ]
             ),
@@ -393,33 +393,33 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         create: { .extractPagesAsImages() }
     ),
     StepTemplate(
-        name: "targetSize", description: "Compress until the file fits under a size limit (Discord 10MB, email 25MB, etc.)",
+        name: "targetSize", description: "压缩直到文件低于体积上限(Discord 10MB、邮件 25MB 等)",
         mandatoryParams: [
             ParamTemplate(
                 name: "size",
-                description: "size limit, e.g. 10MB, 500KB",
+                description: "体积上限,如 10MB、500KB",
                 suggestions: ["240KB", "1MB", "5MB", "8MB", "10MB", "16MB", "25MB"],
                 freeText: true,
                 valueDescriptions: [
                     "240KB": "US visa photo limit",
-                    "5MB": "Notion free plan",
-                    "8MB": "Google Play screenshots",
-                    "10MB": "Discord free, GitHub attachments",
+                    "5MB": "Notion 免费版",
+                    "8MB": "Google Play 截图",
+                    "10MB": "Discord 免费、GitHub 附件",
                     "16MB": "WhatsApp media",
-                    "25MB": "Gmail attachments",
+                    "25MB": "Gmail 附件",
                 ]
             ),
         ],
         optionalParams: [
             ParamTemplate(
                 name: "location",
-                description: "where to save the result",
+                description: "结果保存位置",
                 suggestions: ["inPlace", "sameFolder", "temporaryFolder", "template"],
                 freeText: true,
                 valueDescriptions: [
-                    "inPlace": "replace original file",
-                    "sameFolder": "save next to original",
-                    "temporaryFolder": "save in temp directory",
+                    "inPlace": "替换原始文件",
+                    "sameFolder": "存到原件旁",
+                    "temporaryFolder": "存到临时文件夹",
                     "template": "custom path with %f (filename), %y (year), etc. Output extension is added automatically",
                 ]
             ),
@@ -428,35 +428,35 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         create: { .targetSize(bytes: 10_000_000) }
     ),
     StepTemplate(
-        name: "stripExif", description: "Remove EXIF and GPS metadata (privacy before sharing)",
+        name: "stripExif", description: "移除 EXIF 与 GPS 元数据(分享前保护隐私)",
         mandatoryParams: [],
         optionalParams: [],
         applicableTypes: [.image, .video],
         create: { .stripExif }
     ),
     StepTemplate(
-        name: "watermark", description: "Overlay a watermark image",
+        name: "watermark", description: "叠加水印图片",
         mandatoryParams: [
-            ParamTemplate(name: "image", description: "path to the watermark image (PNG with transparency works best)", suggestions: [], freeText: true, needsQuotes: true),
+            ParamTemplate(name: "image", description: "水印图片路径(最好用带透明的 PNG)", suggestions: [], freeText: true, needsQuotes: true),
         ],
         optionalParams: [
             ParamTemplate(
                 name: "position",
-                description: "corner or center placement",
+                description: "角落或居中放置",
                 suggestions: ["bottomRight", "bottomLeft", "topRight", "topLeft", "center"],
                 freeText: false
             ),
             ParamTemplate(name: "opacity", description: "0.0 to 1.0", suggestions: ["1.0", "0.5", "0.3"], freeText: true),
-            ParamTemplate(name: "scale", description: "watermark width as a fraction of the file width", suggestions: ["0.15", "0.1", "0.25", "0.5"], freeText: true),
+            ParamTemplate(name: "scale", description: "水印宽度占文件宽度的比例", suggestions: ["0.15", "0.1", "0.25", "0.5"], freeText: true),
             ParamTemplate(
                 name: "location",
-                description: "where to save the result",
+                description: "结果保存位置",
                 suggestions: ["inPlace", "sameFolder", "temporaryFolder", "template"],
                 freeText: true,
                 valueDescriptions: [
-                    "inPlace": "replace original file",
-                    "sameFolder": "save next to original",
-                    "temporaryFolder": "save in temp directory",
+                    "inPlace": "替换原始文件",
+                    "sameFolder": "存到原件旁",
+                    "temporaryFolder": "存到临时文件夹",
                     "template": "custom path with %f (filename), %y (year), etc. Output extension is added automatically",
                 ]
             ),
@@ -465,9 +465,9 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         create: { .watermark(image: "") }
     ),
     StepTemplate(
-        name: "capFps", description: "Cap the video frame rate",
+        name: "capFps", description: "限制视频帧率",
         mandatoryParams: [
-            ParamTemplate(name: "fps", description: "maximum frames per second", suggestions: ["60", "30", "24", "15", "10"], freeText: true),
+            ParamTemplate(name: "fps", description: "最大帧率", suggestions: ["60", "30", "24", "15", "10"], freeText: true),
         ],
         optionalParams: [],
         applicableTypes: [.video],
@@ -479,7 +479,7 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         optionalParams: [
             ParamTemplate(
                 name: "lufs",
-                description: "target integrated loudness",
+                description: "目标综合响度",
                 suggestions: ["-14", "-16", "-23"],
                 freeText: true,
                 valueDescriptions: [
@@ -493,7 +493,7 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         create: { .normalize() }
     ),
     StepTemplate(
-        name: "copy", description: "Copy file to a path",
+        name: "copy", description: "复制文件到指定路径",
         mandatoryParams: [
             ParamTemplate(name: "to", description: "destination path, supports sourceFolder, sourceFileName, $1, $2", suggestions: [], freeText: true, needsQuotes: true),
         ],
@@ -511,7 +511,7 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         create: { .move(to: "") }
     ),
     StepTemplate(
-        name: "rename", description: "Rename the file",
+        name: "rename", description: "重命名文件",
         mandatoryParams: [
             ParamTemplate(name: "to", description: "new name, supports sourceFileName, $1, $2", suggestions: [], freeText: true, needsQuotes: true),
         ],
@@ -529,50 +529,50 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         create: { .delete(path: "") }
     ),
     StepTemplate(
-        name: "if", description: "Continue pipeline only if condition matches",
+        name: "if", description: "仅当条件匹配时继续管线",
         mandatoryParams: [],
         optionalParams: [
             ParamTemplate(name: "regex", description: "pattern matched against filename (smart case), capture groups as $1, $2", suggestions: [], freeText: true, needsQuotes: true),
             ParamTemplate(name: "types", description: "space-separated UTTypes: jpeg png webp heic", suggestions: [], freeText: true),
-            ParamTemplate(name: "nameContains", description: "case-insensitive substring match", suggestions: [], freeText: true, needsQuotes: true),
-            ParamTemplate(name: "nameIs", description: "exact filename match", suggestions: [], freeText: true, needsQuotes: true),
-            ParamTemplate(name: "fileSizeGreaterThan", description: "min file size in bytes", suggestions: [], freeText: true),
-            ParamTemplate(name: "fileSizeLowerThan", description: "max file size in bytes", suggestions: [], freeText: true),
-            ParamTemplate(name: "widthGreaterThan", description: "min width in pixels", suggestions: [], freeText: true, applicableTypes: [.image]),
-            ParamTemplate(name: "widthLowerThan", description: "max width in pixels", suggestions: [], freeText: true, applicableTypes: [.image]),
-            ParamTemplate(name: "heightGreaterThan", description: "min height in pixels", suggestions: [], freeText: true, applicableTypes: [.image]),
-            ParamTemplate(name: "heightLowerThan", description: "max height in pixels", suggestions: [], freeText: true, applicableTypes: [.image]),
-            ParamTemplate(name: "dpiGreaterThan", description: "min DPI (images & PDFs)", suggestions: ["72", "150", "300"], freeText: true, applicableTypes: [.image, .pdf]),
-            ParamTemplate(name: "dpiLowerThan", description: "max DPI (images & PDFs)", suggestions: ["72", "150", "300"], freeText: true, applicableTypes: [.image, .pdf]),
-            ParamTemplate(name: "minFileSize", description: "minimum file size, e.g. 100kb or 2mb", suggestions: ["100kb", "1mb"], freeText: true),
-            ParamTemplate(name: "minResolution", description: "minimum width & height in pixels, e.g. 100x100", suggestions: ["100x100", "640x480"], freeText: true, applicableTypes: [.image]),
-            ParamTemplate(name: "copiedBy", description: "app that copied the item (clipboard only), fuzzy match on app name or bundle id", suggestions: [], freeText: true, needsQuotes: true),
+            ParamTemplate(name: "nameContains", description: "不区分大小写的子串匹配", suggestions: [], freeText: true, needsQuotes: true),
+            ParamTemplate(name: "nameIs", description: "精确文件名匹配", suggestions: [], freeText: true, needsQuotes: true),
+            ParamTemplate(name: "fileSizeGreaterThan", description: "最小文件大小(字节)", suggestions: [], freeText: true),
+            ParamTemplate(name: "fileSizeLowerThan", description: "最大文件大小(字节)", suggestions: [], freeText: true),
+            ParamTemplate(name: "widthGreaterThan", description: "最小宽度(像素)", suggestions: [], freeText: true, applicableTypes: [.image]),
+            ParamTemplate(name: "widthLowerThan", description: "最大宽度(像素)", suggestions: [], freeText: true, applicableTypes: [.image]),
+            ParamTemplate(name: "heightGreaterThan", description: "最小高度(像素)", suggestions: [], freeText: true, applicableTypes: [.image]),
+            ParamTemplate(name: "heightLowerThan", description: "最大高度(像素)", suggestions: [], freeText: true, applicableTypes: [.image]),
+            ParamTemplate(name: "dpiGreaterThan", description: "最小 DPI(图像和 PDF)", suggestions: ["72", "150", "300"], freeText: true, applicableTypes: [.image, .pdf]),
+            ParamTemplate(name: "dpiLowerThan", description: "最大 DPI(图像和 PDF)", suggestions: ["72", "150", "300"], freeText: true, applicableTypes: [.image, .pdf]),
+            ParamTemplate(name: "minFileSize", description: "最小文件大小,如 100kb 或 2mb", suggestions: ["100kb", "1mb"], freeText: true),
+            ParamTemplate(name: "minResolution", description: "最小宽高(像素),如 100x100", suggestions: ["100x100", "640x480"], freeText: true, applicableTypes: [.image]),
+            ParamTemplate(name: "copiedBy", description: "拷贝来源应用(仅剪贴板),模糊匹配应用名或 bundle id", suggestions: [], freeText: true, needsQuotes: true),
         ],
         applicableTypes: [.image, .video, .audio, .pdf],
         create: { .filterIf(FilterCondition(regex: "")) }
     ),
     StepTemplate(
-        name: "ifNot", description: "Continue pipeline only if condition does NOT match",
+        name: "ifNot", description: "仅当条件不匹配时继续管线",
         mandatoryParams: [],
         optionalParams: [
-            ParamTemplate(name: "regex", description: "pattern matched against filename (smart case)", suggestions: [], freeText: true, needsQuotes: true),
-            ParamTemplate(name: "types", description: "space-separated UTTypes to exclude", suggestions: [], freeText: true),
-            ParamTemplate(name: "nameContains", description: "case-insensitive substring to exclude", suggestions: [], freeText: true, needsQuotes: true),
-            ParamTemplate(name: "nameIs", description: "exact filename to exclude", suggestions: [], freeText: true, needsQuotes: true),
-            ParamTemplate(name: "copiedBy", description: "exclude when copied by this app (clipboard only), fuzzy match on app name or bundle id", suggestions: [], freeText: true, needsQuotes: true),
+            ParamTemplate(name: "regex", description: "按文件名匹配的模式(智能大小写)", suggestions: [], freeText: true, needsQuotes: true),
+            ParamTemplate(name: "types", description: "空格分隔的 UTType 排除列表", suggestions: [], freeText: true),
+            ParamTemplate(name: "nameContains", description: "不区分大小写的排除子串", suggestions: [], freeText: true, needsQuotes: true),
+            ParamTemplate(name: "nameIs", description: "精确排除的文件名", suggestions: [], freeText: true, needsQuotes: true),
+            ParamTemplate(name: "copiedBy", description: "此应用拷贝时排除(仅剪贴板),模糊匹配应用名或 bundle id", suggestions: [], freeText: true, needsQuotes: true),
         ],
         applicableTypes: [.image, .video, .audio, .pdf],
         create: { .filterIfNot(FilterCondition(regex: "")) }
     ),
     StepTemplate(
-        name: "removeAudio", description: "Strip the audio track",
+        name: "removeAudio", description: "移除音轨",
         mandatoryParams: [],
         optionalParams: [],
         applicableTypes: [.video],
         create: { .removeAudio }
     ),
     StepTemplate(
-        name: "changeSpeed", description: "Change playback speed",
+        name: "changeSpeed", description: "更改播放速度",
         mandatoryParams: [
             ParamTemplate(name: "factor", description: "speed multiplier (e.g. 2.0 = 2x, 0.5 = half speed)", suggestions: ["1.5", "2.0", "0.5", "0.75"], freeText: true),
         ],
@@ -587,14 +587,14 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         description: "Run a script file, executable, or inline shell code. Input file is passed as $1 and CLOP_INPUT_FILE; Clop's bundled tools (ffmpeg, gs, gifski…) are in $CLOP_BIN; print a file path to stdout to swap the file the pipeline carries forward",
         mandatoryParams: [],
         optionalParams: [
-            ParamTemplate(name: "path", description: "path to a script file or executable", suggestions: [], freeText: true, needsQuotes: true),
-            ParamTemplate(name: "code", description: "inline shell code run via zsh -c (use instead of path)", suggestions: [], freeText: true, needsQuotes: true),
+            ParamTemplate(name: "path", description: "脚本文件或可执行文件的路径", suggestions: [], freeText: true, needsQuotes: true),
+            ParamTemplate(name: "code", description: "通过 zsh -c 运行的内联 shell 代码(代替路径)", suggestions: [], freeText: true, needsQuotes: true),
         ],
         applicableTypes: [.image, .video, .audio, .pdf],
         create: { .runScript(path: "") }
     ),
     StepTemplate(
-        name: "runShortcut", description: "Run a macOS Shortcut",
+        name: "runShortcut", description: "运行快捷指令",
         mandatoryParams: [
             ParamTemplate(name: "name", description: "shortcut name as shown in Shortcuts.app", suggestions: [], freeText: true, needsQuotes: true),
         ],
@@ -603,15 +603,15 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         create: { .runShortcut(Shortcut(name: "", identifier: "")) }
     ),
     StepTemplate(
-        name: "copyToClipboard", description: "Copy file reference to clipboard",
+        name: "copyToClipboard", description: "复制文件引用到剪贴板",
         mandatoryParams: [],
         optionalParams: [
             ParamTemplate(
                 name: "format",
-                description: "clipboard content format",
+                description: "剪贴板内容格式",
                 suggestions: ["path", "imageData", "markdown"],
                 freeText: false,
-                valueDescriptions: ["path": "file path, relative if relativeTo is set", "imageData": "raw image data", "markdown": "markdown link, relative if relativeTo is set"],
+                valueDescriptions: ["path": "文件路径(设置了 relativeTo 则为相对路径)", "imageData": "raw image data", "markdown": "Markdown 链接(设置了 relativeTo 则为相对路径)"],
                 suggestionsForType: [
                     .video: ["path", "markdown"],
                     .audio: ["path", "markdown"],
@@ -624,7 +624,7 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         create: { .copyToClipboard() }
     ),
     StepTemplate(
-        name: "copyLinkForSending", description: "Send file securely and copy share link to clipboard",
+        name: "copyLinkForSending", description: "安全发送文件并复制分享链接到剪贴板",
         mandatoryParams: [],
         optionalParams: [
             ParamTemplate(
@@ -638,7 +638,7 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         create: { .copyLinkForSending() }
     ),
     StepTemplate(
-        name: "fork", description: "Also show the result so far as a second draggable card, then keep processing",
+        name: "fork", description: "同时把当前结果作为第二张可拖动卡片显示,然后继续处理",
         mandatoryParams: [],
         optionalParams: [
             ParamTemplate(
@@ -652,7 +652,7 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         create: { .fork() }
     ),
     StepTemplate(
-        name: "shelveWith", description: "Send file to a shelf app",
+        name: "shelveWith", description: "发送文件到暂存区应用",
         mandatoryParams: [
             ParamTemplate(
                 name: "app",
@@ -667,7 +667,7 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         create: { .shelveWith(app: "yoink") }
     ),
     StepTemplate(
-        name: "uploadWith", description: "Upload file via an upload app",
+        name: "uploadWith", description: "通过上传应用上传文件",
         mandatoryParams: [
             ParamTemplate(
                 name: "app",
@@ -684,13 +684,13 @@ let ALL_STEP_TEMPLATES: [StepTemplate] = [
         create: { .uploadWith(app: "dropshare") }
     ),
     StepTemplate(
-        name: "openWith", description: "Open file with a specific app",
+        name: "openWith", description: "用指定应用打开文件",
         mandatoryParams: [
             {
                 let apps = installedApps()
                 return ParamTemplate(
                     name: "app",
-                    description: "application name (e.g. Preview, Pixelmator Pro)",
+                    description: "应用名(如 Preview、Pixelmator Pro)",
                     suggestions: apps.names,
                     freeText: true,
                     needsQuotes: false,
@@ -1005,21 +1005,21 @@ struct TemplateVariable {
 }
 
 let TEMPLATE_VARIABLES: [TemplateVariable] = [
-    TemplateVariable(token: "%f", name: "filename", description: "source file name without extension"),
-    TemplateVariable(token: "%e", name: "extension", description: "source file extension without dot (note: output extension is always added automatically)"),
-    TemplateVariable(token: "%P", name: "path", description: "source file directory path"),
-    TemplateVariable(token: "%F", name: "fullPath", description: "full source file path including filename"),
-    TemplateVariable(token: "%y", name: "year", description: "current year (e.g. 2026)"),
-    TemplateVariable(token: "%m", name: "month", description: "month number (01-12)"),
-    TemplateVariable(token: "%n", name: "monthName", description: "month name (e.g. March)"),
-    TemplateVariable(token: "%d", name: "day", description: "day of month (01-31)"),
-    TemplateVariable(token: "%w", name: "weekday", description: "day of week (e.g. Friday)"),
+    TemplateVariable(token: "%f", name: "filename", description: "不含扩展名的源文件名"),
+    TemplateVariable(token: "%e", name: "extension", description: "不含点的源文件扩展名(输出扩展名总是自动添加)"),
+    TemplateVariable(token: "%P", name: "path", description: "源文件所在目录路径"),
+    TemplateVariable(token: "%F", name: "fullPath", description: "完整源文件路径(含文件名)"),
+    TemplateVariable(token: "%y", name: "year", description: "当前年份(如 2026)"),
+    TemplateVariable(token: "%m", name: "month", description: "月(01-12)"),
+    TemplateVariable(token: "%n", name: "monthName", description: "月份名(如 March)"),
+    TemplateVariable(token: "%d", name: "day", description: "日(01-31)"),
+    TemplateVariable(token: "%w", name: "weekday", description: "星期几(如 Friday)"),
     TemplateVariable(token: "%H", name: "hour", description: "hour (00-23)"),
-    TemplateVariable(token: "%M", name: "minutes", description: "minutes (00-59)"),
-    TemplateVariable(token: "%S", name: "seconds", description: "seconds (00-59)"),
+    TemplateVariable(token: "%M", name: "minutes", description: "分(00-59)"),
+    TemplateVariable(token: "%S", name: "seconds", description: "秒(00-59)"),
     TemplateVariable(token: "%p", name: "amPm", description: "AM or PM"),
-    TemplateVariable(token: "%r", name: "random", description: "random characters"),
-    TemplateVariable(token: "%i", name: "counter", description: "auto-incrementing number"),
+    TemplateVariable(token: "%r", name: "random", description: "随机字符"),
+    TemplateVariable(token: "%i", name: "counter", description: "自增编号"),
 ]
 
 /// Determines context from the prefix and returns appropriate suggestions.
@@ -1160,7 +1160,7 @@ struct StepActionGrid: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("Possible actions")
+            Text("可用操作")
                 .dimmed(9, weight: .medium)
             FlowLayout(spacing: 4) {
                 ForEach(templates, id: \.name) { template in

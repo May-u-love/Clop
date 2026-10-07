@@ -27,10 +27,10 @@ func nearestExpirationPresetIndex(_ t: TimeInterval) -> Int {
 /// Long label for menus/overlays: "1 minute", "45 minutes", "1 hour", "3 days".
 func expirationDurationLabel(_ t: TimeInterval) -> String {
     let s = Int(t.rounded())
-    guard s > 0 else { return "never" }
-    if s % 86400 == 0 { let d = s / 86400; return "\(d) day\(d == 1 ? "" : "s")" }
-    if s % 3600 == 0 { let h = s / 3600; return "\(h) hour\(h == 1 ? "" : "s")" }
-    let m = max(1, s / 60); return "\(m) minute\(m == 1 ? "" : "s")"
+    guard s > 0 else { return "永不过期" }
+    if s % 86400 == 0 { let d = s / 86400; return "\(d) 天" }
+    if s % 3600 == 0 { let h = s / 3600; return "\(h) 小时" }
+    let m = max(1, s / 60); return "\(m) 分钟"
 }
 
 /// Short label for compact buttons: 1m, 45m, 1h, 3d (∞ for never).
@@ -62,12 +62,12 @@ struct WarpDropSession: Identifiable {
     /// When the link auto-stops, or nil for no expiration.
     var expiresAt: Date?
 
-    /// Human label for the remaining time, e.g. "Expires in 42 minutes". nil when no expiration.
+    /// Human label for the remaining time, e.g. "42 分钟后过期". nil when no expiration.
     var expiresInLabel: String? {
         guard let expiresAt else { return nil }
         let remaining = expiresAt.timeIntervalSinceNow
-        guard remaining > 0 else { return "Expiring now" }
-        return "Expires in \(expirationDurationLabel(remaining))"
+        guard remaining > 0 else { return "即将过期" }
+        return "\(expirationDurationLabel(remaining))后过期"
     }
 
     var directURL: String {
@@ -222,14 +222,14 @@ func resolveLinkExpiry(_ expiration: TimeInterval?) -> Date? {
 func warpDropSend(optimiser: Optimiser, expiration: TimeInterval? = nil) {
     guard let url = optimiser.url else { return }
     guard FileManager.default.fileExists(atPath: url.path) else {
-        optimiser.overlayMessage = "File not found"
+        optimiser.overlayMessage = "文件不存在"
         return
     }
 
     // Already shared: copy the existing link instead of creating a second one.
     if let session = WDM.session(forOptimiser: optimiser) {
         session.copyLink()
-        optimiser.overlayMessage = "Copied link"
+        optimiser.overlayMessage = "已复制链接"
         return
     }
     // Already connecting (room not created yet): don't start a second transfer.
@@ -245,7 +245,7 @@ func warpDropSend(optimisers: [Optimiser], expiration: TimeInterval? = nil) {
     let urls = optimisers.compactMap { opt -> URL? in
         guard let url = opt.url else { return nil }
         guard FileManager.default.fileExists(atPath: url.path) else {
-            opt.overlayMessage = "File not found"
+            opt.overlayMessage = "文件不存在"
             return nil
         }
         return url
@@ -299,7 +299,7 @@ private func warpDropSendFiles(_ files: [URL], overlayOptimisers: [Optimiser], e
                     for optimiser in overlayOptimisers {
                         optimiser.warpDropConnecting = false
                     }
-                    overlayOptimisers.first?.overlayMessage = "Copied link"
+                    overlayOptimisers.first?.overlayMessage = "已复制链接"
                 }
             },
             onDownloadCompleted: { [roomIDRef] count in
@@ -362,7 +362,7 @@ func warpDropSendAndWait(url: URL, optimiser: Optimiser, expiration: TimeInterva
                         pb.clearContents()
                         pb.setString(shareURL, forType: .string)
                     }
-                    optimiser.overlayMessage = "Copied link"
+                    optimiser.overlayMessage = "已复制链接"
                 }
             },
             onDownloadCompleted: { [roomIDRef] count in

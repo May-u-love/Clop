@@ -152,7 +152,7 @@ enum LoudnessChoice: String, CaseIterable, Identifiable {
         rawValue
     }
     var title: String {
-        switch self { case .off: "No normalisation"; case .streaming: "Streaming (−14 LUFS)"; case .appleMusic: "Apple Music (−16)"; case .podcast: "Podcast (−19)"; case .broadcast: "Broadcast (−23)" }
+        switch self { case .off: "不标准化"; case .streaming: "Streaming (−14 LUFS)"; case .appleMusic: "Apple Music (−16)"; case .podcast: "Podcast (−19)"; case .broadcast: "Broadcast (−23)" }
     }
     var lufs: Double? {
         switch self { case .off: nil; case .streaming: -14; case .appleMusic: -16; case .podcast: -19; case .broadcast: -23 }
@@ -422,9 +422,9 @@ struct BatchPrepContent: View {
             SwiftUI.Image(systemName: "square.and.arrow.down.on.square")
                 .font(.system(size: 52, weight: .light))
                 .foregroundStyle(.secondary)
-            Text("Drop files and folders here")
+            Text("把文件和文件夹拖到这里")
                 .font(.title2.weight(.medium))
-            Text("Images, videos, PDFs and audio are added; everything else is ignored. Drop more anytime to keep adding.")
+            Text("图像、视频、PDF 和音频会被加入,其余忽略。可随时继续拖入更多文件。")
                 .font(.callout)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -445,20 +445,20 @@ struct BatchPrepContent: View {
             if !manager.phase.isEmpty {
                 Text(manager.phase).foregroundStyle(.secondary)
             } else {
-                Text("\(manager.items.count) file\(manager.items.count == 1 ? "" : "s")")
+                Text("\(manager.items.count) 个文件")
                     .foregroundStyle(.secondary)
                 if !manager.items.isEmpty {
-                    Text("·  drop to add more, select and ⌫ to remove files")
+                    Text("· 拖入可继续添加,选中后按 ⌫ 移除")
                         .foregroundStyle(.tertiary)
                 }
             }
             Spacer()
             if !manager.items.isEmpty {
-                Button("Reset") { manager.reset() }
+                Button("重置") { manager.reset() }
             }
-            Button("Cancel") { manager.windowController?.window?.close() }
+            Button("取消") { manager.windowController?.window?.close() }
                 .keyboardShortcut(.cancelAction)
-            Button("Optimise") { manager.beginProcessing(params: form.toBatchParams()) }
+            Button("优化") { manager.beginProcessing(params: form.toBatchParams()) }
                 .keyboardShortcut(.defaultAction)
                 .disabled(manager.items.isEmpty || !manager.phase.isEmpty)
         }
@@ -517,7 +517,7 @@ private struct BatchPrepFilesTable: View {
             }.width(min: 90, ideal: 110)
         }
         .contextMenu(forSelectionType: BatchItem.ID.self) { ids in
-            Button("Remove from batch") { manager.remove(ids: Array(ids)); selection.subtract(ids) }
+            Button("从批次中移除") { manager.remove(ids: Array(ids)); selection.subtract(ids) }
                 .disabled(ids.isEmpty)
         }
         .onDeleteCommand {
@@ -578,7 +578,7 @@ struct BatchParamColumns: View {
         ParamCard("Images", icon: "photo", dimmed: !present.image) {
             ParamRow("Compression") { compressionSlider($form.imageCompression) }
             Divider()
-            ParamRow("Convert to") { choicePicker("Convert to", $form.imageConvert, ImageConvertChoice.allCases) { $0.title } }
+            ParamRow("Convert to") { choicePicker("转换为", $form.imageConvert, ImageConvertChoice.allCases) { $0.title } }
             Divider()
             ParamRow("Downscale", disabled: form.imageDownscaleDisabled) { downscaleSlider($form.imageDownscale) }
             Divider()
@@ -593,7 +593,7 @@ struct BatchParamColumns: View {
 
     private var pdfCard: some View {
         ParamCard("PDF", icon: "doc.text", dimmed: !present.pdf) {
-            ParamRow("Resolution") { choicePicker("Resolution", $form.pdfDPI, PDFDPIChoice.allCases) { $0.title } }
+            ParamRow("Resolution") { choicePicker("分辨率", $form.pdfDPI, PDFDPIChoice.allCases) { $0.title } }
         }
         .frame(width: 330)
     }
@@ -602,19 +602,19 @@ struct BatchParamColumns: View {
         ParamCard("Video", icon: "film", dimmed: !present.video) {
             ParamRow("Compression", disabled: form.videoCompressionDisabled) { compressionSlider($form.videoCompression) }
             Divider()
-            ParamRow("Convert to") { choicePicker("Convert to", $form.videoConvert, VideoConvertChoice.allCases) { $0.title } }
+            ParamRow("Convert to") { choicePicker("转换为", $form.videoConvert, VideoConvertChoice.allCases) { $0.title } }
             Divider()
             ParamRow("Downscale", disabled: form.videoDownscaleDisabled) { downscaleSlider($form.videoDownscale) }
             Divider()
             ParamRow("Max long edge", disabled: form.videoLongEdgeDisabled) { numberSuffix($form.videoLongEdge, "px") }
             Divider()
-            ParamRow("Encoder") { choicePicker("Encoder", $form.videoEncoder, VideoEncoderChoice.allCases) { $0.title } }
+            ParamRow("Encoder") { choicePicker("编码器", $form.videoEncoder, VideoEncoderChoice.allCases) { $0.title } }
             Divider()
             ParamRow("Frame rate") {
                 HStack(spacing: 6) {
                     numberField($form.videoFPS).disabled(!form.videoFPSCap)
                     Text("fps").foregroundStyle(.tertiary)
-                    Toggle("Frame rate", isOn: $form.videoFPSCap).labelsHidden().toggleStyle(.switch).controlSize(.mini)
+                    Toggle("帧率", isOn: $form.videoFPSCap).labelsHidden().toggleStyle(.switch).controlSize(.mini)
                 }
             }
             Divider()
@@ -629,28 +629,28 @@ struct BatchParamColumns: View {
         ParamCard("Audio", icon: "music.note", dimmed: !present.audio) {
             ParamRow("Compression", disabled: form.audioCompressionDisabled) { compressionSlider($form.audioCompression) }
             Divider()
-            ParamRow("Format") { choicePicker("Format", $form.audioFormat, AudioFormatChoice.allCases) { $0.title } }
+            ParamRow("Format") { choicePicker("格式", $form.audioFormat, AudioFormatChoice.allCases) { $0.title } }
             Divider()
             ParamRow("Bitrate", disabled: form.audioBitrateDisabled) { bitrateSlider($form.audioBitrate, range: form.audioBitrateRange) }
             Divider()
-            ParamRow("Loudness") { choicePicker("Loudness", $form.audioLoudness, LoudnessChoice.allCases) { $0.title } }
+            ParamRow("Loudness") { choicePicker("响度", $form.audioLoudness, LoudnessChoice.allCases) { $0.title } }
             Divider()
             ParamRow("Cover art", disabled: form.audioCoverDisabled) {
-                Picker("Cover art", selection: $form.audioCover) { ForEach(AudioCoverArtBehaviour.allCases, id: \.self) { Text($0.rawValue.capitalized).tag($0) } }.labelsHidden().fixedSize()
+                Picker("封面图", selection: $form.audioCover) { ForEach(AudioCoverArtBehaviour.allCases, id: \.self) { Text($0.rawValue.capitalized).tag($0) } }.labelsHidden().fixedSize()
             }
             Divider()
             ParamRow("Cover size", disabled: form.audioCoverSizeDisabled) {
                 HStack(spacing: 6) {
                     numberSuffix($form.audioCoverSize, "px")
-                    Picker("Cover size", selection: $form.audioCoverSquaring) {
-                        Text("Square if landscape").tag(CoverArtSquaring.landscapeOnly)
-                        Text("Square").tag(CoverArtSquaring.always)
-                        Text("Long edge").tag(CoverArtSquaring.never)
+                    Picker("封面尺寸", selection: $form.audioCoverSquaring) {
+                        Text("横向时取方形").tag(CoverArtSquaring.landscapeOnly)
+                        Text("方形").tag(CoverArtSquaring.always)
+                        Text("长边").tag(CoverArtSquaring.never)
                     }.labelsHidden().fixedSize()
                 }
             }
             Divider()
-            ToggleRow("Convert WAV / AIFF / FLAC", $form.audioConvertLossless)
+            ToggleRow("转换 WAV / AIFF / FLAC", $form.audioConvertLossless)
             Divider()
             ToggleRow("Keep if larger", $form.audioKeepIfLarger, disabled: form.audioKeepIfLargerDisabled)
         }
@@ -664,8 +664,8 @@ private struct OutputRow: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            Text("Save to").foregroundStyle(.secondary)
-            Picker("Save to", selection: Binding(
+            Text("存储到").foregroundStyle(.secondary)
+            Picker("存储到", selection: Binding(
                 get: { form.outputFolder == nil ? 0 : 1 },
                 set: {
                     if $0 == 0 {
@@ -675,8 +675,8 @@ private struct OutputRow: View {
                     }
                 }
             )) {
-                Text("In place").tag(0)
-                Text("To folder…").tag(1)
+                Text("原位").tag(0)
+                Text("到文件夹…").tag(1)
             }
             .labelsHidden()
             .fixedSize()
@@ -983,7 +983,7 @@ struct BatchResultsContent: View {
 
     private var affectedSummary: String {
         let ids = Set(affectedIDs(scope: nil))
-        guard !ids.isEmpty else { return "No changes to apply" }
+        guard !ids.isEmpty else { return "没有可应用的更改" }
         var media = 0, docs = 0
         for item in manager.items where ids.contains(item.id) {
             switch batchTypeKey(item.type) {
@@ -999,7 +999,7 @@ struct BatchResultsContent: View {
         if docs > 0 {
             parts.append("\(docs) image\(docs == 1 ? "" : "s")/PDF\(docs == 1 ? "" : "s")")
         }
-        return "Will re-optimise " + parts.joined(separator: ", ")
+        return "将重新优化 " + parts.joined(separator: ", ")
     }
 
     private var canTune: Bool {
@@ -1014,9 +1014,9 @@ struct BatchResultsContent: View {
             HStack {
                 Text(affectedSummary).foregroundStyle(.secondary).font(.callout)
                 Spacer()
-                Button("Apply to selection") { applyAdjust(Array(selection)) }
+                Button("应用到所选") { applyAdjust(Array(selection)) }
                     .disabled(changedTypes.isEmpty || selection.isEmpty)
-                Button("Apply to all") { applyAdjust(nil) }
+                Button("应用到全部") { applyAdjust(nil) }
                     .disabled(changedTypes.isEmpty)
                     .keyboardShortcut(.defaultAction)
             }
@@ -1031,16 +1031,16 @@ struct BatchResultsContent: View {
                 savingsPills
             }
             if !manager.canReapply {
-                Text("Backups deleted, re-running unavailable").font(.caption).foregroundStyle(.secondary)
+                Text("备份已删除,无法重新运行").font(.caption).foregroundStyle(.secondary)
             }
             Spacer()
             Button {
                 toggleAdjust()
             } label: {
-                Label(showAdjust ? "Hide parameters" : "Adjust optimisation parameters…", systemImage: "slider.horizontal.3")
+                Label(showAdjust ? "隐藏参数" : "Adjust optimisation parameters…", systemImage: "slider.horizontal.3")
             }
             .disabled(!canTune)
-            Button("Cancel") { manager.cancel() }.disabled(!manager.isRunning)
+            Button("取消") { manager.cancel() }.disabled(!manager.isRunning)
         }
         .padding(12)
     }
@@ -1054,7 +1054,7 @@ struct BatchResultsContent: View {
                     .font(.callout).monospacedDigit().foregroundStyle(.secondary)
             }
         } else if a.total > 0 {
-            Label("\(a.done) done\(a.failed > 0 ? ", \(a.failed) failed" : "")", systemImage: a.failed > 0 ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
+            Label("完成 \(a.done)\(a.failed > 0 ? ",失败 \(a.failed)" : "")", systemImage: a.failed > 0 ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
                 .font(.callout).foregroundStyle(a.failed > 0 ? .orange : .green)
         }
     }
@@ -1072,34 +1072,34 @@ struct BatchResultsContent: View {
 
     private var actionBar: some View {
         HStack(spacing: 10) {
-            Button("Show in Finder") { batchReveal(selectedItems) }.disabled(selection.isEmpty)
-            Button("Open") { BatchQuickLooker.quicklook(batchResultURLs(selectedItems)) }.disabled(selection.isEmpty)
-            Button("Copy") { batchCopyFiles(selectedItems) }.disabled(selection.isEmpty)
+            Button("在访达中显示") { batchReveal(selectedItems) }.disabled(selection.isEmpty)
+            Button("打开") { BatchQuickLooker.quicklook(batchResultURLs(selectedItems)) }.disabled(selection.isEmpty)
+            Button("复制") { batchCopyFiles(selectedItems) }.disabled(selection.isEmpty)
             if manager.aggregate.failed > 0 {
                 Button {
                     showFailures = true
                 } label: {
-                    Label("\(manager.aggregate.failed) failed", systemImage: "exclamationmark.triangle.fill")
+                    Label("\(manager.aggregate.failed) 个失败", systemImage: "exclamationmark.triangle.fill")
                 }
                 .tint(.orange)
             }
             Spacer()
-            Button("Restore originals") { manager.restoreFromBackup(toSelection: selection.isEmpty ? nil : Array(selection)) }
+            Button("恢复原件") { manager.restoreFromBackup(toSelection: selection.isEmpty ? nil : Array(selection)) }
                 .disabled(!canTune)
-            Button("Show backups in Finder") {
+            Button("在访达中显示备份") {
                 if let url = manager.backupDirURL {
                     NSWorkspace.shared.activateFileViewerSelecting([url])
                 }
             }
             .disabled(manager.backupDirURL == nil)
-            Button("Delete backups", role: .destructive) { confirmDeleteBackups = true }
+            Button("删除备份", role: .destructive) { confirmDeleteBackups = true }
                 .disabled(!manager.canDeleteBackups)
-                .confirmationDialog("Delete the backups for this batch?", isPresented: $confirmDeleteBackups, titleVisibility: .visible) {
-                    Button("Delete backups", role: .destructive) { manager.deleteBackups() }
-                    Button("Cancel", role: .cancel) {}
+                .confirmationDialog("删除此批次的备份?", isPresented: $confirmDeleteBackups, titleVisibility: .visible) {
+                    Button("删除备份", role: .destructive) { manager.deleteBackups() }
+                    Button("取消", role: .cancel) {}
                 } message: {
                     Text(
-                        "Clop keeps a pristine copy of every original so you can re-run with different settings or restore them. Deleting the backups frees that space but means you can no longer re-compress or restore these files from Clop."
+                        "Clop 为每个原件保留完好副本,便于换参数重跑或恢复。删除备份可释放空间,但之后无法再从 Clop 重压缩或恢复这些文件。"
                     )
                 }
         }
@@ -1205,18 +1205,18 @@ private struct BatchResultsTable: View {
             let items = manager.items.filter { ids.contains($0.id) }
             Button("Quick Look") { BatchQuickLooker.quicklook(batchResultURLs(items)) }
                 .disabled(items.isEmpty)
-            Button("Show in Finder") { batchReveal(items) }
+            Button("在访达中显示") { batchReveal(items) }
                 .disabled(items.isEmpty)
-            Button("Copy") { batchCopyFiles(items) }
+            Button("复制") { batchCopyFiles(items) }
                 .disabled(items.isEmpty)
             if ids.count == 1, let id = ids.first, let item = items.first {
                 Divider()
-                Button("Compare before / after") { manager.compareItem(id: id) }
+                Button("对比原图 / 成品") { manager.compareItem(id: id) }
                     .disabled(!manager.canReapply || item.status != .done)
             }
             if manager.canReapply {
                 Divider()
-                Button("Restore original\(ids.count > 1 ? "s" : "")") { manager.restoreFromBackup(toSelection: Array(ids)) }
+                Button("恢复原件") { manager.restoreFromBackup(toSelection: Array(ids)) }
                     .disabled(manager.isRunning || manager.isRestoring)
             }
         } primaryAction: { ids in
@@ -1340,7 +1340,7 @@ struct BatchFailuresSheet: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Label("\(failures.count) file\(failures.count == 1 ? "" : "s") failed", systemImage: "exclamationmark.triangle.fill")
+                Label("\(failures.count) 个文件失败", systemImage: "exclamationmark.triangle.fill")
                     .foregroundStyle(.orange).font(.headline)
                 Spacer()
             }
@@ -1357,7 +1357,7 @@ struct BatchFailuresSheet: View {
                         .frame(maxHeight: 220)
                         .background(Color(nsColor: .textBackgroundColor), in: RoundedRectangle(cornerRadius: 6))
                     } else {
-                        Text("No tool output captured for this failure.").font(.callout).foregroundStyle(.secondary)
+                        Text("没有捕获到此次失败的工具输出。").font(.callout).foregroundStyle(.secondary)
                     }
                 } label: {
                     VStack(alignment: .leading, spacing: 2) {
@@ -1369,9 +1369,9 @@ struct BatchFailuresSheet: View {
 
             Divider()
             HStack {
-                Button("Copy") { copyFailures() }
+                Button("复制") { copyFailures() }
                 Spacer()
-                Button("Done") { dismiss() }.keyboardShortcut(.defaultAction)
+                Button("完成") { dismiss() }.keyboardShortcut(.defaultAction)
             }
             .padding(12)
         }

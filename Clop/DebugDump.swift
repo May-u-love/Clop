@@ -63,7 +63,7 @@ enum DebugDump {
 
     @MainActor static func confirmAndRun() {
         guard !isRunning else {
-            showNotice("A debug dump is already being collected")
+            showNotice("已在收集调试信息")
             return
         }
         focus()
@@ -78,7 +78,7 @@ enum DebugDump {
 
     @MainActor static func runAndReveal() {
         isRunning = true
-        let optimiser = OM.optimiser(id: "Debug dump", type: .unknown, operation: "Collecting debug data", indeterminateProgress: true)
+        let optimiser = OM.optimiser(id: "Debug dump", type: .unknown, operation: "正在收集调试数据", indeterminateProgress: true)
         progressOptimiser = optimiser
 
         Task.detached(priority: .userInitiated) {
@@ -94,7 +94,7 @@ enum DebugDump {
                 try? FileManager.default.createDirectory(at: outputDir, withIntermediateDirectories: true)
                 await MainActor.run {
                     isRunning = false
-                    optimiser.finish(error: "Debug dump failed", notice: error.localizedDescription)
+                    optimiser.finish(error: "调试信息生成失败", notice: error.localizedDescription)
                     NSWorkspace.shared.open(outputDir)
                 }
             }
@@ -227,7 +227,7 @@ enum DebugDump {
             lines.append("    running: \(o.running)  operation: \(o.operation)  progress: \(o.progress.fractionCompleted)  step: \(o.stepIndicator)")
             if let error = o.error { lines.append("    error: \(error)") }
             if let notice = o.notice { lines.append("    notice: \(notice)") }
-            // `info` carries the outcomes that aren't failures ("File already fully compressed"), which
+            // `info` carries the outcomes that aren't failures ("文件已充分压缩"), which
             // is exactly what a "nothing happened" report looks like from the outside. Leaving it out
             // made a run that deliberately kept the original indistinguishable from one that crashed.
             if let info = o.info { lines.append("    info: \(info)") }
@@ -293,10 +293,10 @@ enum DebugDump {
                 }
             }
         }
-        automations("Image automations", Defaults[.pipelinesToRunOnImage])
+        automations("图像自动化", Defaults[.pipelinesToRunOnImage])
         automations("Video automations", Defaults[.pipelinesToRunOnVideo])
-        automations("PDF automations", Defaults[.pipelinesToRunOnPdf])
-        automations("Audio automations", Defaults[.pipelinesToRunOnAudio])
+        automations("PDF 自动化", Defaults[.pipelinesToRunOnPdf])
+        automations("音频自动化", Defaults[.pipelinesToRunOnAudio])
 
         func watched(_ title: String, _ dirs: [String]) {
             lines.append("")

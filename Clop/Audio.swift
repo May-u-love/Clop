@@ -445,7 +445,7 @@ func optimiseCoverJPEG(_ path: FilePath) {
 /// Extract the embedded cover art as losslessly as possible (copy the original encoded bytes, no
 /// transcode and no resize) into a temp file named by its real format (.jpg/.png sniffed from the
 /// header bytes, .img when unknown). Returns nil when there's no artwork or extraction fails.
-/// Shared by the optimise pass and the "Extract cover art" action.
+/// Shared by the optimise pass and the "提取封面图" action.
 func extractedAudioCoverArt(input: FilePath, stem: String) -> FilePath? {
     let token = "\(stem)-cover-\(Int.random(in: 100 ... 100_000))"
     let rawPath = FilePath.images.appending("\(token).img")
@@ -616,7 +616,7 @@ func resolveOriginalAudioCoverArt(cached: FilePath?, optimiser: Optimiser, audio
 }
 
 /// Lazily read the original embedded cover-art resolution and cache the original cover, for the
-/// "Downscale cover art" slider's resolution label.
+/// "缩小封面图" slider's resolution label.
 @MainActor func loadAudioCoverArtSize(optimiser: Optimiser) {
     guard optimiser.coverArtSize == nil,
           let url = optimiser.url ?? optimiser.originalURL, let path = url.filePath
@@ -645,7 +645,7 @@ func resolveOriginalAudioCoverArt(cached: FilePath?, optimiser: Optimiser, audio
 
     optimiser.coverDownscaleFactor = factor
     optimiser.running = true
-    optimiser.operation = "Downscaling cover art"
+    optimiser.operation = "正在缩小封面图"
     optimiser.stopRemover()
 
     audioOptimisationQueue.addOperation {
@@ -676,7 +676,7 @@ func resolveOriginalAudioCoverArt(cached: FilePath?, optimiser: Optimiser, audio
             guard let sproc = try? tryProc(FFMPEG.string, args: scaleArgs, tries: 1),
                   sproc.terminationStatus == 0, (scaledPath.fileSize() ?? 0) > 0
             else {
-                fail("Downscale failed")
+                fail("缩放失败")
                 return
             }
             if !isPNG { optimiseCoverJPEG(scaledPath) }
@@ -692,7 +692,7 @@ func resolveOriginalAudioCoverArt(cached: FilePath?, optimiser: Optimiser, audio
         guard let mproc = try? tryProc(FFMPEG.string, args: muxArgs, tries: 1),
               mproc.terminationStatus == 0, (outPath.fileSize() ?? 0) > 0
         else {
-            fail("Downscale failed")
+            fail("缩放失败")
             return
         }
 

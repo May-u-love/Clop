@@ -300,7 +300,7 @@ enum TempPipelineSegment {
     }
 
     enum IDs {
-        static let clipboardImage = "Clipboard image"
+        static let clipboardImage = "剪贴板图像"
         static let clipboard = "Clipboard"
         static let pro = "Pro"
     }
@@ -330,7 +330,7 @@ enum TempPipelineSegment {
     @Published var oldDPI: Int? = nil
     @Published var newDPI: Int? = nil
 
-    /// Original embedded cover-art resolution, lazily loaded for the audio "Downscale cover art"
+    /// Original embedded cover-art resolution, lazily loaded for the audio "缩小封面图"
     /// slider so it can show the target size.
     @Published var coverArtSize: CGSize? = nil
     /// Current cover-art scale (1.0 = original). Kept separate from `downscaleFactor` so audio cover
@@ -1220,7 +1220,7 @@ enum TempPipelineSegment {
                 DispatchQueue.global().async { [weak self] in
                     guard let self else { return }
                     guard let result = try? video.convertToGIF(optimiser: self, maxWidth: 960, fps: 15) else {
-                        mainActor { self.finish(error: "GIF conversion failed") }
+                        mainActor { self.finish(error: "GIF 转换失败") }
                         return
                     }
                     mainActor {
@@ -1537,7 +1537,7 @@ enum TempPipelineSegment {
             // Audio speed runs off the pristine backup when we still have it, so factors stay
             // absolute (1.5x then 2x means 2x of the original, not 3x), matching the menu.
             running = true
-            operation = effectiveFactor == 1.0 ? "Restoring speed" : "Changing speed to \(effectiveFactor)x"
+            operation = effectiveFactor == 1.0 ? "正在恢复速度" : "Changing speed to \(effectiveFactor)x"
             let oldBytes = oldBytes
             // The atempo pass has no backup step of its own, so snapshot the file before the first
             // speed change: without it, a second one would compound on the first result.
@@ -2170,7 +2170,7 @@ enum TempPipelineSegment {
     /// Capture the failing process's command line and output, then finish with a generic error.
     func finish(processError proc: Process) {
         errorLog = "\(proc.commandLine)\n\nExit code: \(proc.terminationStatus)\n\nSTDERR:\n\(proc.err)\n\nSTDOUT:\n\(proc.out)"
-        finish(error: "Optimisation failed")
+        finish(error: "优化失败")
     }
 
     func finish(oldBytes: Int, newBytes: Int, oldSize: CGSize? = nil, newSize: CGSize? = nil, oldBitrate: Int? = nil, newBitrate: Int? = nil, removeAfterMs: Int? = nil) {
@@ -3040,7 +3040,7 @@ func optimiseURL(
             await runPipelinesAfterOptimisation(file: resultPath, type: type, source: source, optimiser: optimiser)
         }
     } catch ClopError.imageSizeLarger, ClopError.videoSizeLarger, ClopError.pdfSizeLarger {
-        opt(url.absoluteString)?.info = "File already fully compressed"
+        opt(url.absoluteString)?.info = "文件已充分压缩"
         return clipResult
     } catch let error as ClopError {
         opt(url.absoluteString)?.finish(error: error.humanDescription)
@@ -3106,7 +3106,7 @@ final class OptimisationCounter: @unchecked Sendable {
             OM.skippedBecauseNotPro = OM.skippedBecauseNotPro.with(url)
         }
         proLimitsReached(url: url)
-        throw ClopError.proError("Pro limits reached")
+        throw ClopError.proError("已达 Pro 限制")
     }
     do {
         return try await action()
@@ -3956,7 +3956,7 @@ func processOptimisationRequest(_ req: OptimisationRequest) async throws -> [Opt
                     try? OPTIMISATION_RESPONSE_PORT.sendAndForget(data: resp.jsonData)
                 }
             } catch is CancellationError {
-                log.error("BatchOptimisation cancelled")
+                log.error("批量优化已取消")
                 continue
             } catch let BatchOptimisationError.wrappedClopError(error, url) {
                 copiedFiles.append(req.originalUrls[url] ?? url)

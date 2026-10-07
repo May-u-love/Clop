@@ -228,14 +228,14 @@ struct CompactResult: View {
 
                 if proError {
                     HStack {
-                        Button("Get Clop Pro") {
+                        Button("获取 Clop Pro") {
                             manageLicenceInSettings()
                         }
                         .buttonStyle(FlatButton(color: .inverted, textColor: .mauvish, radius: 5, verticalPadding: 2))
                         .font(.round(10, weight: .heavy))
                         .colorMultiply(.mauvish.blended(withFraction: 0.8, of: .white))
                         Spacer()
-                        Button("Never show this again") {
+                        Button("不再显示") {
                             neverShowProError = true
                             hoveredOptimiserID = nil
                             optimiser.remove(after: 200, withAnimation: true)
@@ -365,7 +365,7 @@ struct CompactResult: View {
                 .font(.system(size: 17, weight: .medium))
                 .shadow(color: .black.opacity(0.15), radius: 1, y: 0.5)
             }
-            .accessibilityLabel("Select")
+            .accessibilityLabel("选择")
             .accessibilityToggle(isOn: selected)
             .buttonStyle(.plain)
             .focusable(false)
@@ -566,7 +566,7 @@ struct CompactNameField: View {
                     }
                 }
                 .onTapGesture { startEditing() }
-                .help("Click to rename")
+                .help("点按重命名")
                 .accessibleTap { startEditing() }
             if !ext.isEmpty {
                 formatSegment
@@ -590,7 +590,7 @@ struct CompactNameField: View {
                 }
                 Divider()
                 // A system Menu can't show a live "+" on Option-hold, so hint the gesture statically.
-                Text("⌥ click keeps both formats")
+                Text("⌥ 点按保留两种格式")
             } label: {
                 Text(optimiser.formatChipText)
                     .font(CompactResult.nameFont)
@@ -602,7 +602,7 @@ struct CompactNameField: View {
             .buttonStyle(.plain)
             .onHover { hoveringExt = $0 }
             .fixedSize()
-            .help("Convert to another format")
+            .help("转换为其他格式")
         } else {
             Text(optimiser.formatChipText).font(CompactResult.nameFont).foregroundColor(.secondary)
         }
@@ -864,12 +864,12 @@ struct CompactSelectionBar: View {
     var body: some View {
         let selected = sm.selection.compactMap { opt($0) }
         HStack(spacing: 6) {
-            CompactDragAllHandle(optimisers: selected, help: "Drag all selected files")
+            CompactDragAllHandle(optimisers: selected, help: "拖动全部所选文件")
 
             Menu {
                 BatchRightClickMenuView()
                 Divider()
-                Button("Select all") { SM.selection = OM.visibleOptimisers.filter { !$0.running && $0.url != nil }.map(\.id).set }
+                Button("全选") { SM.selection = OM.visibleOptimisers.filter { !$0.running && $0.url != nil }.map(\.id).set }
             } label: {
                 SwiftUI.Image(systemName: "ellipsis")
                     .font(.medium(12))
@@ -884,8 +884,8 @@ struct CompactSelectionBar: View {
             .buttonStyle(.plain)
             .menuIndicator(.hidden)
             .fixedSize()
-            .help("Actions for the selection")
-            .accessibilityLabel("Actions for the selection")
+            .help("针对所选项目的操作")
+            .accessibilityLabel("针对所选项目的操作")
 
             BatchCropButton()
 
@@ -899,8 +899,8 @@ struct CompactSelectionBar: View {
             }
             .buttonStyle(.plain)
             .foregroundColor(.secondary)
-            .help("Clear selection")
-            .accessibilityLabel("Clear selection")
+            .help("取消选择")
+            .accessibilityLabel("取消选择")
         }
         .font(.round(10))
         .buttonStyle(FlatButton(color: .primary.opacity(0.08), textColor: .primary.opacity(0.8), shadowSize: 0))
@@ -918,10 +918,10 @@ struct CompactListBar: View {
 
     var body: some View {
         HStack(spacing: 6) {
-            CompactDragAllHandle(optimisers: optimisers, help: "Drag all results")
+            CompactDragAllHandle(optimisers: optimisers, help: "拖动全部结果")
 
             if hasRunning {
-                Button("Stop all") {
+                Button("全部停止") {
                     for optimiser in OM.optimisers.filter(\.running) {
                         optimiser.stop(remove: false)
                         optimiser.uiStop()
@@ -931,7 +931,7 @@ struct CompactListBar: View {
             Button(hasRunning ? "Stop and clear" : "Clear all") {
                 OM.clearVisibleOptimisers(stop: true)
             }
-            .help("Stop all running optimisations and dismiss all results (\(keyComboModifiers.str) esc)")
+            .help("停止所有优化并关闭全部结果(\(keyComboModifiers.str) esc)")
 
             Spacer()
 
@@ -1338,7 +1338,7 @@ struct CompactPreview: View {
         let errorOpt = Optimiser(id: "file-with-error", type: .image(.png))
         errorOpt.url = "\(HOME)/Desktop/passport-scan.png".fileURL
         errorOpt.thumbnail = NSImage(resource: .passport)
-        errorOpt.finish(error: "Already optimised")
+        errorOpt.finish(error: "已是优化状态")
 
         let pdfRunning = Optimiser(id: "scans.pdf", type: .pdf, running: true, progress: pdfProgress)
         pdfRunning.url = "\(HOME)/Documents/scans.pdf".fileURL
@@ -1353,7 +1353,7 @@ struct CompactPreview: View {
 
         let videoToGIF = Optimiser(id: "Videos/app-ui-demo.mov", type: .video(.quickTimeMovie), running: true, progress: videoToGIFProgress)
         videoToGIF.url = "\(HOME)/Videos/app-ui-demo.mov".fileURL
-        videoToGIF.operation = "Converting to GIF"
+        videoToGIF.operation = "正在转换为 GIF"
         videoToGIF.thumbnail = NSImage(resource: .appUiDemo)
 
         let pdfEnd = Optimiser(id: "Low-Tech Whistle.pdf", type: .pdf)

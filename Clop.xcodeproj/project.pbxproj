@@ -1434,7 +1434,7 @@
 /* Begin XCLocalSwiftPackageReference section */
 		C7605FC12F78194D0087B195 /* XCLocalSwiftPackageReference "../../../Github/alin23/warpdrop/swift" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../../Github/alin23/warpdrop/swift;
+			relativePath = WarpDropStub;
 		};
 /* End XCLocalSwiftPackageReference section */
 

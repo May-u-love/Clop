@@ -519,7 +519,7 @@ enum MCPSettingsBridge {
     }
 
     /// `FileBehaviour` gets its own builder rather than going through `rawValue`: it is not
-    /// `CaseIterable`, and the names people and agents use for it ("in place", "replace the original")
+    /// `CaseIterable`, and the names people and agents use for it ("in place", "替换原件")
     /// are not its raw values.
     private static func behaviour(_ name: String, _ key: Defaults.Key<FileBehaviour>) -> MCPSettingKey {
         let names: [(String, FileBehaviour)] = [
@@ -531,11 +531,11 @@ enum MCPSettingsBridge {
         // What an agent is likely to say, mapped onto what the setting takes.
         let aliases: [String: FileBehaviour] = [
             "in place": .inPlace, "in-place": .inPlace, "inplace": .inPlace,
-            "replace": .inPlace, "replace original": .inPlace, "overwrite": .inPlace,
+            "replace": .inPlace, "替换原件": .inPlace, "overwrite": .inPlace,
             "same folder": .sameFolder, "same-folder": .sameFolder, "samefolder": .sameFolder,
             "beside": .sameFolder, "next to": .sameFolder, "copy": .sameFolder,
-            "specific folder": .specificFolder, "specific-folder": .specificFolder,
-            "temp": .temporary, "temporary folder": .temporary,
+            "指定文件夹": .specificFolder, "specific-folder": .specificFolder,
+            "temp": .temporary, "临时文件夹": .temporary,
         ]
         return MCPSettingKey(name: name, type: "enum", allowed: names.map(\.0)) {
             names.first { $0.1 == Defaults[key] }?.0 ?? "\(Defaults[key])"
@@ -577,7 +577,7 @@ extension MCPSettingsBridge {
             if req.action == .set, !Defaults[.mcpEnabled] {
                 return SettingsResponse(
                     ok: false,
-                    error: "Clop is not accepting changes from agents. Ask the user to allow it in Clop Settings, MCP."
+                    error: "Clop 当前不接受智能体的修改。请在 Clop 设置的 MCP 中允许。"
                 )
             }
         }
@@ -623,7 +623,7 @@ extension MCPSettingsBridge {
         return "Clop's MCP server needs Clop Pro."
     }
     guard Defaults[.mcpEnabled] else {
-        return "Clop is not accepting changes from agents. Ask the user to allow it in Clop Settings, MCP."
+        return "Clop 当前不接受智能体的修改。请在 Clop 设置的 MCP 中允许。"
     }
     guard let pipeline, !Defaults[.mcpAllowScriptSteps] else { return nil }
 

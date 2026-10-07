@@ -101,7 +101,7 @@ func decrementedDownscaleFactor(_ factor: Double) -> Double {
         let label = if factor > 1 {
             "Speeding up by \(factor < 2 ? factor.str(decimals: 2) : factor.i.s)x"
         } else if factor == 1 {
-            "Reverting to original speed"
+            "正在恢复原速"
         } else {
             "Slowing down to \(factor != 0.5 ? factor.str(decimals: 2) : "0.5")x"
         }
@@ -150,7 +150,7 @@ func decrementedDownscaleFactor(_ factor: Double) -> Double {
     // Guard: TIFF setting
     guard img.type != .tiff || (allowTiff ?? Defaults[.optimiseTIFF]) else {
         log.debug("Skipping image \(pathString) because TIFF optimisation is disabled")
-        throw ClopError.skippedType("TIFF optimisation is disabled")
+        throw ClopError.skippedType("TIFF 优化已停用")
     }
 
     // Guard: clipboard pause
@@ -372,7 +372,7 @@ func decrementedDownscaleFactor(_ factor: Double) -> Double {
                                 adaptiveSize: adaptiveOptimisation ?? (effectiveImageCompression(aggressiveOptimisation, override: optimiser.compressionOverride).tier == .adaptive)
                             )
                         } catch ClopError.imageSizeLarger, ClopError.alreadyOptimised {
-                            mainActor { optimiser.info = "File already fully compressed" }
+                            mainActor { optimiser.info = "文件已充分压缩" }
                             currentImage = ci
                             continue
                         }
@@ -477,13 +477,13 @@ func decrementedDownscaleFactor(_ factor: Double) -> Double {
                 if currentImage == nil {
                     currentImage = img
                 }
-                mainActor { optimiser.info = "File already fully compressed" }
+                mainActor { optimiser.info = "文件已充分压缩" }
             } catch let error as ClopError {
                 log.error("Error in image pipeline \(pathString): \(error.description)")
                 mainActor { optimiser.finish(error: error.humanDescription) }
             } catch {
                 log.error("Error in image pipeline \(pathString): \(error)")
-                mainActor { optimiser.finish(error: "Optimisation failed") }
+                mainActor { optimiser.finish(error: "优化失败") }
             }
 
             guard let optimisedImage = currentImage else { return }

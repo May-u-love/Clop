@@ -117,7 +117,7 @@ func executePlacement(_ plan: PlacementPlan, produced: FilePath, original: FileP
         // already cleared it. A conversion writes a new-extension file and the original is now gone.
     }
 
-    // Skip a redundant self-copy (and its "copy path to itself" error) when the produced file already
+    // Skip a redundant self-copy (and its "复制路径到自身" error) when the produced file already
     // sits at the destination, e.g. an in-place optimise where produced == original == dest.
     let finalPath = produced == dest ? produced : try produced.copy(to: dest, force: true)
     try? finalPath.setOptimisationStatusXattr("true")

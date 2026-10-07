@@ -116,7 +116,7 @@ func handleCLIInstall() {
         print(error.info)
         exit(1)
     } catch {
-        print("Error installing CLI")
+        print("安装命令行工具出错")
         print(error.localizedDescription)
         exit(2)
     }

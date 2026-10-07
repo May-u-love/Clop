@@ -16,7 +16,7 @@ enum Xattr {
         queue.async(execute: workItem)
         let result = workItem.wait(timeout: .now() + timeout)
         if result == .timedOut {
-            log.error("Xattr timed out")
+            log.error("扩展属性超时")
             workItem.cancel()
         }
     }

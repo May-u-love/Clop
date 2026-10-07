@@ -72,7 +72,7 @@ struct IgnoredAppsPicker: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             if bundleIds.isEmpty {
-                Text("No apps ignored. Clipboard events from all apps are processed.")
+                Text("没有忽略任何应用。所有应用的剪贴板事件都会被处理。")
                     .round(11, weight: .regular)
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -96,13 +96,13 @@ struct IgnoredAppsPicker: View {
                         Button {
                             bundleIds.insert(id)
                         } label: {
-                            Label("Last focused: \(appName)", systemImage: "rectangle.inset.filled.and.person.filled")
+                            Label("上次聚焦:\(appName)", systemImage: "rectangle.inset.filled.and.person.filled")
                         }
                         Divider()
                     }
 
                     if selectableApps.isEmpty {
-                        Text("Loading installed apps…").disabled(true)
+                        Text("正在载入已安装的应用…").disabled(true)
                     } else {
                         ForEach(selectableApps, id: \.bundleIdentifier) { app in
                             Button {
@@ -121,9 +121,9 @@ struct IgnoredAppsPicker: View {
                     }
 
                     Divider()
-                    Button("Choose app…") { chooseApp() }
+                    Button("选择应用…") { chooseApp() }
                 } label: {
-                    Label("Add app", systemImage: "plus")
+                    Label("添加应用", systemImage: "plus")
                         .font(.round(11, weight: .medium))
                 }
                 .menuStyle(.borderlessButton)
@@ -136,7 +136,7 @@ struct IgnoredAppsPicker: View {
                     Button {
                         bundleIds = []
                     } label: {
-                        Text("Clear all").font(.round(10, weight: .regular))
+                        Text("全部清空").font(.round(10, weight: .regular))
                     }
                     .buttonStyle(.borderless)
                     .foregroundColor(.secondary)
@@ -183,8 +183,8 @@ struct IgnoredAppsPicker: View {
                     .foregroundColor(.secondary)
             }
             .buttonStyle(.plain)
-            .help("Remove from ignore list")
-            .accessibilityLabel("Remove from ignore list")
+            .help("从忽略列表移除")
+            .accessibilityLabel("从忽略列表移除")
         }
         .padding(.horizontal, 6)
         .padding(.vertical, 3)

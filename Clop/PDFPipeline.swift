@@ -29,7 +29,7 @@ private let log = Logger(subsystem: LOG_SUBSYSTEM, category: "PDFPipeline")
 
     let aggressive = aggressiveOptimisation ?? false
     let opLabel = if debounceMS > 0 {
-        "Waiting for PDF to be ready"
+        "等待 PDF 就绪"
     } else {
         operationLabel(for: actions, filename: path.lastComponent?.string ?? "", aggressive: aggressive)
     }
@@ -131,13 +131,13 @@ private let log = Logger(subsystem: LOG_SUBSYSTEM, category: "PDFPipeline")
                 }
             } catch ClopError.imageSizeLarger, ClopError.videoSizeLarger, ClopError.pdfSizeLarger {
                 optimisedPDF = pdf
-                mainActor { optimiser.info = "File already fully compressed" }
+                mainActor { optimiser.info = "文件已充分压缩" }
             } catch let error as ClopError {
                 log.error("Error in PDF pipeline \(pathString): \(error.description)")
                 mainActor { optimiser.finish(error: error.humanDescription) }
             } catch {
                 log.error("Error in PDF pipeline \(pathString): \(error)")
-                mainActor { optimiser.finish(error: "Optimisation failed") }
+                mainActor { optimiser.finish(error: "优化失败") }
             }
 
             guard var optimisedPDF else { return }

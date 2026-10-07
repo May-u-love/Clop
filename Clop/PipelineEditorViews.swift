@@ -9,7 +9,7 @@ struct CompletionPanel: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Suggestions")
+            Text("建议")
                 .dimmed(9, weight: .medium)
                 .padding(.bottom, 3)
             ForEach(suggestions.prefix(10)) { suggestion in
@@ -120,7 +120,7 @@ struct PipelineEditorRow: View {
     var addPipelineMenu: some View {
         let sourceStr = source.string
         return Menu {
-            Button("New pipeline") {
+            Button("新建管线") {
                 var list = pipelines[sourceStr] ?? []
                 list.append(Pipeline(steps: []))
                 pipelines[sourceStr] = list
@@ -142,7 +142,7 @@ struct PipelineEditorRow: View {
         } label: {
             HStack(spacing: 3) {
                 // SwiftUI.Image(systemName: "plus.circle.fill")
-                Text("Add pipeline")
+                Text("添加管线")
             }
             .font(.regular(10))
             .foregroundColor(.secondary)
@@ -178,8 +178,8 @@ struct PipelineEditorRow: View {
                     .buttonStyle(.plain)
                     .disabled(!isDirSource || onRemoveSource == nil)
                     .allowsHitTesting(isDirSource)
-                    .help(isDirSource ? "Remove this folder from automation" : "")
-                    .accessibilityLabel(isDirSource ? "Remove this folder from automation" : "")
+                    .help(isDirSource ? "从自动化中移除此文件夹" : "")
+                    .accessibilityLabel(isDirSource ? "从自动化中移除此文件夹" : "")
                     // Clipboard and drop zone keep the button only as a spacer.
                     .accessibilityHidden(!isDirSource)
                 }
@@ -197,8 +197,8 @@ struct PipelineEditorRow: View {
             if case .dropZone = source {
                 Button(action: { settingsViewManager.tab = .presetZones }) {
                     HStack(spacing: 3) {
-                        Text("Want different pipelines for specific drop targets?")
-                        Text("Use Preset Zones")
+                        Text("想为不同投放目标使用不同管线?")
+                        Text("使用预设区")
                             .foregroundColor(.accentColor)
                     }
                     .font(.regular(10))
@@ -206,7 +206,7 @@ struct PipelineEditorRow: View {
                 }
                 .buttonStyle(.plain)
                 .padding(.leading, 16)
-                .help("Open the Preset Zones tab to set up per-target drop pipelines")
+                .help("打开「预设区」标签页,为不同投放目标配置管线")
             }
 
             ForEach(Array(pipelineList.enumerated()), id: \.element.id) { index, pipeline in
@@ -353,13 +353,13 @@ struct PipelineFieldRow: View {
                     nameChip
 
                     if pipeline.isLibraryReference, !pipeline.resolves {
-                        Text("Missing")
+                        Text("失效")
                             .font(.regular(9))
                             .foregroundColor(.white)
                             .padding(.horizontal, 5)
                             .padding(.vertical, 1)
                             .background(Capsule().fill(Color.red.opacity(0.75)))
-                            .help("The saved pipeline this refers to was deleted. Remove this entry or re-create the pipeline in the Pipelines tab.")
+                            .help("所引用的管线已被删除。移除此项,或在「管线」标签页重新创建。")
                     }
 
                     Spacer()
@@ -382,7 +382,7 @@ struct PipelineFieldRow: View {
                 PipelineTextView(
                     text: $text,
                     fileType: fileType,
-                    placeholder: "Type an action: optimise, crop, copy...",
+                    placeholder: "输入操作:优化、裁剪、复制…",
                     onEditingChanged: onEditingChanged,
                     onPrefixChanged: { currentPrefix = $0 },
                     coordinatorRef: { coordHolder.value = $0 }
@@ -441,7 +441,7 @@ struct PipelineFieldRow: View {
         PipelineFlagSegmentedToggle(
             leading: nil,
             options: ("Show", "Hide"),
-            trailing: "floating result",
+            trailing: "悬浮结果",
             selection: resolved.hideResult ? 1 : 0,
             help: PipelineFlagCopy.hideResult,
             tint: .red
@@ -465,8 +465,8 @@ struct PipelineFieldRow: View {
                 .foregroundColor(.red.opacity(0.6))
         }
         .buttonStyle(.plain)
-        .help("Remove this pipeline")
-        .accessibilityLabel("Remove this pipeline")
+        .help("移除此管线")
+        .accessibilityLabel("移除此管线")
     }
 
     /// When the name field is submitted: if name is non-empty, save/update in library.
@@ -602,7 +602,7 @@ struct PipelineTypeSectionView: View {
                     } label: {
                         HStack(spacing: 3) {
                             SwiftUI.Image(systemName: "folder.badge.plus")
-                            Text("Add folder")
+                            Text("添加文件夹")
                         }
                         .font(.regular(11))
                     }
@@ -637,7 +637,7 @@ struct PipelineTypeSectionView: View {
             }
 
             if activeSources.isEmpty {
-                Text("No automations yet. Turn on Clipboard or Drop zone above, or watch a folder, to run pipelines automatically.")
+                Text("还没有自动化。开启上方「剪贴板」或「投放区」,或监视文件夹,即可自动运行管线。")
                     .regular(11)
                     .foregroundColor(.secondary)
                     .padding(.leading, 146)
@@ -802,7 +802,7 @@ struct InlineNameField: View {
                         NSCursor.pop()
                     }
                 }
-                .help("Click to rename")
+                .help("点按重命名")
         }
     }
 
@@ -931,7 +931,7 @@ struct SavedPipelineRow: View {
                         HStack(spacing: 6) {
                             Group {
                                 if pipeline.isBuiltin {
-                                    Text("Built-in")
+                                    Text("内置")
                                         .font(.regular(9))
                                         .foregroundColor(.secondary)
                                         .padding(.horizontal, 5)
@@ -939,7 +939,7 @@ struct SavedPipelineRow: View {
                                         .background(
                                             Capsule().fill(Color.secondary.opacity(0.15))
                                         )
-                                        .help("Shipped with Clop. Delete to hide it; it returns only with a future built-in update.")
+                                        .help("随 Clop 内置。删除即隐藏,仅在未来内置更新时恢复。")
                                 }
 
                                 Spacer(minLength: 0)
@@ -960,7 +960,7 @@ struct SavedPipelineRow: View {
                                 PipelineFlagSegmentedToggle(
                                     leading: nil,
                                     options: ("Show", "Hide"),
-                                    trailing: "floating result",
+                                    trailing: "悬浮结果",
                                     selection: pipeline.hideResult ? 1 : 0,
                                     help: PipelineFlagCopy.hideResult,
                                     tint: .red
@@ -991,7 +991,7 @@ struct SavedPipelineRow: View {
                                                 .padding(.horizontal, 6)
                                                 .padding(.vertical, 3)
                                         }
-                                        .accessibilityLabel("Cancel")
+                                        .accessibilityLabel("取消")
                                         .buttonStyle(.plain)
                                     }
                                     .background(Capsule().fill(Color.primary.opacity(0.05)))
@@ -1005,7 +1005,7 @@ struct SavedPipelineRow: View {
                                     .font(.regular(9))
                                     .foregroundColor(.red.opacity(0.6))
                             }
-                            .accessibilityLabel("Delete pipeline")
+                            .accessibilityLabel("删除管线")
                             .buttonStyle(.plain)
                         }
                     }
@@ -1040,7 +1040,7 @@ struct SavedPipelineRow: View {
                 PipelineTextView(
                     text: $editText,
                     fileType: pipeline.fileType,
-                    placeholder: "Pipeline steps...",
+                    placeholder: "管线步骤…",
                     onEditingChanged: { isEditingSteps = $0 },
                     onPrefixChanged: { currentPrefix = $0 },
                     onSubmit: { commitLibraryEdit() },
@@ -1092,7 +1092,7 @@ struct SavedPipelineRow: View {
                             NSCursor.pop()
                         }
                     }
-                    .help("Click to edit")
+                    .help("点按编辑")
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
@@ -1117,8 +1117,8 @@ struct SavedPipelineRow: View {
         HStack(spacing: 4) {
             ForEach(assignments) { assignment in
                 Menu {
-                    Button("Go to") { goTo(assignment) }
-                    Button("Remove", role: .destructive) { remove(assignment) }
+                    Button("前往") { goTo(assignment) }
+                    Button("移除", role: .destructive) { remove(assignment) }
                 } label: {
                     assignmentPillLabel(assignment)
                 }
@@ -1126,7 +1126,7 @@ struct SavedPipelineRow: View {
                 .buttonStyle(.plain)
                 .menuIndicator(.hidden)
                 .fixedSize()
-                .help("Assigned to \(assignmentHelp(assignment)). Click to go there or remove.")
+                .help("已指定到 \(assignmentHelp(assignment))。点按前往或移除。")
             }
             addToMenu
             moveToMenu
@@ -1146,7 +1146,7 @@ struct SavedPipelineRow: View {
                     }
                 }
                 Divider()
-                Menu("All types") {
+                Menu("所有类型") {
                     Button(OptimisationSource.clipboard.displayLabel) {
                         for type in ClopFileType.allCases {
                             attach(to: .clipboard, fileType: type)
@@ -1157,7 +1157,7 @@ struct SavedPipelineRow: View {
                             attach(to: .dropZone, fileType: type)
                         }
                     }
-                    Button("Preset zone") { addToPresetZone(fileType: nil) }
+                    Button("预设区") { addToPresetZone(fileType: nil) }
                     let allFolders = ClopFileType.allCases.flatMap { existingFolderSources(for: $0) }
                     let uniqueFolders = allFolders.reduce(into: [OptimisationSource]()) { acc, s in
                         if !acc.contains(s) {
@@ -1166,7 +1166,7 @@ struct SavedPipelineRow: View {
                     }
                     if !uniqueFolders.isEmpty {
                         Divider()
-                        Text("Folders").foregroundColor(.secondary).disabled(true)
+                        Text("文件夹").foregroundColor(.secondary).disabled(true)
                         ForEach(uniqueFolders, id: \.self) { source in
                             Button(source.displayLabel) {
                                 for type in ClopFileType.allCases {
@@ -1180,7 +1180,7 @@ struct SavedPipelineRow: View {
         } label: {
             HStack(spacing: 3) {
                 SwiftUI.Image(systemName: "plus").font(.system(size: 8))
-                Text("Add to").font(.regular(9))
+                Text("添加到").font(.regular(9))
             }
             .foregroundColor(.blue.opacity(0.8))
             .padding(.horizontal, 6)
@@ -1192,7 +1192,7 @@ struct SavedPipelineRow: View {
         .buttonStyle(.plain)
         .menuIndicator(.hidden)
         .fixedSize()
-        .help("Run this pipeline automatically on the clipboard, drop zone or a watched folder")
+        .help("在剪贴板、投放区或被监视的文件夹上自动运行此管线")
     }
 
     /// The "Move to" pill sitting right after "Add to…": changes which file type this library pipeline
@@ -1228,7 +1228,7 @@ struct SavedPipelineRow: View {
                 } else {
                     SwiftUI.Image(systemName: "doc").foregroundColor(.secondary)
                 }
-                Text("Move to").font(.regular(9))
+                Text("移到").font(.regular(9))
             }
             .foregroundColor(.blue.opacity(0.8))
             .padding(.horizontal, 6)
@@ -1240,17 +1240,17 @@ struct SavedPipelineRow: View {
         .buttonStyle(.plain)
         .menuIndicator(.hidden)
         .fixedSize()
-        .help("Move this pipeline to another file type")
+        .help("将此管线移到其他文件类型")
     }
 
     @ViewBuilder func addToButtons(for type: ClopFileType) -> some View {
         Button(OptimisationSource.clipboard.displayLabel) { attach(to: .clipboard, fileType: type) }
         Button(OptimisationSource.dropZone.displayLabel) { attach(to: .dropZone, fileType: type) }
-        Button("Preset zone") { addToPresetZone(fileType: type) }
+        Button("预设区") { addToPresetZone(fileType: type) }
         let folders = existingFolderSources(for: type)
         if !folders.isEmpty {
             Divider()
-            Text("Folders").foregroundColor(.secondary).disabled(true)
+            Text("文件夹").foregroundColor(.secondary).disabled(true)
             ForEach(folders, id: \.self) { source in
                 Button(source.displayLabel) { attach(to: source, fileType: type) }
             }
@@ -1481,13 +1481,13 @@ struct PipelinesSettingsView: View {
         ScrollViewReader { proxy in
             Form {
                 Section(header: SectionHeader(
-                    title: "Saved Pipelines",
-                    subtitle: "Reusable pipelines available in automation, preset zones and right-click menus"
+                    title: "已保存的管线",
+                    subtitle: "可在自动化、预设区和右键菜单中复用的管线"
                 )) {
                     ForEach(Self.sections, id: \.0) { label, fileType in
                         let pipelines = savedPipelines.filter { $0.fileType == fileType }
                         let headerColor: Color = fileType?.color ?? .secondary
-                        let buttonLabel = fileType != nil ? "Create new \(label.lowercased()) pipeline" : "Create new pipeline"
+                        let buttonLabel = fileType != nil ? "Create new \(label.lowercased()) pipeline" : "新建管线"
 
                         VStack(alignment: .leading, spacing: 4) {
                             HStack {
@@ -1514,7 +1514,7 @@ struct PipelinesSettingsView: View {
                             .padding(.top, 6)
 
                             if pipelines.isEmpty {
-                                Text("No pipelines yet")
+                                Text("还没有管线")
                                     .round(11, weight: .regular)
                                     .foregroundColor(.secondary)
                                     .padding(.bottom, 4)
@@ -1590,8 +1590,8 @@ struct AutomationSettingsView: View {
         ScrollViewReader { proxy in
             Form {
                 Section(header: SectionHeader(
-                    title: "Automation",
-                    subtitle: "Automatically run actions on files after (or before) optimisation: convert, crop, copy, rename and more\nType an action name and press Tab to fill in, Enter to finish"
+                    title: "自动化",
+                    subtitle: "在优化后(或前)自动对文件执行操作:转换、裁剪、复制、重命名等\n输入操作名后按 Tab 补全,按 Enter 完成"
                 )) {
                     PipelineTypeSectionView(fileType: .image, pipelines: $imagePipelines)
                         .id(ClopFileType.image)

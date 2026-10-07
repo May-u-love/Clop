@@ -40,7 +40,7 @@ struct ResolutionField: View {
             }
         )
         .focusable(false)
-        .help("Open the crop and resize window")
+        .help("打开裁剪缩放窗口")
         .onAppear {
             guard let size = optimiser.oldSize else { return }
             self.size = size

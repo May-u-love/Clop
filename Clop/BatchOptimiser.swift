@@ -126,7 +126,7 @@ struct BatchParams: Equatable {
 
     static func fromDefaults() -> BatchParams {
         var p = BatchParams()
-        // Resolve "use the global default" to a concrete DPI mode up front: the Adjust panel's picker
+        // Resolve "使用全局默认" to a concrete DPI mode up front: the Adjust panel's picker
         // has no "use default" option, so leaving .useDefault here makes an untouched round-trip look
         // like a change and spuriously re-optimises every PDF.
         p.pdf.dpiMode = Defaults[.pdfDPI] == PDF_DPI_ADAPTIVE ? .adaptive : .fixed(Defaults[.pdfDPI])
@@ -341,7 +341,7 @@ func batchTypeKey(_ type: ItemType) -> BatchTypeKey? {
             self.phase = ""
             if built.isEmpty {
                 self.isPreparing = false
-                log.debug("Batch had no supported files")
+                log.debug("批次中没有受支持的文件")
             }
             self.publishNow()
         }
@@ -357,7 +357,7 @@ func batchTypeKey(_ type: ItemType) -> BatchTypeKey? {
         backing = buildBatchItems(expanded, params: resolved)
         rebuildIndex()
         guard !backing.isEmpty else {
-            log.debug("Batch had no supported files")
+            log.debug("批次中没有受支持的文件")
             publishNow()
             return
         }

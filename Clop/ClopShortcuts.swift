@@ -52,7 +52,7 @@ func shortcutCompression(_ factor: Int?) -> CompressionQuality? {
 struct ChangePlaybackSpeedOptimiseFileIntent: AppIntent {
     init() {}
 
-    static var title: LocalizedStringResource = "Change video playback speed"
+    static var title: LocalizedStringResource = "更改视频播放速度"
     static var description = IntentDescription("Optimises a video received as input and changes its playback speed by the specific factor.", categoryName: "Optimisation")
 
     static var parameterSummary: some ParameterSummary {
@@ -75,25 +75,25 @@ struct ChangePlaybackSpeedOptimiseFileIntent: AppIntent {
         }
     }
 
-    @Parameter(title: "Video")
+    @Parameter(title: "视频")
     var item: IntentFile
 
-    @Parameter(title: "Hide floating result")
+    @Parameter(title: "隐藏悬浮结果")
     var hideFloatingResult: Bool
 
-    @Parameter(title: "Use aggressive optimisation")
+    @Parameter(title: "使用激进优化")
     var aggressiveOptimisation: Bool
 
-    @Parameter(title: "Compression factor", description: "How hard to compress: a factor from 5 (best quality) to 100 (smallest file). Takes priority over aggressive optimisation. Leave empty to use the app's compression settings.")
+    @Parameter(title: "压缩系数", description: "How hard to compress: a factor from 5 (best quality) to 100 (smallest file). Takes priority over aggressive optimisation. Leave empty to use the app's compression settings.")
     var compressionFactor: Int?
 
-    @Parameter(title: "Playback speed factor", default: 1.5)
+    @Parameter(title: "播放速度倍数", default: 1.5)
     var playbackSpeedFactor: Double
 
-    @Parameter(title: "Remove audio from video")
+    @Parameter(title: "移除视频音轨")
     var removeAudio: Bool
 
-    @Parameter(title: "Output path", description: """
+    @Parameter(title: "输出路径", description: """
     Output file path or template (defaults to overwriting the original file).
 
     The template may contain the following tokens on the filename:
@@ -165,7 +165,7 @@ struct ChangePlaybackSpeedOptimiseFileIntent: AppIntent {
             let file = IntentFile(fileURL: img.path.url, filename: img.path.name.string, type: img.type)
             return .result(value: file)
         default:
-            throw IntentError.message("Bad optimisation result")
+            throw IntentError.message("优化结果不佳")
         }
     }
 }
@@ -199,7 +199,7 @@ struct ConvertImageIntent: AppIntent {
     init() {}
 
     static var title: LocalizedStringResource = "Convert image to…"
-    static var description = IntentDescription("Convert an image received as input to a different format such as WEBP, AVIF or JPEG XL.", categoryName: "Conversion")
+    static var description = IntentDescription("将输入的图像转换为其他格式,如 WEBP、AVIF 或 JPEG XL。", categoryName: "Conversion")
 
     static var parameterSummary: some ParameterSummary {
         Summary("Convert \(\.$image) to \(\.$format)") {
@@ -210,28 +210,28 @@ struct ConvertImageIntent: AppIntent {
         }
     }
 
-    @Parameter(title: "Image")
+    @Parameter(title: "图像")
     var image: IntentFile
 
-    @Parameter(title: "Use aggressive optimisation")
+    @Parameter(title: "使用激进优化")
     var aggressiveOptimisation: Bool
 
-    @Parameter(title: "Compression factor", description: "How hard to compress: a factor from 5 (best quality) to 100 (smallest file). Leave empty to use the app's image compression setting.")
+    @Parameter(title: "压缩系数", description: "How hard to compress: a factor from 5 (best quality) to 100 (smallest file). Leave empty to use the app's image compression setting.")
     var compressionFactor: Int?
 
-    @Parameter(title: "Hide floating result")
+    @Parameter(title: "隐藏悬浮结果")
     var hideFloatingResult: Bool
 
-    @Parameter(title: "Show converted image as result")
+    @Parameter(title: "结果显示为转换后的图像")
     var addFloatingResult: Bool
 
-    @Parameter(title: "Delete original image")
+    @Parameter(title: "删除原始图像")
     var deleteOriginal: Bool
 
-    @Parameter(title: "Format", default: .webp)
+    @Parameter(title: "格式", default: .webp)
     var format: ImageFormat
 
-    @Parameter(title: "Output path", description: """
+    @Parameter(title: "输出路径", description: """
     Output file path or template (defaults to placing the converted file in the same folder as the original).
 
     The template may contain the following tokens on the filename:
@@ -301,9 +301,9 @@ struct ConvertImageIntent: AppIntent {
 struct CropOptimiseFileIntent: AppIntent {
     init() {}
 
-    static var title: LocalizedStringResource = "Crop image or video"
+    static var title: LocalizedStringResource = "裁剪图像或视频"
     static var description = IntentDescription(
-        "Resizes and does a smart crop on an image or video received as input. Use 0 for width or height to have it calculated automatically while keeping the original aspect ratio.",
+        "缩放并对输入的图像或视频智能裁剪。宽或高填 0 可自动计算,同时保持原始宽高比。",
         categoryName: "Optimisation"
     )
 
@@ -343,40 +343,40 @@ struct CropOptimiseFileIntent: AppIntent {
         }
     }
 
-    @Parameter(title: "Video, image or PDF file")
+    @Parameter(title: "视频、图像或 PDF 文件")
     var item: IntentFile
 
-    @Parameter(title: "Hide floating result")
+    @Parameter(title: "隐藏悬浮结果")
     var hideFloatingResult: Bool
 
-    @Parameter(title: "Use aggressive optimisation")
+    @Parameter(title: "使用激进优化")
     var aggressiveOptimisation: Bool
 
-    @Parameter(title: "Compression factor", description: "How hard to compress: a factor from 5 (best quality) to 100 (smallest file). Takes priority over aggressive optimisation. Leave empty to use the app's compression settings.")
+    @Parameter(title: "压缩系数", description: "How hard to compress: a factor from 5 (best quality) to 100 (smallest file). Takes priority over aggressive optimisation. Leave empty to use the app's compression settings.")
     var compressionFactor: Int?
 
-    @Parameter(title: "Size or aspect ratio toggle", default: false, displayName: .init(true: "aspect ratio", false: "size"))
+    @Parameter(title: "尺寸/宽高比切换", default: false, displayName: .init(true: "aspect ratio", false: "size"))
     var isAspectRatio: Bool
 
-    @Parameter(title: "Copy to clipboard")
+    @Parameter(title: "复制到剪贴板")
     var copyToClipboard: Bool
 
-    @Parameter(title: "Remove audio from video")
+    @Parameter(title: "移除视频音轨")
     var removeAudio: Bool
 
-    @Parameter(title: "Resize over long edge")
+    @Parameter(title: "按最长边缩放")
     var longEdge: Bool
 
-    @Parameter(title: "Width")
+    @Parameter(title: "宽度")
     var width: Int?
 
-    @Parameter(title: "Height")
+    @Parameter(title: "高度")
     var height: Int?
 
-    @Parameter(title: "Size")
+    @Parameter(title: "大小")
     var size: Int?
 
-    @Parameter(title: "Output path", description: """
+    @Parameter(title: "输出路径", description: """
     Output file path or template (defaults to overwriting the original file).
 
     The template may contain the following tokens on the filename:
@@ -455,7 +455,7 @@ struct CropOptimiseFileIntent: AppIntent {
             let file = IntentFile(fileURL: img.path.url, filename: img.path.name.string, type: img.type)
             return .result(value: file)
         default:
-            throw IntentError.message("Bad optimisation result")
+            throw IntentError.message("优化结果不佳")
         }
     }
 }
@@ -464,7 +464,7 @@ struct CropPDFIntent: AppIntent {
     init() {}
 
     static var title: LocalizedStringResource = "Crop PDF"
-    static var description = IntentDescription("Crops a PDF for a specific device, paper size or aspect ratio.", categoryName: "PDF")
+    static var description = IntentDescription("按指定设备、纸张尺寸或宽高比裁剪 PDF。", categoryName: "PDF")
 
     static var parameterSummary: some ParameterSummary {
         When(\.$overwrite, .equalTo, true) {
@@ -485,10 +485,10 @@ struct CropPDFIntent: AppIntent {
     @Parameter(title: "PDF")
     var item: IntentFile
 
-    @Parameter(title: "Paper size or device", displayName: .init(true: "to paper size", false: "for device"))
+    @Parameter(title: "纸张尺寸或设备", displayName: .init(true: "to paper size", false: "for device"))
     var usePaperSize: Bool
 
-    @Parameter(title: "Page layout", description: """
+    @Parameter(title: "页面布局", description: """
     Allows forcing a page layout on all PDF pages:
         auto: Crop pages based on their longest edge, so that horizontal pages stay horizontal and vertical pages stay vertical
         portrait: Force all pages to be cropped to vertical or portrait layout
@@ -496,20 +496,20 @@ struct CropPDFIntent: AppIntent {
     """, default: PageLayout.auto)
     var pageLayout: PageLayout
 
-    @Parameter(title: "Paper", default: PaperSize.a4)
+    @Parameter(title: "纸张", default: PaperSize.a4)
     var paperSize: PaperSize?
 
-    @Parameter(title: "Device", default: Device.iPadAir)
+    @Parameter(title: "设备", default: Device.iPadAir)
     var device: Device?
 
-    @Parameter(title: "Output path", description: "Where to save the cropped PDF (defaults to modifying the PDF in place).")
+    @Parameter(title: "输出路径", description: "Where to save the cropped PDF (defaults to modifying the PDF in place).")
     var output: String?
 
-    @Parameter(title: "Overwrite original file", default: true, displayName: .init(true: "overwrite original file", false: "save to"))
+    @Parameter(title: "覆盖原始文件", default: true, displayName: .init(true: "overwrite original file", false: "save to"))
     var overwrite: Bool
 
     @Parameter(
-        title: "Extend instead of clipping",
+        title: "扩展而非裁切",
         description: "Grows pages with empty paper instead of cutting content away, so everything stays visible (e.g. fit a book to a phone screen without cutting off text).",
         default: false
     )
@@ -518,7 +518,7 @@ struct CropPDFIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult & ReturnsValue<IntentFile> {
         guard let aspectRatio = usePaperSize ? paperSize?.aspectRatio : device?.aspectRatio else {
-            throw IntentError.message("Invalid aspect ratio")
+            throw IntentError.message("宽高比无效")
         }
 
         let url = item.url
@@ -549,7 +549,7 @@ struct CropPDFIntent: AppIntent {
 struct OptimiseFileIntent: AppIntent {
     init() {}
 
-    static var title: LocalizedStringResource = "Optimise file (image, video, PDF or audio)"
+    static var title: LocalizedStringResource = "优化文件(图像、视频、PDF 或音频)"
     static var description = IntentDescription("Optimises an image, video, PDF or audio file received as input.", categoryName: "Optimisation")
 
     static var parameterSummary: some ParameterSummary {
@@ -578,37 +578,37 @@ struct OptimiseFileIntent: AppIntent {
         }
     }
 
-    @Parameter(title: "Video, image, PDF or audio file")
+    @Parameter(title: "视频、图像、PDF 或音频文件")
     var item: IntentFile
 
-    @Parameter(title: "Hide floating result")
+    @Parameter(title: "隐藏悬浮结果")
     var hideFloatingResult: Bool
 
-    @Parameter(title: "Overwrite original file", default: true, displayName: .init(true: "overwrite original file", false: "save to"))
+    @Parameter(title: "覆盖原始文件", default: true, displayName: .init(true: "overwrite original file", false: "save to"))
     var overwrite: Bool
 
-    @Parameter(title: "Use aggressive optimisation")
+    @Parameter(title: "使用激进优化")
     var aggressiveOptimisation: Bool
 
-    @Parameter(title: "Compression factor", description: "How hard to compress: a factor from 5 (best quality) to 100 (smallest file). Takes priority over aggressive optimisation. Leave empty to use the app's compression settings.")
+    @Parameter(title: "压缩系数", description: "How hard to compress: a factor from 5 (best quality) to 100 (smallest file). Takes priority over aggressive optimisation. Leave empty to use the app's compression settings.")
     var compressionFactor: Int?
 
-    @Parameter(title: "Audio bitrate (kbps)", description: "Target bitrate in kbps for audio files (e.g. 128). Takes priority over the compression factor. Never upscales, snaps to the allowed bitrates of the output format.")
+    @Parameter(title: "音频码率(kbps)", description: "音频目标码率 kbps(如 128)。优先于压缩系数;不会放大,会对齐输出格式允许的码率档位。")
     var audioBitrate: Int?
 
     @Parameter(title: "PDF DPI", description: "Rendering DPI for PDF optimisation: adaptive picks the best DPI per document, lower DPI means smaller files. Leave empty to use the app's setting.")
     var pdfDpi: PDFDPIOption?
 
-    @Parameter(title: "Copy to clipboard")
+    @Parameter(title: "复制到剪贴板")
     var copyToClipboard: Bool
 
-    @Parameter(title: "Remove audio from video")
+    @Parameter(title: "移除视频音轨")
     var removeAudio: Bool
 
-    @Parameter(title: "Downscale factor", description: "Makes the image or video smaller by a certain amount (1.0 means no resize, 0.5 means half the size)", default: 1.0, controlStyle: .field, inclusiveRange: (0.1, 1.0))
+    @Parameter(title: "缩放系数", description: "把图像或视频按比例缩小(1.0 不缩放,0.5 尺寸减半)", default: 1.0, controlStyle: .field, inclusiveRange: (0.1, 1.0))
     var downscaleFactor: Double
 
-    @Parameter(title: "Output path", description: """
+    @Parameter(title: "输出路径", description: """
     Output file path or template (defaults to overwriting the original file).
 
     The template may contain the following tokens on the filename:
@@ -640,7 +640,7 @@ struct OptimiseFileIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult & ReturnsValue<IntentFile> {
         if let audioBitrate, audioBitrate <= 0 {
-            throw IntentError.message("Invalid audio bitrate, must be greater than 0")
+            throw IntentError.message("音频码率无效,必须大于 0")
         }
         let clip = ClipboardType.fromURL(item.url)
 
@@ -686,7 +686,7 @@ struct OptimiseFileIntent: AppIntent {
             let file = IntentFile(fileURL: img.path.url, filename: img.path.name.string, type: img.type)
             return .result(value: file)
         default:
-            throw IntentError.message("Bad optimisation result")
+            throw IntentError.message("优化结果不佳")
         }
     }
 }
@@ -694,8 +694,8 @@ struct OptimiseFileIntent: AppIntent {
 struct DownscaleFileIntent: AppIntent {
     init() {}
 
-    static var title: LocalizedStringResource = "Downscale image, video or audio"
-    static var description = IntentDescription("Downscales an image or video received as input. For audio files, lowers the bitrate by the same factor.", categoryName: "Optimisation")
+    static var title: LocalizedStringResource = "缩小图像、视频或音频"
+    static var description = IntentDescription("缩小输入的图像或视频;对音频则按相同系数降低码率。", categoryName: "Optimisation")
 
     static var parameterSummary: some ParameterSummary {
         When(\.$overwrite, .equalTo, true) {
@@ -717,37 +717,37 @@ struct DownscaleFileIntent: AppIntent {
         }
     }
 
-    @Parameter(title: "Video, image or audio file")
+    @Parameter(title: "视频、图像或音频文件")
     var item: IntentFile
 
-    @Parameter(title: "Hide floating result")
+    @Parameter(title: "隐藏悬浮结果")
     var hideFloatingResult: Bool
 
-    @Parameter(title: "Overwrite original file", default: true, displayName: .init(true: "overwrite original file", false: "save to"))
+    @Parameter(title: "覆盖原始文件", default: true, displayName: .init(true: "overwrite original file", false: "save to"))
     var overwrite: Bool
 
-    @Parameter(title: "Use aggressive optimisation")
+    @Parameter(title: "使用激进优化")
     var aggressiveOptimisation: Bool
 
-    @Parameter(title: "Compression factor", description: "How hard to compress: a factor from 5 (best quality) to 100 (smallest file). Takes priority over aggressive optimisation. Leave empty to use the app's compression settings.")
+    @Parameter(title: "压缩系数", description: "How hard to compress: a factor from 5 (best quality) to 100 (smallest file). Takes priority over aggressive optimisation. Leave empty to use the app's compression settings.")
     var compressionFactor: Int?
 
-    @Parameter(title: "Copy to clipboard")
+    @Parameter(title: "复制到剪贴板")
     var copyToClipboard: Bool
 
-    @Parameter(title: "Remove audio from video")
+    @Parameter(title: "移除视频音轨")
     var removeAudio: Bool
 
     @Parameter(
-        title: "Downscale factor",
-        description: "Makes the image or video smaller by a certain amount (1.0 means no change, 0.5 means half the size, or half the bitrate for audio)",
+        title: "缩放系数",
+        description: "把图像或视频按比例缩小(1.0 不变,0.5 尺寸减半;音频为码率减半)",
         default: 0.5,
         controlStyle: .field,
         inclusiveRange: (0.1, 1.0)
     )
     var downscaleFactor: Double
 
-    @Parameter(title: "Output path", description: """
+    @Parameter(title: "输出路径", description: """
     Output file path or template (defaults to overwriting the original file).
 
     The template may contain the following tokens on the filename:
@@ -820,7 +820,7 @@ struct DownscaleFileIntent: AppIntent {
             let file = IntentFile(fileURL: img.path.url, filename: img.path.name.string, type: img.type)
             return .result(value: file)
         default:
-            throw IntentError.message("Bad optimisation result")
+            throw IntentError.message("优化结果不佳")
         }
     }
 }
@@ -846,28 +846,28 @@ struct OptimiseURLIntent: AppIntent {
     @Parameter(title: "URL")
     var item: URL
 
-    @Parameter(title: "Hide floating result")
+    @Parameter(title: "隐藏悬浮结果")
     var hideFloatingResult: Bool
 
-    @Parameter(title: "Use aggressive optimisation")
+    @Parameter(title: "使用激进优化")
     var aggressiveOptimisation: Bool
 
-    @Parameter(title: "Compression factor", description: "How hard to compress: a factor from 5 (best quality) to 100 (smallest file). Takes priority over aggressive optimisation. Leave empty to use the app's compression settings.")
+    @Parameter(title: "压缩系数", description: "How hard to compress: a factor from 5 (best quality) to 100 (smallest file). Takes priority over aggressive optimisation. Leave empty to use the app's compression settings.")
     var compressionFactor: Int?
 
-    @Parameter(title: "Audio bitrate (kbps)", description: "Target bitrate in kbps for audio files (e.g. 128). Takes priority over the compression factor. Never upscales, snaps to the allowed bitrates of the output format.")
+    @Parameter(title: "音频码率(kbps)", description: "音频目标码率 kbps(如 128)。优先于压缩系数;不会放大,会对齐输出格式允许的码率档位。")
     var audioBitrate: Int?
 
-    @Parameter(title: "Copy to clipboard")
+    @Parameter(title: "复制到剪贴板")
     var copyToClipboard: Bool
 
-    @Parameter(title: "Remove audio from video")
+    @Parameter(title: "移除视频音轨")
     var removeAudio: Bool
 
-    @Parameter(title: "Downscale factor", description: "Makes the image or video smaller by a certain amount (1.0 means no resize, 0.5 means half the size)", default: 1.0, controlStyle: .field, inclusiveRange: (0.1, 1.0))
+    @Parameter(title: "缩放系数", description: "把图像或视频按比例缩小(1.0 不缩放,0.5 尺寸减半)", default: 1.0, controlStyle: .field, inclusiveRange: (0.1, 1.0))
     var downscaleFactor: Double
 
-    @Parameter(title: "Output path (or temporary folder)", description: """
+    @Parameter(title: "输出路径(或临时文件夹)", description: """
     Output file path or template (defaults to saving to a temporary folder).
 
     The template may contain the following tokens on the filename:
@@ -899,7 +899,7 @@ struct OptimiseURLIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult & ReturnsValue<IntentFile> {
         if let audioBitrate, audioBitrate <= 0 {
-            throw IntentError.message("Invalid audio bitrate, must be greater than 0")
+            throw IntentError.message("音频码率无效,必须大于 0")
         }
         let clip = ClipboardType.fromURL(item)
 
@@ -944,7 +944,7 @@ struct OptimiseURLIntent: AppIntent {
             let file = IntentFile(fileURL: img.path.url, filename: img.path.name.string, type: img.type)
             return .result(value: file)
         default:
-            throw IntentError.message("Bad optimisation result")
+            throw IntentError.message("优化结果不佳")
         }
     }
 }
@@ -959,7 +959,7 @@ enum PDFDPIOption: String, CaseIterable, AppEnum {
 
     static var caseDisplayRepresentations: [PDFDPIOption: DisplayRepresentation] {
         [
-            .adaptive: DisplayRepresentation(title: "Adaptive", subtitle: "Pick the best DPI per document"),
+            .adaptive: DisplayRepresentation(title: "自适应", subtitle: "按文档选择最佳 DPI"),
             .dpi300: "300", .dpi250: "250", .dpi200: "200", .dpi150: "150", .dpi100: "100", .dpi72: "72", .dpi48: "48",
         ]
     }
@@ -1030,11 +1030,11 @@ enum VideoConversionFormat: String, CaseIterable, AppEnum {
     static var caseDisplayRepresentations: [VideoConversionFormat: DisplayRepresentation] {
         [
             .mp4: DisplayRepresentation(title: "mp4", subtitle: "H.264"),
-            .gif: DisplayRepresentation(title: "gif", subtitle: "Animated GIF"),
+            .gif: DisplayRepresentation(title: "gif", subtitle: "动图 GIF"),
             .webm: DisplayRepresentation(title: "webm", subtitle: "VP9"),
-            .hevc: DisplayRepresentation(title: "hevc", subtitle: "Hardware H.265"),
-            .x265: DisplayRepresentation(title: "x265", subtitle: "Software H.265"),
-            .av1: DisplayRepresentation(title: "av1", subtitle: "SVT-AV1 in MKV"),
+            .hevc: DisplayRepresentation(title: "hevc", subtitle: "硬件 H.265"),
+            .x265: DisplayRepresentation(title: "x265", subtitle: "软件 H.265"),
+            .av1: DisplayRepresentation(title: "av1", subtitle: "SVT-AV1(MKV)"),
         ]
     }
 }
@@ -1043,7 +1043,7 @@ struct ConvertVideoIntent: AppIntent {
     init() {}
 
     static var title: LocalizedStringResource = "Convert video to…"
-    static var description = IntentDescription("Convert a video received as input to a different format or codec such as GIF, WEBM (VP9), H.265 or AV1.", categoryName: "Conversion")
+    static var description = IntentDescription("将输入的视频转换为其他格式或编码,如 GIF、WEBM (VP9)、H.265 或 AV1。", categoryName: "Conversion")
 
     static var parameterSummary: some ParameterSummary {
         Summary("Convert \(\.$video) to \(\.$format)") {
@@ -1052,16 +1052,16 @@ struct ConvertVideoIntent: AppIntent {
         }
     }
 
-    @Parameter(title: "Video")
+    @Parameter(title: "视频")
     var video: IntentFile
 
-    @Parameter(title: "Format", default: .mp4)
+    @Parameter(title: "格式", default: .mp4)
     var format: VideoConversionFormat
 
-    @Parameter(title: "Compression factor", description: "How hard to compress: a factor from 5 (best quality) to 100 (smallest file). Only applies to mp4 (H.264); the other codecs use tuned fixed settings.")
+    @Parameter(title: "压缩系数", description: "压缩强度:系数 5(最佳画质)到 100(最小体积)。仅对 mp4 (H.264) 生效;其他编码器使用调好的固定参数。")
     var compressionFactor: Int?
 
-    @Parameter(title: "Hide floating result")
+    @Parameter(title: "隐藏悬浮结果")
     var hideFloatingResult: Bool
 
     @MainActor
@@ -1088,9 +1088,9 @@ enum AudioConversionFormat: String, CaseIterable, AppEnum {
             .aac: DisplayRepresentation(title: "aac", subtitle: "AAC (M4A)"),
             .mp3: DisplayRepresentation(title: "mp3", subtitle: "MP3"),
             .opus: DisplayRepresentation(title: "opus", subtitle: "Opus (OGG)"),
-            .flac: DisplayRepresentation(title: "flac", subtitle: "FLAC (lossless)"),
-            .wav: DisplayRepresentation(title: "wav", subtitle: "WAV (uncompressed)"),
-            .aiff: DisplayRepresentation(title: "aiff", subtitle: "AIFF (uncompressed)"),
+            .flac: DisplayRepresentation(title: "flac", subtitle: "FLAC(无损)"),
+            .wav: DisplayRepresentation(title: "wav", subtitle: "WAV(未压缩)"),
+            .aiff: DisplayRepresentation(title: "aiff", subtitle: "AIFF(未压缩)"),
         ]
     }
 }
@@ -1099,7 +1099,7 @@ struct ConvertAudioIntent: AppIntent {
     init() {}
 
     static var title: LocalizedStringResource = "Convert audio to…"
-    static var description = IntentDescription("Convert an audio file received as input to a different format such as AAC, MP3 or Opus.", categoryName: "Conversion")
+    static var description = IntentDescription("将输入的音频转换为其他格式,如 AAC、MP3 或 Opus。", categoryName: "Conversion")
 
     static var parameterSummary: some ParameterSummary {
         Summary("Convert \(\.$audio) to \(\.$format)") {
@@ -1109,25 +1109,25 @@ struct ConvertAudioIntent: AppIntent {
         }
     }
 
-    @Parameter(title: "Audio")
+    @Parameter(title: "音频")
     var audio: IntentFile
 
-    @Parameter(title: "Format", default: .aac)
+    @Parameter(title: "格式", default: .aac)
     var format: AudioConversionFormat
 
-    @Parameter(title: "Compression factor", description: "How hard to compress: a factor from 5 (best quality) to 100 (smallest file), mapped to a bitrate for the target format. Leave empty to use the app's audio compression setting.")
+    @Parameter(title: "压缩系数", description: "How hard to compress: a factor from 5 (best quality) to 100 (smallest file), mapped to a bitrate for the target format. Leave empty to use the app's audio compression setting.")
     var compressionFactor: Int?
 
-    @Parameter(title: "Audio bitrate (kbps)", description: "Target bitrate in kbps (e.g. 128). Takes priority over the compression factor. Never upscales, snaps to the allowed bitrates of the target format.")
+    @Parameter(title: "音频码率(kbps)", description: "目标码率 kbps(如 128)。优先于压缩系数;不会放大,会对齐目标格式允许的码率档位。")
     var bitrate: Int?
 
-    @Parameter(title: "Hide floating result")
+    @Parameter(title: "隐藏悬浮结果")
     var hideFloatingResult: Bool
 
     @MainActor
     func perform() async throws -> some IntentResult & ReturnsValue<IntentFile> {
         if let bitrate, bitrate <= 0 {
-            throw IntentError.message("Invalid audio bitrate, must be greater than 0")
+            throw IntentError.message("音频码率无效,必须大于 0")
         }
         let file = try await runShortcutsPipeline(
             url: audio.url,
@@ -1177,11 +1177,11 @@ struct PipelineEntityQuery: EntityStringQuery {
 struct RunPipelineIntent: AppIntent {
     init() {}
 
-    static var title: LocalizedStringResource = "Run pipeline on file"
+    static var title: LocalizedStringResource = "对文件运行管线"
     static var description = IntentDescription("""
     Runs a pipeline on an image, video, PDF or audio file: either a pipeline saved in the Clop app, or custom inline steps like `crop(width: 1600) -> convert(to: webp)`.
 
-    Inline steps run exactly as written (no implicit optimisation pass); add an explicit `optimise` step if you want one. Saved pipelines keep their "skip optimisation" setting: when off, the file is optimised before the steps run.
+    Inline steps run exactly as written (no implicit optimisation pass); add an explicit `optimise` step if you want one. Saved pipelines keep their "跳过优化" setting: when off, the file is optimised before the steps run.
     """, categoryName: "Pipelines")
 
     static var parameterSummary: some ParameterSummary {
@@ -1196,16 +1196,16 @@ struct RunPipelineIntent: AppIntent {
         }
     }
 
-    @Parameter(title: "Image, video, PDF or audio file")
+    @Parameter(title: "图像、视频、PDF 或音频文件")
     var item: IntentFile
 
-    @Parameter(title: "Pipeline type", default: false, displayName: .init(true: "custom steps", false: "saved pipeline"))
+    @Parameter(title: "管线类型", default: false, displayName: .init(true: "custom steps", false: "saved pipeline"))
     var useCustomSteps: Bool
 
-    @Parameter(title: "Pipeline")
+    @Parameter(title: "管线")
     var pipeline: PipelineEntity?
 
-    @Parameter(title: "Steps", description: """
+    @Parameter(title: "步骤", description: """
     Inline pipeline steps separated by `->`, e.g. `crop(width: 1600) -> convert(to: webp)`.
 
     Steps: optimise, downscale, lowerBitrate, convert, crop, extractPagesAsImages,
@@ -1214,7 +1214,7 @@ struct RunPipelineIntent: AppIntent {
     """)
     var steps: String?
 
-    @Parameter(title: "Hide floating result")
+    @Parameter(title: "隐藏悬浮结果")
     var hideFloatingResult: Bool
 
     @MainActor
@@ -1245,18 +1245,18 @@ extension PageLayout: AppEnum {
     static var caseDisplayRepresentations: [PageLayout: DisplayRepresentation] {
         [
             .auto: DisplayRepresentation(
-                title: "Auto",
-                subtitle: "Crop pages based on their longest edge",
+                title: "自动",
+                subtitle: "按最长边裁剪页面",
                 image: .init(systemName: "sparkles.rectangle.stack.fill")
             ),
             .portrait: DisplayRepresentation(
-                title: "Portrait",
-                subtitle: "Force all pages to be vertical",
+                title: "纵向",
+                subtitle: "强制所有页面为纵向",
                 image: .init(systemName: "rectangle.portrait.arrowtriangle.2.inward")
             ),
             .landscape: DisplayRepresentation(
-                title: "Landscape",
-                subtitle: "Force all pages to be horizontal",
+                title: "横向",
+                subtitle: "强制所有页面为横向",
                 image: .init(systemName: "rectangle.arrowtriangle.2.inward")
             ),
         ]

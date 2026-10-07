@@ -201,8 +201,8 @@ enum MCPInstaller {
 
     @MainActor private static func showProRequired() {
         let alert = NSAlert()
-        alert.messageText = "MCP needs Clop Pro"
-        alert.informativeText = "An agent asked for access to controlling Clop through MCP. That is a Pro feature."
+        alert.messageText = "MCP 需要 Clop Pro"
+        alert.informativeText = "有智能体请求通过 MCP 控制 Clop。这是 Pro 功能。"
         alert.alertStyle = .informational
         alert.addButton(withTitle: "Manage Licence")
         alert.addButton(withTitle: "Not now")

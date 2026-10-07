@@ -239,13 +239,13 @@ extension Defaults.Keys {
 
 @ViewBuilder
 func fileActions(for url: URL) -> some View {
-    Button("Open") {
+    Button("打开") {
         NSWorkspace.shared.open(url)
     }
-    Button("Show in Finder") {
+    Button("在访达中显示") {
         NSWorkspace.shared.selectFile(url.path, inFileViewerRootedAtPath: "")
     }
-    Button("Copy Path") {
+    Button("复制路径") {
         withGeneralPasteboard { pb in
             pb.clearContents()
             pb.setString(url.path, forType: .string)
@@ -286,7 +286,7 @@ enum AudioSide: Hashable {
 /// single start position so the other side begins from exactly where the first one started.
 ///
 /// `startTime` is that shared anchor. Pressing play on a side that wasn't the last one played seeks
-/// it to the anchor first ("the other side starts from the same time the first playback did");
+/// it to the anchor first ("另一侧与首次播放位置同步");
 /// resuming the same side after a pause just continues. Scrubbing either side stores the new time as
 /// the anchor, so you can move the comparison point instead of always restarting from the same spot.
 @MainActor
@@ -429,10 +429,10 @@ struct CompareView: View {
         GeometryReader { _ in
             HStack {
                 if let url = optimiser.url, let originalURL = optimiser.comparisonOriginalURL {
-                    preview(url: originalURL, pane: .original, title: "Original", bytes: optimiser.oldBytes, size: optimiser.oldSize) {
+                    preview(url: originalURL, pane: .original, title: "原件", bytes: optimiser.oldBytes, size: optimiser.oldSize) {
                         renderer(for: originalURL, otherVideoURL: url)
                     }
-                    preview(url: url, pane: .optimised, title: "Optimised", bytes: optimiser.newBytes ?! optimiser.oldBytes, size: optimiser.newSize ?? optimiser.oldSize) {
+                    preview(url: url, pane: .optimised, title: "已优化", bytes: optimiser.newBytes ?! optimiser.oldBytes, size: optimiser.newSize ?? optimiser.oldSize) {
                         renderer(for: url)
                     }
                 }
@@ -450,9 +450,9 @@ struct CompareView: View {
             VStack {
                 if let url = optimiser.url, let originalURL = optimiser.comparisonOriginalURL {
                     HStack {
-                        paneHeader(title: "Original", url: originalURL)
+                        paneHeader(title: "原件", url: originalURL)
                         Spacer()
-                        paneHeader(title: "Optimised", url: url)
+                        paneHeader(title: "已优化", url: url)
                     }
                     splitPreview(originalURL: originalURL, optimisedURL: url)
                     splitFooter
@@ -468,9 +468,9 @@ struct CompareView: View {
     var audioStack: some View {
         HStack(alignment: .top, spacing: 16) {
             if let url = optimiser.url, let originalURL = optimiser.comparisonOriginalURL {
-                audioSide(.original, url: originalURL, title: "Original", bytes: optimiser.oldBytes, bitrate: optimiser.oldBitrate)
+                audioSide(.original, url: originalURL, title: "原件", bytes: optimiser.oldBytes, bitrate: optimiser.oldBitrate)
                 audioSide(
-                    .optimised, url: url, title: "Optimised",
+                    .optimised, url: url, title: "已优化",
                     bytes: optimiser.newBytes > 0 ? optimiser.newBytes : optimiser.oldBytes,
                     bitrate: optimiser.newBitrate ?? optimiser.oldBitrate
                 )
@@ -534,7 +534,7 @@ struct CompareView: View {
             if optimiser.type.isAudio {
                 audioStack
 
-                Text("Only one side plays at a time, scrub either side to set where both start")
+                Text("一次只播放一侧,拖动任一侧设定两者起点")
                     .round(10).foregroundColor(.tertiaryLabel)
                     .padding(.top, 10)
             } else {
@@ -551,11 +551,11 @@ struct CompareView: View {
                 }
 
                 if compareMode == .split {
-                    Text("Drag across the preview to move the split divider")
+                    Text("在预览上拖动以移动分割线")
                         .round(10).foregroundColor(.tertiaryLabel)
                         .padding(.top, 6)
                 }
-                Text("Hold **⌘ Command** to zoom in, add **⌥ Option** to zoom further")
+                Text("按住 **⌘ Command** 放大,再加按 **⌥ Option** 继续放大")
                     .round(10).foregroundColor(.tertiaryLabel)
                     .padding(.top, compareMode == .split ? 2 : 6)
             }
@@ -581,12 +581,12 @@ struct CompareView: View {
 
     var controls: some View {
         HStack(spacing: 12) {
-            Picker("Comparison", selection: $compareMode) {
+            Picker("对比", selection: $compareMode) {
                 SwiftUI.Image(systemName: "rectangle.split.2x1")
-                    .help("Side by side comparison")
+                    .help("并排对比")
                     .tag(CompareMode.sideBySide)
                 SwiftUI.Image(systemName: "rectangle.lefthalf.inset.filled")
-                    .help("Split comparison with a draggable divider")
+                    .help("带可拖动分割线的分屏对比")
                     .tag(CompareMode.split)
             }
             .pickerStyle(.segmented)
@@ -602,8 +602,8 @@ struct CompareView: View {
                 }
                 .buttonStyle(FlatButton())
                 .keyboardShortcut(.space, modifiers: [])
-                .help(videoPlaying ? "Pause both videos" : "Play both videos")
-                .accessibilityLabel(videoPlaying ? "Pause both videos" : "Play both videos")
+                .help(videoPlaying ? "暂停两个视频" : "播放两个视频")
+                .accessibilityLabel(videoPlaying ? "暂停两个视频" : "播放两个视频")
             }
 
             if optimiser.type.isImage {
@@ -617,8 +617,8 @@ struct CompareView: View {
                 }
                 .buttonStyle(FlatButton())
                 .keyboardShortcut(.space, modifiers: [])
-                .help(fitOrFill == .fit ? "Fill the preview area" : "Fit the whole image")
-                .accessibilityLabel(fitOrFill == .fit ? "Fill the preview area" : "Fit the whole image")
+                .help(fitOrFill == .fit ? "填满预览区域" : "显示完整图像")
+                .accessibilityLabel(fitOrFill == .fit ? "填满预览区域" : "显示完整图像")
             }
         }
         .padding(.top, 10)
@@ -666,10 +666,10 @@ struct CompareView: View {
             audioScrubber(side)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("Size: \(bytes.humanSize)").mono(10)
+                Text("大小:\(bytes.humanSize)").mono(10)
                     .hfill(.leading)
                 if let bitrate {
-                    Text("Bitrate: \(bitrate) kbps").mono(10)
+                    Text("码率:\(bitrate) kbps").mono(10)
                         .hfill(.leading)
                 }
             }
@@ -729,8 +729,8 @@ struct CompareView: View {
                 }
             )
             .contextMenu {
-                Section("Original") { fileActions(for: originalURL) }
-                Section("Optimised") { fileActions(for: optimisedURL) }
+                Section("原件") { fileActions(for: originalURL) }
+                Section("已优化") { fileActions(for: optimisedURL) }
             }
         }
         .frame(
@@ -771,13 +771,13 @@ struct CompareView: View {
                         SwiftUI.Image(systemName: "chevron.left")
                             .font(.system(size: 14))
                     }
-                    .accessibilityLabel("Previous page")
+                    .accessibilityLabel("上一页")
                     .buttonStyle(FlatButton())
                     .disabled(pdfPage == 1)
                     .keyboardShortcut(.leftArrow, modifiers: [])
                 }
 
-                Text("Page \(pdfPage.i)/\(pdf.pageCount)")
+                Text("第 \(pdfPage.i)/\(pdf.pageCount) 页")
                     .font(.round(11))
 
                 if pdf.pageCount > 1 {
@@ -787,7 +787,7 @@ struct CompareView: View {
                         SwiftUI.Image(systemName: "chevron.right")
                             .font(.system(size: 14))
                     }
-                    .accessibilityLabel("Next page")
+                    .accessibilityLabel("下一页")
                     .buttonStyle(FlatButton())
                     .disabled(Int(pdfPage) == pdf.pageCount)
                     .keyboardShortcut(.rightArrow, modifiers: [])
@@ -796,7 +796,7 @@ struct CompareView: View {
 
             if pdf.pageCount > 1 {
                 Slider(value: $pdfPage, in: 1 ... pdf.pageCount.d, step: 1.0)
-                    .accessibilityLabel("Page")
+                    .accessibilityLabel("页")
                     .frame(width: 400)
             }
         }
@@ -871,11 +871,11 @@ struct CompareView: View {
 
             VStack(alignment: .leading) {
                 if let bytes {
-                    Text("Size: \(bytes.humanSize)").mono(10)
+                    Text("大小:\(bytes.humanSize)").mono(10)
                         .hfill(.leading)
                 }
                 if let size {
-                    Text("Dimensions: \(size.s)").mono(10)
+                    Text("尺寸:\(size.s)").mono(10)
                         .hfill(.leading)
                 }
             }

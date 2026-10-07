@@ -164,17 +164,17 @@ enum ClopError: Error, CustomStringConvertible, Codable {
         case .noProcess:
             "Can't start process"
         case .alreadyOptimised:
-            "Already optimised"
+            "已是优化状态"
         case .alreadyResized:
             "Image is already at the correct size or smaller"
         case .imageSizeLarger:
-            "Already optimised"
+            "已是优化状态"
         case .videoSizeLarger:
-            "Already optimised"
+            "已是优化状态"
         case .pdfSizeLarger:
-            "Already optimised"
+            "已是优化状态"
         case .audioSizeLarger:
-            "Already optimised"
+            "已是优化状态"
         case .unknownImageType:
             "Unknown image type"
         case .videoError:
@@ -192,9 +192,9 @@ enum ClopError: Error, CustomStringConvertible, Codable {
         case .proError:
             "Pro error"
         case .downscaleFailed:
-            "Downscale failed"
+            "缩放失败"
         case .optimisationFailed:
-            "Optimisation failed"
+            "优化失败"
         case .appNotRunning:
             "App integration not running"
         case .encryptedPDF:

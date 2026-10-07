@@ -580,7 +580,7 @@ let GIFSKI_FRAME_REGEX = try! Regex(#"Frame (\d+) / (\d+)"#, as: (Substring, Sub
         optimiser.progress.fileURL = url
         optimiser.progress.localizedDescription = optimiser.operation
         if optimiser.progress.totalUnitCount == 100 {
-            optimiser.progress.localizedAdditionalDescription = "Calculating duration"
+            optimiser.progress.localizedAdditionalDescription = "正在计算时长"
         } else {
             optimiser.progress.localizedAdditionalDescription = "\(0.i64.hmsString) of \(optimiser.progress.totalUnitCount.hmsString)"
         }

@@ -81,7 +81,7 @@ final class PipelineExecution {
             && (!Defaults[.appendClipboardResults] || Defaults[.copyConsecutiveClipboardImages])
     }
 
-    /// Clipboard image pipelines must keep updating the single "Clipboard image" optimiser
+    /// Clipboard image pipelines must keep updating the single "剪贴板图像" optimiser
     /// (rather than spawning a new floating result keyed by each step's temp file path) so a
     /// pipeline like `downscale(0.5)` shows only one result. For in-place steps on a clipboard
     /// source, reuse the parent optimiser id; for file/dir sources the optimiser id already
@@ -342,7 +342,7 @@ final class PipelineExecution {
 
         // Phase 1: Extract pages as images
         optimiser.running = true
-        optimiser.operation = "Extracting pages"
+        optimiser.operation = "正在提取页面"
         optimiser.progress = Progress(totalUnitCount: Int64(pageCount))
 
         let batchSize = ProcessInfo.processInfo.activeProcessorCount
@@ -383,7 +383,7 @@ final class PipelineExecution {
         }
 
         // Phase 2: Optimise extracted images
-        optimiser.operation = "Optimising images"
+        optimiser.operation = "正在优化图像"
         optimiser.progress = Progress(totalUnitCount: Int64(extractedPaths.count))
 
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
@@ -480,7 +480,7 @@ final class PipelineExecution {
         let input = currentFile
         let hadOptimisationStatus = input.hasOptimisationStatusXattr()
         optimiser.running = true
-        optimiser.operation = "Stripping metadata"
+        optimiser.operation = "正在清理元数据"
 
         let stripped: FilePath? = await Task.detached {
             let tempFile = FilePath.images.appending("exif-\(UUID().uuidString.prefix(8))-\(input.lastComponent?.string ?? "file")")
@@ -564,7 +564,7 @@ final class PipelineExecution {
             optimiser.running = false
 
             guard let resultPath else {
-                optimiser.finish(error: "Watermarking failed")
+                optimiser.finish(error: "加水印失败")
                 shouldStop = true
                 return
             }
@@ -1645,7 +1645,7 @@ final class PipelineExecution {
         optimiser.running = false
 
         guard success else {
-            optimiser.finish(error: "Watermarking failed")
+            optimiser.finish(error: "加水印失败")
             shouldStop = true
             return
         }

@@ -632,7 +632,7 @@ struct PipelineTextView: NSViewRepresentable {
         let scrollView = NSTextView.scrollableTextView()
         let textView = scrollView.documentView as! NSTextView
         textView.delegate = context.coordinator
-        textView.setAccessibilityLabel("Pipeline")
+        textView.setAccessibilityLabel("管线")
         textView.font = PIPELINE_FONT
         textView.isRichText = true
         textView.isAutomaticQuoteSubstitutionEnabled = false

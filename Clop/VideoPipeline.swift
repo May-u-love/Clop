@@ -118,7 +118,7 @@ private let log = Logger(subsystem: LOG_SUBSYSTEM, category: "VideoPipeline")
         }
     }
     let opLabel = if debounceMS > 0, !hasDownscale, !hasSpeedChange {
-        "Waiting for video to be ready"
+        "等待视频就绪"
     } else {
         operationLabel(for: labelActions, filename: path.lastComponent?.string ?? "", videoSize: resolution, aggressive: aggressive)
     }
@@ -289,13 +289,13 @@ private let log = Logger(subsystem: LOG_SUBSYSTEM, category: "VideoPipeline")
                 }
             } catch ClopError.imageSizeLarger, ClopError.videoSizeLarger, ClopError.pdfSizeLarger {
                 optimisedVideo = video
-                mainActor { optimiser.info = "File already fully compressed" }
+                mainActor { optimiser.info = "文件已充分压缩" }
             } catch let error as ClopError {
                 log.error("Error in video pipeline \(pathString): \(error.description)")
                 mainActor { optimiser.finish(error: error.humanDescription) }
             } catch {
                 log.error("Error in video pipeline \(pathString): \(error)")
-                mainActor { optimiser.finish(error: "Optimisation failed") }
+                mainActor { optimiser.finish(error: "优化失败") }
             }
 
             guard var optimisedVideo else { return }

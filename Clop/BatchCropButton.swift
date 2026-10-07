@@ -22,20 +22,20 @@ struct BatchCropButton: View {
     @Environment(\.colorScheme) var colorScheme
 
     var viewer: some View {
-        Button("Crop") {
+        Button("裁剪") {
             withAnimation(.easeOut(duration: 0.1)) { cropping = true }
         }
         .focusable(false)
     }
 
     var aspectRatioPicker: some View {
-        Picker("Orientation", selection: $cropOrientation) {
-            Label("Portrait", systemImage: "rectangle.portrait").tag(CropOrientation.portrait)
-                .help("Crop all images to a portrait orientation.")
-            Label("Adaptive", systemImage: "sparkles.rectangle.stack").tag(CropOrientation.adaptive)
-                .help("Crop all images to the specified size while keeping the original orientation of each image.")
-            Label("Landscape", systemImage: "rectangle").tag(CropOrientation.landscape)
-                .help("Crop all images to a landscape orientation.")
+        Picker("方向", selection: $cropOrientation) {
+            Label("纵向", systemImage: "rectangle.portrait").tag(CropOrientation.portrait)
+                .help("将所有图像裁剪为纵向。")
+            Label("自适应", systemImage: "sparkles.rectangle.stack").tag(CropOrientation.adaptive)
+                .help("将所有图像裁剪到指定尺寸,并保留各自原始方向。")
+            Label("横向", systemImage: "rectangle").tag(CropOrientation.landscape)
+                .help("将所有图像裁剪为横向。")
         }
         .labelsHidden()
         .pickerStyle(.segmented)
@@ -57,7 +57,7 @@ struct BatchCropButton: View {
     var editor: some View {
         VStack(spacing: 8) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("SIZE PRESETS")
+                Text("尺寸预设")
                     .font(.system(size: 9.5, weight: .bold))
                     .kerning(0.7)
                     .foregroundColor(.secondary)
@@ -66,7 +66,7 @@ struct BatchCropButton: View {
                     cropSizeButton(size)
                 }
                 HStack(spacing: 8) {
-                    TextField("", text: $name, prompt: Text("Name"))
+                    TextField("", text: $name, prompt: Text("名称"))
                         .textFieldStyle(.roundedBorder)
                         .focused($focused, equals: .name)
                         .frame(width: 208, alignment: .leading)
@@ -91,7 +91,7 @@ struct BatchCropButton: View {
 
             Divider()
             VStack(alignment: .leading, spacing: 4) {
-                Text("ASPECT RATIOS")
+                Text("宽高比")
                     .font(.system(size: 9.5, weight: .bold))
                     .kerning(0.7)
                     .foregroundColor(.secondary)
@@ -119,13 +119,13 @@ struct BatchCropButton: View {
             Divider()
 
             HStack {
-                TextField("", value: $tempWidth, formatter: NumberFormatter(), prompt: Text("Width"))
+                TextField("", value: $tempWidth, formatter: NumberFormatter(), prompt: Text("宽度"))
                     .textFieldStyle(.roundedBorder)
                     .focused($focused, equals: .width)
                     .frame(width: 60, alignment: .center)
                     .multilineTextAlignment(.center)
                 Text("×")
-                TextField("", value: $tempHeight, formatter: NumberFormatter(), prompt: Text("Height"))
+                TextField("", value: $tempHeight, formatter: NumberFormatter(), prompt: Text("高度"))
                     .textFieldStyle(.roundedBorder)
                     .focused($focused, equals: .height)
                     .frame(width: 60, alignment: .center)
@@ -133,7 +133,7 @@ struct BatchCropButton: View {
             }.disabled(isAspectRatio)
 
             let sizeStr = isAspectRatio ? (cropSize?.name ?? "\(tempWidth):\(tempHeight)") : "\(tempWidth == 0 ? "Auto" : tempWidth.s)×\(tempHeight == 0 ? "Auto" : tempHeight.s)"
-            Button("Crop and resize to \(sizeStr)") {
+            Button("裁剪并缩放到 \(sizeStr)") {
                 guard !preview, tempWidth > 0 || tempHeight > 0 || isAspectRatio else { return }
 
                 if isAspectRatio, let cropSize {

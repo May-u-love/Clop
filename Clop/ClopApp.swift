@@ -410,7 +410,7 @@ class AppDelegate: AppDelegateParent {
         paddleAPIKey = "e1e517a68c1ed1bea2ac968a593ac147"
         paddleProductID = "841006"
         trialDays = 14
-        trialText = "This is a trial for the Pro features. After the trial, the app will automatically revert to the free version."
+        trialText = "这是 Pro 功能的试用期。试用结束后,应用会自动回到免费版。"
         price = 15
         productName = "Clop Pro"
         vendorName = "THE LOW TECH GUYS SRL"
@@ -795,7 +795,7 @@ class AppDelegate: AppDelegateParent {
             opt.stop(animateRemoval: true)
         case .z where !opt.isOriginal:
             opt.restoreOriginal()
-            opt.overlayMessage = "Restored original"
+            opt.overlayMessage = "已恢复原件"
             opt.collapseHoverOverlay = true
         case .r where !opt.running:
             opt.editingFilename = true
@@ -1962,13 +1962,13 @@ class ContextualMenuServiceProvider: NSObject {
                 } catch let error as ClopError {
                     // A bare `try await` inside this Task discarded every failure: the result card sat
                     // at "Optimising" forever and the file was silently left untouched, which read as
-                    // "Clop stopped working" for anyone optimising into a read-only folder. Every other
+                    // "Clop 已停止工作" for anyone optimising into a read-only folder. Every other
                     // entry point (Shortcuts, drop zone, URL handler, CLI) already reports its errors.
                     log.error("Error optimising \(item.id) from the Services menu: \(error.description)")
                     await MainActor.run { opt(item.id)?.finish(error: error.humanDescription) }
                 } catch {
                     log.error("Error optimising \(item.id) from the Services menu: \(error)")
-                    await MainActor.run { opt(item.id)?.finish(error: "Optimisation failed") }
+                    await MainActor.run { opt(item.id)?.finish(error: "优化失败") }
                 }
             }
         }

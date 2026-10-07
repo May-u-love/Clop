@@ -468,8 +468,8 @@ struct SizePresetRow: View {
                     .buttonStyle(.plain)
                     .opacity(hovering ? 1 : 0)
                     .onHover { hoveringTrash = $0 }
-                    .help("Delete preset")
-                    .accessibilityLabel("Delete preset")
+                    .help("删除预设")
+                    .accessibilityLabel("删除预设")
                 }
             }
             .padding(.horizontal, 8)
@@ -747,7 +747,7 @@ struct CropView: View {
                     SwiftUI.Image(systemName: "chevron.left")
                 }
                 .disabled(pageIndex == 0)
-                Text("Page \(pageIndex + 1) of \(pageCount)")
+                Text("第 \(pageIndex + 1) 页,共 \(pageCount) 页")
                     .font(.round(11))
                     .monospacedDigit()
                 Button(action: { pageIndex = min(pageIndex + 1, pageCount - 1) }) {
@@ -759,10 +759,10 @@ struct CropView: View {
                     .font(.system(size: 11))
                     .foregroundColor(.secondary)
                 Slider(value: $videoTime, in: 0 ... 1)
-                    .accessibilityLabel("Frame")
+                    .accessibilityLabel("帧")
                     .frame(maxWidth: 300)
                     .controlSize(.small)
-                    .help("Choose the video frame used for the crop preview")
+                    .help("选择用于裁剪预览的视频帧")
             }
         }
         .buttonStyle(.borderless)
@@ -818,15 +818,15 @@ struct CropView: View {
     }
 
     var orientationPicker: some View {
-        Picker("Orientation", selection: $cropOrientation) {
-            Label("Portrait", systemImage: "rectangle.portrait").tag(CropOrientation.portrait)
-                .help("Crop the \(optimiser.type.str) to a portrait orientation.")
+        Picker("方向", selection: $cropOrientation) {
+            Label("纵向", systemImage: "rectangle.portrait").tag(CropOrientation.portrait)
+                .help("将\(optimiser.type.str)裁剪为纵向。")
             if optimiser.type.isPDF {
-                Label("Adaptive", systemImage: "sparkles.rectangle.stack").tag(CropOrientation.adaptive)
-                    .help("Crop all pages to the specified size while keeping the original orientation of each page.")
+                Label("自适应", systemImage: "sparkles.rectangle.stack").tag(CropOrientation.adaptive)
+                    .help("将所有页面裁剪到指定尺寸,并保留各自原始方向。")
             }
-            Label("Landscape", systemImage: "rectangle").tag(CropOrientation.landscape)
-                .help("Crop the \(optimiser.type.str) to a landscape orientation.")
+            Label("横向", systemImage: "rectangle").tag(CropOrientation.landscape)
+                .help("将\(optimiser.type.str)裁剪为横向。")
         }
         .labelsHidden()
         .pickerStyle(.segmented)
@@ -867,7 +867,7 @@ struct CropView: View {
                 saveField
             }
             if !savedCropSizes.contains(DEFAULT_CROP_SIZES) {
-                Button("Bring back default sizes") {
+                Button("恢复默认尺寸") {
                     Defaults[.savedCropSizes] = DEFAULT_CROP_SIZES + Defaults[.savedCropSizes].without(DEFAULT_CROP_SIZES)
                 }
                 .buttonStyle(.link)
@@ -878,7 +878,7 @@ struct CropView: View {
 
     var saveField: some View {
         HStack(spacing: 4) {
-            TextField("", text: $saveName, prompt: Text("Save \(pixelWidth.s)×\(pixelHeight.s) as…"))
+            TextField("", text: $saveName, prompt: Text("将 \(pixelWidth.s)×\(pixelHeight.s) 存为…"))
                 .textFieldStyle(.roundedBorder)
                 .controlSize(.small)
                 .focused($focused, equals: .name)
@@ -906,8 +906,8 @@ struct CropView: View {
             sectionHeader("Device size")
             CropSizeGroupPicker(selection: $deviceSize, categories: DEVICE_SIZE_GROUPS)
             sectionHeader("Aspect ratio")
-            Picker("Aspect ratio", selection: $ratioSize) {
-                Text("No selection").tag(nil as CropSize?)
+            Picker("宽高比", selection: $ratioSize) {
+                Text("未选择").tag(nil as CropSize?)
                 Divider()
                 ForEach(DEFAULT_CROP_ASPECT_RATIOS.filter { $0.name != "A4" && $0.name != "B5" }, id: \.name) { size in
                     Text(size.name).tag(size as CropSize?)
@@ -919,11 +919,11 @@ struct CropView: View {
                 .fixedSize()
                 .padding(.top, 4)
 
-            Toggle("Extend instead of clipping", isOn: $extendPage)
+            Toggle("扩展而非裁切", isOn: $extendPage)
                 .toggleStyle(.checkbox)
                 .font(.round(10))
                 .padding(.top, 4)
-                .help("Grows pages with empty paper instead of cutting content away. Useful for fitting a book page on a phone screen without losing text at the edges.")
+                .help("页面放不下时扩展纸张而不是裁掉内容。适合把书页适配到手机屏幕且不丢失边缘文字。")
                 .onChange(of: extendPage) { extend in
                     guard adaptiveAspect != nil else { return }
                     // the selection space switches between page and extended canvas
@@ -955,7 +955,7 @@ struct CropView: View {
 
     @ViewBuilder var uncropButton: some View {
         if let pdf = optimiser.pdf, let originalSize = pdf.originalSize, originalSize != pdf.size {
-            Button("Uncrop to \(originalSize.s)") {
+            Button("还原裁剪至 \(originalSize.s)") {
                 pdf.uncrop()
                 optimiser.oldSize = originalSize
                 optimiser.newSize = nil
@@ -968,13 +968,13 @@ struct CropView: View {
 
     var dimensionFields: some View {
         HStack {
-            TextField("", value: widthBinding, formatter: NumberFormatter.int, prompt: Text("Width"))
+            TextField("", value: widthBinding, formatter: NumberFormatter.int, prompt: Text("宽度"))
                 .textFieldStyle(.roundedBorder)
                 .focused($focused, equals: .width)
                 .frame(width: 60, alignment: .center)
                 .multilineTextAlignment(.center)
             Text("×")
-            TextField("", value: heightBinding, formatter: NumberFormatter.int, prompt: Text("Height"))
+            TextField("", value: heightBinding, formatter: NumberFormatter.int, prompt: Text("高度"))
                 .textFieldStyle(.roundedBorder)
                 .focused($focused, equals: .height)
                 .frame(width: 60, alignment: .center)
@@ -995,13 +995,13 @@ struct CropView: View {
                 SwiftUI.Image(systemName: "lock.fill").font(.system(size: 10))
             }
             .buttonStyle(.borderless)
-            .help("Aspect ratio locked, click to unlock")
+            .help("宽高比已锁定,点按解锁")
         }
     }
 
     var actionButtons: some View {
         HStack {
-            Button("Reset") { reset() }
+            Button("重置") { reset() }
                 .buttonStyle(.bordered)
                 .fontDesign(.rounded)
 
@@ -1017,7 +1017,7 @@ struct CropView: View {
             .monospacedDigit()
             .keyboardShortcut(.return, modifiers: [.command])
             .disabled(optimiser.running || nothingToCrop)
-            .help("Press ⌘⏎ to crop")
+            .help("按 ⌘⏎ 裁剪")
         }
     }
 

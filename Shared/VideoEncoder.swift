@@ -7,8 +7,8 @@ enum VideoEncoder: String, CaseIterable, Codable {
 
     var name: String {
         switch self {
-        case .fast: "Fast, battery efficient, larger file"
-        case .slowHighQuality: "Slow, high quality, smaller file"
+        case .fast: "快速省电,文件较大"
+        case .slowHighQuality: "慢速高画质,文件更小"
         case .visuallyLossless: "Visually lossless"
         }
     }
@@ -24,7 +24,7 @@ enum VideoEncoder: String, CaseIterable, Codable {
         case .slowHighQuality:
             "Uses a slow software encoder preset for smaller files with better quality"
         case .visuallyLossless:
-            "Produces files with no perceptible quality loss (CRF 17)"
+            "生成无可感知画质损失的文件(CRF 17)"
         }
     }
 }

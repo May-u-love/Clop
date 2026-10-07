@@ -257,57 +257,57 @@ private let BUILTIN_PIPELINE_DEFS: [(id: String, name: String, fileType: ClopFil
     (
         id: "builtin-image-webp", name: "to WebP", fileType: .image,
         rawText: "convert(to: webp)", skipOptimisation: true,
-        icon: "photo", details: "Convert images to the compact WebP format", version: 1
+        icon: "photo", details: "将图像转换为紧凑的 WebP 格式", version: 1
     ),
     (
-        id: "builtin-image-sort-screenshots", name: "Sort screenshots", fileType: .image,
+        id: "builtin-image-sort-screenshots", name: "整理截屏", fileType: .image,
         rawText: "if(regex: \"^(screen\\s?shot|cleanshot)\") -> optimise() -> move(to: \"~/Pictures/Screenshots/%y/%m/\")", skipOptimisation: true,
-        icon: "folder", details: "Optimise screenshots and file them under ~/Pictures/Screenshots/year/month", version: 1
+        icon: "folder", details: "优化截屏并归档到 ~/Pictures/Screenshots/年/月", version: 1
     ),
     (
         id: "builtin-image-half", name: "0.5×", fileType: .image,
         rawText: "downscale(factor: 0.5)", skipOptimisation: true,
-        icon: "arrow.down.right.and.arrow.up.left", details: "Halve the image resolution", version: 1
+        icon: "arrow.down.right.and.arrow.up.left", details: "图像分辨率减半", version: 1
     ),
     (
         id: "builtin-image-watermark", name: "Watermark", fileType: .image,
         rawText: "watermark(image: \"%P/watermark.png\")", skipOptimisation: true,
-        icon: "signature", details: "Overlay watermark.png from the same folder onto the image", version: 1
+        icon: "signature", details: "把同文件夹的 watermark.png 叠加到图像上", version: 1
     ),
     (
         id: "builtin-video-1080p", name: "1080p", fileType: .video,
         rawText: "crop(width: 1920) -> optimise(encoder: slowHighQuality)", skipOptimisation: true,
-        icon: "tv", details: "Scale video to 1920px wide and optimise", version: 1
+        icon: "tv", details: "视频缩放到 1920px 宽并优化", version: 1
     ),
     (
         id: "builtin-video-to-gif", name: "to GIF", fileType: .video,
         rawText: "crop(longEdge: 800) -> convert(to: gif)", skipOptimisation: true,
-        icon: "photo.on.rectangle.angled", details: "Crop to 800px and convert to an animated GIF", version: 1
+        icon: "photo.on.rectangle.angled", details: "裁剪到 800px 并转为动图 GIF", version: 1
     ),
     (
         id: "builtin-video-2x-silent", name: "2× silent", fileType: .video,
         rawText: "changeSpeed(factor: 2.0) -> removeAudio -> optimise(encoder: fast)", skipOptimisation: true,
-        icon: "speaker.slash.fill", details: "Double the playback speed and remove the audio", version: 1
+        icon: "speaker.slash.fill", details: "双倍速播放并移除音轨", version: 1
     ),
     (
         id: "builtin-video-half", name: "0.5×", fileType: .video,
         rawText: "downscale(factor: 0.5)", skipOptimisation: true,
-        icon: "arrow.down.right.and.arrow.up.left", details: "Halve the video resolution", version: 1
+        icon: "arrow.down.right.and.arrow.up.left", details: "视频分辨率减半", version: 1
     ),
     (
         id: "builtin-video-watermark", name: "Watermark", fileType: .video,
         rawText: "watermark(image: \"%P/watermark.png\")", skipOptimisation: true,
-        icon: "signature", details: "Overlay watermark.png from the same folder onto the video", version: 1
+        icon: "signature", details: "把同文件夹的 watermark.png 叠加到视频上", version: 1
     ),
     (
         id: "builtin-pdf-as-images", name: "as images", fileType: .pdf,
         rawText: "extractPagesAsImages(format: jpeg, quality: high)", skipOptimisation: true,
-        icon: "photo.stack", details: "Extract each PDF page as a JPEG image", version: 1
+        icon: "photo.stack", details: "将每个 PDF 页面导出为 JPEG 图像", version: 1
     ),
     (
         id: "builtin-audio-to-mp3", name: "to MP3", fileType: .audio,
         rawText: "convert(to: mp3)", skipOptimisation: true,
-        icon: "music.note", details: "Convert any audio file to MP3", version: 1
+        icon: "music.note", details: "将任意音频文件转换为 MP3", version: 1
     ),
 ]
 
@@ -526,7 +526,7 @@ func applyLocation(_ location: String, to resultFile: FilePath, original: FilePa
             let nameWithExt = hasFileExtension(resolved, matching: [ext]) ? resolved : "\(resolved).\(ext)"
             destPath = original.dir.appending(nameWithExt)
         } else if let fp = resolved.filePath {
-            // A trailing slash or an existing folder means "into this folder", under the file's own
+            // A trailing slash or an existing folder means "存到此文件夹", under the file's own
             // name. FilePath drops the slash, so it has to be read off the string.
             destPath = resolved.hasSuffix("/") || fp.isDir ? fp.appending(pipelineResultName(resultFile)) : fp
         } else {
@@ -575,7 +575,7 @@ extension Optimiser {
     /// Returns false if the file can't be rendered (e.g. it was deleted), so the caller can drop
     /// the card entirely.
     @discardableResult
-    @MainActor func showAsUnchanged(file: FilePath, notice: String = "No changes needed") -> Bool {
+    @MainActor func showAsUnchanged(file: FilePath, notice: String = "无需更改") -> Bool {
         guard isRenderableMediaFile(file) else { return false }
         url = file.url // triggers refetch() → loads the media wrapper + thumbnail
         type = .from(filePath: file)

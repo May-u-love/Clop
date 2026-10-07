@@ -34,7 +34,7 @@ private let log = Logger(subsystem: LOG_SUBSYSTEM, category: "AudioPipeline")
     let aggressive = aggressiveOptimisation ?? opt(id ?? pathString)?.aggressive ?? false
     let audioType = path.url.utType() ?? .mp3
     let opLabel = if debounceMS > 0 {
-        "Waiting for audio to be ready"
+        "等待音频就绪"
     } else {
         operationLabel(for: actions, filename: path.lastComponent?.string ?? "", aggressive: aggressive)
     }
@@ -134,13 +134,13 @@ private let log = Logger(subsystem: LOG_SUBSYSTEM, category: "AudioPipeline")
                 }
             } catch ClopError.audioSizeLarger {
                 optimisedAudio = audio
-                mainActor { optimiser.info = "File already fully compressed" }
+                mainActor { optimiser.info = "文件已充分压缩" }
             } catch let error as ClopError {
                 log.error("Error in audio pipeline \(pathString): \(error.description)")
                 mainActor { optimiser.finish(error: error.humanDescription) }
             } catch {
                 log.error("Error in audio pipeline \(pathString): \(error)")
-                mainActor { optimiser.finish(error: "Optimisation failed") }
+                mainActor { optimiser.finish(error: "优化失败") }
             }
 
             guard var optimisedAudio else { return }

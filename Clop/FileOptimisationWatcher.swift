@@ -336,7 +336,7 @@ class FileOptimisationWatcher {
             delayOptimiser = nil
 
             let alert = NSAlert()
-            alert.messageText = "Too many file events"
+            alert.messageText = "文件事件过多"
             alert.informativeText = """
             Clop detected a large number of file change events that happened as soon as Clop started watching the folders.
 
@@ -358,7 +358,7 @@ class FileOptimisationWatcher {
             return true
         }
 
-        delayOptimiser = OM.optimiser(id: delayOptimiserID, type: .unknown, operation: "Initialising file watcher", hidden: false, source: .fileWatcher, indeterminateProgress: true)
+        delayOptimiser = OM.optimiser(id: delayOptimiserID, type: .unknown, operation: "正在初始化文件监视", hidden: false, source: .fileWatcher, indeterminateProgress: true)
         addedFilesProcessor = mainAsyncAfter(ms: 3000) { [weak self] in
             guard let self else { return }
             for event in justAddedFiles.filter({ ev in

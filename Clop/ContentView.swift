@@ -37,33 +37,33 @@ struct MenuView: View {
     @State var cliInstallResult: String?
 
     var proErrors: some View {
-        Section("Skipped items because of free version limits") {
+        Section("因免费版限制而跳过的项目") {
             ForEach(om.skippedBecauseNotPro, id: \.self) { url in
                 let str = url.isFileURL ? url.filePath!.shellString : url.absoluteString
                 Button("    \(str.count > 50 ? (str.prefix(25) + "..." + str.suffix(15)) : str)") {
                     QuickLooker.quicklook(url: url)
                 }
             }
-            Button("Get Clop Pro") {
+            Button("获取 Clop Pro") {
                 manageLicenceInSettings()
             }
         }
     }
 
     var body: some View {
-        Button("Settings") {
+        Button("设置") {
             openWindow(id: "settings")
             focus()
         }.keyboardShortcut(",")
-        Button("Batch optimiser") {
+        Button("批量优化器") {
             BAT.presentForDropping()
         }
         LaunchAtLogin.Toggle()
 
         Divider()
 
-        Section("Clipboard actions") {
-            Button("Optimise") {
+        Section("剪贴板操作") {
+            Button("优化") {
                 Task { try? await optimiseLastClipboardItem() }
             }.hotkeyHint(.c, "c", enabled: enabledKeys, modifiers: keyComboModifiers.eventModifiers)
 
@@ -72,12 +72,12 @@ struct MenuView: View {
                 !useAggressiveOptimisationPNG ||
                 videoEncoder != .slowHighQuality
             {
-                Button("Optimise (aggressive)") {
+                Button("优化(激进)") {
                     Task { try? await optimiseLastClipboardItem(aggressiveOptimisation: true) }
                 }.hotkeyHint(.a, "a", enabled: enabledKeys, modifiers: keyComboModifiers.eventModifiers)
             }
 
-            Button("Downscale") {
+            Button("缩小") {
                 scalingFactor = max(scalingFactor > 0.5 ? scalingFactor - 0.25 : scalingFactor - 0.1, 0.1)
                 Task { try? await optimiseLastClipboardItem(downscaleTo: scalingFactor) }
             }.hotkeyHint(.minus, "-", enabled: enabledKeys, modifiers: keyComboModifiers.eventModifiers)
@@ -87,7 +87,7 @@ struct MenuView: View {
 
             if let bundleID = lastApp.bundleId {
                 let appName = lastApp.name ?? bundleID
-                Toggle("Ignore clipboard events from \(appName)", isOn: Binding(
+                Toggle("忽略来自 \(appName) 的剪贴板事件", isOn: Binding(
                     get: { clipboardIgnoredAppBundleIds.contains(bundleID) },
                     set: { ignore in
                         if ignore {
@@ -100,14 +100,14 @@ struct MenuView: View {
             }
         }
 
-        Section("Backups") {
-            Button("Open backups folder") {
+        Section("备份") {
+            Button("打开备份文件夹") {
                 NSWorkspace.shared.open(FilePath.clopBackups.url)
             }
-            Button("Open working directory") {
+            Button("打开工作目录") {
                 NSWorkspace.shared.open(FilePath.workdir.url)
             }
-            Button("Force clean working directory") {
+            Button("强制清空工作目录") {
                 do {
                     for dir in [FilePath.clopBackups, .videos, .images, .pdfs, .conversions, .downloads, .forResize, .forFilters, .finderQuickAction, .processLogs] {
                         try FileManager.default.removeItem(at: dir.url)
@@ -118,19 +118,19 @@ struct MenuView: View {
 
                 FilePath.workdir.mkdir(withIntermediateDirectories: true, permissions: 0o755)
                 guard FilePath.workdir.exists else {
-                    showNotice("Failed to create working directory")
+                    showNotice("创建工作目录失败")
                     return
                 }
 
-                showNotice("Working directory cleaned")
+                showNotice("工作目录已清理")
             }
 
-            Button("Revert last optimisations") {
+            Button("撤销上次优化") {
                 om.clipboardImageOptimiser?.restoreOriginal()
             }
             .hotkeyHint(.z, "z", enabled: enabledKeys, modifiers: keyComboModifiers.eventModifiers)
             .disabled(om.clipboardImageOptimiser?.isOriginal ?? true)
-            Button("Bring back last result") {
+            Button("找回上个结果") {
                 guard let last = om.removedOptimisers.popLast() else {
                     return
                 }
@@ -140,18 +140,18 @@ struct MenuView: View {
             .disabled(om.removedOptimisers.isEmpty)
         }
 
-        Section("Automation") {
-            Toggle("Pause automatic optimisations", isOn: $pauseAutomaticOptimisations)
+        Section("自动化") {
+            Toggle("暂停自动优化", isOn: $pauseAutomaticOptimisations)
                 .searchAnchor("general.main.pauseAutomaticOptimisations")
             if !cliInstalled {
-                Button("Install command-line integration") {
+                Button("安装命令行集成") {
                     do {
                         try installCLIBinary()
                         cliInstallResult = "CLI installed at \(CLOP_CLI_BIN_SHELL)"
                     } catch let error as InstallCLIError {
                         cliInstallResult = error.message
                     } catch {
-                        cliInstallResult = "Installation failed"
+                        cliInstallResult = "安装失败"
                     }
                     showNotice(cliInstallResult!)
                 }
@@ -159,34 +159,34 @@ struct MenuView: View {
             if let cliInstallResult {
                 Text(cliInstallResult).disabled(true)
             } else if cliInstalled {
-                Text("CLI installed at \(CLOP_CLI_BIN_SHELL)").disabled(true)
+                Text("命令行工具已安装到 \(CLOP_CLI_BIN_SHELL)").disabled(true)
             }
         }
 
         if wdm.hasSessions {
-            Menu("Sending files (\(wdm.sessions.count))") {
+            Menu("正在发送文件(\(wdm.sessions.count))") {
                 ForEach(wdm.sessions) { session in
                     Menu(session.fileNames) {
-                        Button("Copy link") {
+                        Button("复制链接") {
                             session.copyLink()
                         }
                         if session.downloadCount > 0 {
-                            Text("Downloaded \(session.downloadCount) time\(session.downloadCount == 1 ? "" : "s")")
+                            Text("已下载 \(session.downloadCount) 次")
                         }
-                        Button("Stop sending") {
+                        Button("停止发送") {
                             wdm.stopSession(session)
                         }
                     }
                 }
                 Divider()
-                Button("Copy all links") {
+                Button("复制全部链接") {
                     let links = wdm.sessions.map(\.shareURL).joined(separator: "\n")
                     withGeneralPasteboard { pb in
                         pb.clearContents()
                         pb.setString(links, forType: .string)
                     }
                 }
-                Button("Stop all") {
+                Button("全部停止") {
                     wdm.stopAll()
                 }
             }
@@ -196,41 +196,41 @@ struct MenuView: View {
             proErrors
         }
 
-        Menu("About...") {
-            Button("Contact the developer") {
+        Menu("关于…") {
+            Button("联系开发者") {
                 NSWorkspace.shared.open(contactURL())
             }
-            Button("Create debug dump") {
+            Button("生成调试信息") {
                 DebugDump.confirmAndRun()
             }
-            Button("Privacy policy") {
+            Button("隐私政策") {
                 NSWorkspace.shared.open("https://lowtechguys.com/clop/privacy".url!)
             }
-            Text("License: \(proactive ? "Pro" : "Free")")
+            Text("许可:\(proactive ? "Pro" : "Free")")
             #if DEBUG
-                Button("Reset Trial") {
+                Button("重置试用期") {
                     product?.resetTrial()
                 }
-                Button("Expire Trial") {
+                Button("终止试用期") {
                     product?.expireTrial()
                 }
             #endif
-            Text("Version: v\(Bundle.main.version)")
+            Text("版本:v\(Bundle.main.version)")
         }
 
-        Button("Manage license") {
+        Button("管理许可") {
             manageLicenceInSettings()
         }
 
-        Button(um.newVersion != nil ? "v\(um.newVersion!) update available" : "Check for updates") {
+        Button(um.newVersion != nil ? "v\(um.newVersion!) 有可用更新" : "检查更新") {
             checkForUpdates()
             focus()
         }
 
-        Toggle("Show Clop UI in screenshots", isOn: $allowClopToAppearInScreenshots)
+        Toggle("截屏时显示 Clop 界面", isOn: $allowClopToAppearInScreenshots)
             .searchAnchor("general.main.allowClopToAppearInScreenshots")
         Divider()
-        Button("Quit") {
+        Button("退出") {
             NSApp.terminate(nil)
         }.keyboardShortcut("q")
     }

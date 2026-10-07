@@ -54,7 +54,7 @@ struct DropZoneDemoAnimationView: View {
                 }
                 DropZoneView().padding(.horizontal, -20)
             }
-            Text("Drag files into the **drop zone** at\nthe **bottom right** corner of your screen")
+            Text("把文件拖到屏幕**右下角**的**投放区**")
                 .multilineTextAlignment(.center)
         }
         .onAppear {
@@ -149,7 +149,7 @@ struct OnboardingView: View {
                         to copy an image or **screenshot to clipboard**.
                         """)
                         .font(.round(14, weight: .regular))
-                        Toggle(" Enable clipboard optimiser", isOn: $enableClipboardOptimiser)
+                        Toggle(" 启用剪贴板自动优化", isOn: $enableClipboardOptimiser)
                             .font(.round(11, weight: .regular))
                             .controlSize(.mini)
                     }
@@ -172,7 +172,7 @@ struct OnboardingView: View {
                                 so you can further act on them.
                                 """)
                             }
-                            Button("Replay") {
+                            Button("重播") {
                                 fileDropped = false
                             }
                         }
@@ -193,22 +193,22 @@ struct OnboardingView: View {
                 .multilineTextAlignment(.center)
                 HStack {
                     VStack {
-                        Text("Images").round(12)
+                        Text("图像").round(12)
                         DirListView(fileType: .image, dirs: $imageDirs, enabled: $enableAutomaticImageOptimisations, hideIgnoreRules: true)
                     }
                     VStack {
-                        Text("Videos").round(12)
+                        Text("视频").round(12)
                         DirListView(fileType: .video, dirs: $videoDirs, enabled: $enableAutomaticVideoOptimisations, hideIgnoreRules: true)
                     }
                 }
                 .padding(.bottom, 20)
 
                 if bm.decompressingBinaries {
-                    ProgressView("Preparing optimisers...")
+                    ProgressView("正在准备优化器…")
                         .progressViewStyle(.linear)
                         .padding()
                 } else {
-                    Button("Start using Clop") {
+                    Button("开始使用 Clop") {
                         (AppDelegate.instance as? AppDelegate)?.onboardingWindowController?.close()
                     }
                     .font(.round(14, weight: .semibold))

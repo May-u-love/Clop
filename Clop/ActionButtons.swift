@@ -105,9 +105,9 @@ enum FloatingAction: RawRepresentable, CaseIterable, Codable, Hashable, Defaults
         case let .pipeline(set): set.pipelines.map { $0.pipeline.name ?? $0.pipeline.id }.joined(separator: " · ")
         case .downscale: "Downscale"
         case .compression: "Compression"
-        case .crop: "Crop and resize"
+        case .crop: "裁剪并缩放"
         case .share: "Share"
-        case .restoreOptimise: "Restore / Optimise"
+        case .restoreOptimise: "恢复 / 优化"
         case .aggressiveOptimisation: "Aggressive optimisation"
         case .copyToClipboard: "Copy to clipboard"
         case .showInFinder: "Show in Finder"
@@ -170,7 +170,7 @@ enum FloatingAction: RawRepresentable, CaseIterable, Codable, Hashable, Defaults
 
     func label(for type: ItemType) -> String {
         switch self {
-        case .downscale where type.isAudio: "Downscale cover art"
+        case .downscale where type.isAudio: "缩小封面图"
         case .downscale where type.isPDF: "Compression"
         case .pipeline: pipeline(for: type.clopFileType).map { $0.name ?? $0.id } ?? label
         default: label
@@ -390,7 +390,7 @@ struct RestoreOptimiseButton: View {
             Button(
                 action: {
                     if !preview {
-                        optimiser.restoreOriginal(); optimiser.overlayMessage = "Restored original"; optimiser.collapseHoverOverlay = true
+                        optimiser.restoreOriginal(); optimiser.overlayMessage = "已恢复原件"; optimiser.collapseHoverOverlay = true
                     }
                 },
                 label: { SwiftUI.Image(systemName: "arrow.uturn.left").font(.semibold(9)) }
@@ -2655,7 +2655,7 @@ struct WarpDropActiveButton: View {
             if let label = liveSession.expiresInLabel {
                 Text(label)
             }
-            Menu("Change expiration") {
+            Menu("更改有效期") {
                 ForEach(LINK_EXPIRATION_PRESETS, id: \.self) { preset in
                     Button(expirationDurationLabel(preset)) {
                         if !preview {
@@ -2664,7 +2664,7 @@ struct WarpDropActiveButton: View {
                     }
                 }
                 Divider()
-                Button("Never expire") {
+                Button("永不过期") {
                     if !preview {
                         WDM.rescheduleExpiry(liveSession, to: LINK_EXPIRATION_NEVER)
                     }
@@ -2680,7 +2680,7 @@ struct WarpDropActiveButton: View {
                     optimiser.overlayMessage = "Copied link"
                 }
             } label: {
-                Label("Copy Download Link", systemImage: "arrow.down.circle")
+                Label("复制下载链接", systemImage: "arrow.down.circle")
             }
             Button {
                 if !preview {
@@ -2691,14 +2691,14 @@ struct WarpDropActiveButton: View {
                     optimiser.overlayMessage = "Copied link"
                 }
             } label: {
-                Label("Copy Room Link", systemImage: "link")
+                Label("复制房间链接", systemImage: "link")
             }
             Button {
                 if !preview {
                     NSWorkspace.shared.open(URL(string: session.roomURL)!)
                 }
             } label: {
-                Label("Open Room", systemImage: "globe")
+                Label("打开 Room", systemImage: "globe")
             }
             Divider()
             Button(role: .destructive) {
@@ -2706,14 +2706,14 @@ struct WarpDropActiveButton: View {
                     WDM.stopSession(session)
                 }
             } label: {
-                Label("Stop Transfer", systemImage: "xmark.circle")
+                Label("停止传输", systemImage: "xmark.circle")
             }
         } label: {
             SwiftUI.Image(systemName: "link").font(.heavy(9))
                 .foregroundColor(glowing ? Color.red : Color.primary)
                 .shadow(color: .red.opacity(glowing ? 0.5 : 0), radius: glowing ? 4 : 0)
         }
-        .accessibilityLabel("Secure send link")
+        .accessibilityLabel("安全发送链接")
         .menuButtonStyle(BorderlessButtonMenuButtonStyle())
         .onAppear { withAnimation(.easeInOut(duration: 1).repeatForever(autoreverses: true)) { glowing = true } }
         .onDisappear { glowing = false }
@@ -2772,17 +2772,17 @@ struct SendExpirationPopover: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Link expires in \(expirationDurationLabel(optimiser.sendExpiration))")
+            Text("链接 \(expirationDurationLabel(optimiser.sendExpiration))后过期")
                 .font(.system(size: 11, weight: .semibold, design: .rounded))
             Slider(value: sendExpirationIndexBinding(optimiser), in: 0 ... Double(LINK_EXPIRATION_PRESETS.count - 1), step: 1)
-                .accessibilityLabel("Link expiration")
+                .accessibilityLabel("链接有效期")
                 .accessibilityValue(expirationDurationLabel(optimiser.sendExpiration))
             Button(action: {
                 guard !preview else { return }
                 warpDropSend(optimiser: optimiser, expiration: optimiser.sendExpiration)
                 onSend()
             }) {
-                Label("Copy link · expires in \(expirationShortLabel(optimiser.sendExpiration))", systemImage: "paperplane.fill")
+                Label("复制链接 · \(expirationShortLabel(optimiser.sendExpiration))后过期", systemImage: "paperplane.fill")
                     .font(.system(size: 11, weight: .semibold, design: .rounded))
                     .frame(maxWidth: .infinity)
             }
@@ -2800,14 +2800,14 @@ struct CardSendExpirationSlider: View {
 
     var body: some View {
         VStack(spacing: 3) {
-            Text("Link expires in \(expirationDurationLabel(optimiser.sendExpiration))")
+            Text("链接 \(expirationDurationLabel(optimiser.sendExpiration))后过期")
                 .font(.system(size: 10, weight: .heavy, design: .rounded))
                 .foregroundColor(.white)
                 .lineLimit(1)
                 .minimumScaleFactor(0.75)
             Slider(value: sendExpirationIndexBinding(optimiser), in: 0 ... Double(LINK_EXPIRATION_PRESETS.count - 1), step: 1)
                 .controlSize(.mini)
-                .accessibilityLabel("Link expiration")
+                .accessibilityLabel("链接有效期")
                 .accessibilityValue(expirationDurationLabel(optimiser.sendExpiration))
                 .tint(.white)
         }
@@ -2825,7 +2825,7 @@ struct SendExpirationConfirmButton: View {
             optimiser.showSendExpiration = false
             warpDropSend(optimiser: optimiser, expiration: optimiser.sendExpiration)
         }) {
-            Label("Copy link · expires in \(expirationShortLabel(optimiser.sendExpiration))", systemImage: "paperplane.fill")
+            Label("复制链接 · \(expirationShortLabel(optimiser.sendExpiration))后过期", systemImage: "paperplane.fill")
                 .font(.system(size: 10, weight: .heavy, design: .rounded))
                 .foregroundColor(.black)
                 .lineLimit(1)
@@ -2930,7 +2930,7 @@ struct TargetSizeButton: View {
             } label: {
                 SwiftUI.Image(systemName: "target").font(.heavy(9))
             }
-            .accessibilityLabel("Target size")
+            .accessibilityLabel("目标尺寸")
             .menuButtonStyle(BorderlessButtonMenuButtonStyle())
             .disabled(optimiser.running)
         }
@@ -3196,9 +3196,9 @@ struct FloatingGridActionButton: View {
             .onHover { hovering = $0 }
             .topHelpTag(isPresented: .init(get: { hovering && !hideFloatingResultTooltips }, set: { hovering = $0 }), action.label(for: optimiser.type))
             .contextMenu {
-                Button("Remove from buttons", action: onRemove)
+                Button("从按钮中移除", action: onRemove)
                 Divider()
-                Toggle("Hide tooltip", isOn: $hideFloatingResultTooltips)
+                Toggle("隐藏提示", isOn: $hideFloatingResultTooltips)
             }
     }
 
@@ -3224,7 +3224,7 @@ struct FloatingAddActionSlot: View {
                 .overlay { shape.stroke(Color.primary.opacity(0.25), style: StrokeStyle(lineWidth: 1, dash: [3, 2])) }
                 .contentShape(shape)
         }
-        .accessibilityLabel("Add action")
+        .accessibilityLabel("添加操作")
         .buttonStyle(.plain)
         .background(MenuAnchor(holder: anchor))
         .fixedSize()
@@ -3239,9 +3239,9 @@ struct FloatingAddActionSlot: View {
         let menu = NSMenu()
         menu.autoenablesItems = false
         if #available(macOS 14.0, *) {
-            menu.addItem(.sectionHeader(title: "Assign to a button"))
+            menu.addItem(.sectionHeader(title: "指定到按钮"))
         } else {
-            let header = NSMenuItem(title: "Assign to a button", action: nil, keyEquivalent: "")
+            let header = NSMenuItem(title: "指定到按钮", action: nil, keyEquivalent: "")
             header.isEnabled = false
             menu.addItem(header)
         }
@@ -3262,7 +3262,7 @@ struct FloatingAddActionSlot: View {
             let submenu = NSMenu()
             submenu.autoenablesItems = false
             addPipelineSections(to: submenu, pipelines.compactMap { action in action.savedPipeline.map { ($0, action) } }, target: target)
-            let parent = NSMenuItem(title: "Pipelines", action: nil, keyEquivalent: "")
+            let parent = NSMenuItem(title: "管线", action: nil, keyEquivalent: "")
             parent.image = NSImage(systemSymbolName: FloatingAction.pipelinesMenuIcon, accessibilityDescription: nil)
             parent.submenu = submenu
             menu.addItem(parent)
@@ -3328,7 +3328,7 @@ private func popUpPipelineButtonMenu(for action: FloatingAction, in view: NSView
             onChange(nil)
         }
     }
-    let hint = NSMenuItem(title: "You can choose multiple pipelines, one per type, so the button adapts per file", action: nil, keyEquivalent: "")
+    let hint = NSMenuItem(title: "可选多条管线(每种类型一条),按钮按文件类型自适应", action: nil, keyEquivalent: "")
     hint.isEnabled = false
     menu.addItem(hint)
     menu.addItem(.separator())
@@ -3336,7 +3336,7 @@ private func popUpPipelineButtonMenu(for action: FloatingAction, in view: NSView
     let saved = Defaults[.savedPipelines].filter { !($0.name ?? "").isEmpty }
     addPipelineSections(to: menu, saved.map { ($0, $0 as Any) }, target: target, checked: Set(set.ids.values))
     menu.addItem(.separator())
-    let remove = NSMenuItem(title: "Remove from buttons", action: #selector(MenuItemTarget.fire(_:)), keyEquivalent: "")
+    let remove = NSMenuItem(title: "从按钮中移除", action: #selector(MenuItemTarget.fire(_:)), keyEquivalent: "")
     remove.target = target
     menu.addItem(remove)
 
@@ -3422,9 +3422,9 @@ struct FloatingActionGridPicker: View {
     var body: some View {
         VStack(spacing: 6) {
             VStack(spacing: 1) {
-                Text("Action buttons").medium(12).foregroundColor(.secondary)
+                Text("操作按钮").medium(12).foregroundColor(.secondary)
                     .searchAnchor("floating.main.floatingResultActions")
-                Text("Tap a button to change it").regular(8).foregroundColor(.secondary.opacity(0.5))
+                Text("点按按钮进行修改").regular(8).foregroundColor(.secondary.opacity(0.5))
             }
             let cols = Array(repeating: GridItem(.fixed(side), spacing: 8), count: 3)
             LazyVGrid(columns: cols, spacing: 8) {
@@ -3439,7 +3439,7 @@ struct FloatingActionGridPicker: View {
             .fixedSize()
 
             if actions != FloatingAction.defaultFloating {
-                Button("Reset to default") { actions = FloatingAction.defaultFloating }
+                Button("恢复默认") { actions = FloatingAction.defaultFloating }
                     .buttonStyle(.plain)
                     .font(.medium(10))
                     .foregroundColor(.secondary)
@@ -3474,7 +3474,7 @@ struct FloatingActionGridPicker: View {
     private var addPlaceholder: some View {
         let shape = RoundedRectangle(cornerRadius: 15, style: .continuous)
         return Menu {
-            Section("Assign to a button") {
+            Section("指定到按钮") {
                 ForEach(addable) { a in
                     Button(action: { actions.append(a) }) {
                         Label(a.label, systemImage: a.icon).labelStyle(.titleAndIcon)
@@ -3489,7 +3489,7 @@ struct FloatingActionGridPicker: View {
                 .overlay { shape.stroke(Color.primary.opacity(0.25), style: StrokeStyle(lineWidth: 1, dash: [3, 2])) }
                 .contentShape(shape)
         }
-        .accessibilityLabel("Add action")
+        .accessibilityLabel("添加操作")
         // .button, not .borderlessButton: the legacy borderless style drops menu item subtitles, which the
         // Pipelines submenu needs (same style as the preset zone menus in DropZone).
         .menuStyle(.button)
@@ -3526,21 +3526,21 @@ func pipelineActionsMenu(_ pipelines: [FloatingAction], add: @escaping (Floating
         Section {
             Menu {
                 if !image.isEmpty {
-                    Section("Image") {
+                    Section("图像") {
                         ForEach(image) { action in
                             Button { add(action) } label: { pipelineActionMenuLabel(action) }
                         }
                     }
                 }
                 if !video.isEmpty {
-                    Section("Video") {
+                    Section("视频") {
                         ForEach(video) { action in
                             Button { add(action) } label: { pipelineActionMenuLabel(action) }
                         }
                     }
                 }
                 if !audio.isEmpty {
-                    Section("Audio") {
+                    Section("音频") {
                         ForEach(audio) { action in
                             Button { add(action) } label: { pipelineActionMenuLabel(action) }
                         }
@@ -3554,14 +3554,14 @@ func pipelineActionsMenu(_ pipelines: [FloatingAction], add: @escaping (Floating
                     }
                 }
                 if !any.isEmpty {
-                    Section("Any type") {
+                    Section("任意类型") {
                         ForEach(any) { action in
                             Button { add(action) } label: { pipelineActionMenuLabel(action) }
                         }
                     }
                 }
             } label: {
-                Label("Pipelines", systemImage: FloatingAction.pipelinesMenuIcon).labelStyle(.titleAndIcon)
+                Label("管线", systemImage: FloatingAction.pipelinesMenuIcon).labelStyle(.titleAndIcon)
             }
         }
     }
@@ -3667,7 +3667,7 @@ struct ActionListPicker: View {
                 .font(.regular(14))
                 .foregroundColor(.secondary.opacity(0.5))
         }
-        .accessibilityLabel("Add action")
+        .accessibilityLabel("添加操作")
         // See FloatingActionGridPicker: .borderlessButton drops the Pipelines item subtitles.
         .menuStyle(.button)
         .menuIndicator(.hidden)
@@ -3680,7 +3680,7 @@ struct ActionListPicker: View {
             VStack(spacing: 1) {
                 Text(label).medium(12)
                     .foregroundColor(.secondary)
-                Text("To remove an icon, click on it").regular(8)
+                Text("点按图标即可移除").regular(8)
                     .foregroundColor(.secondary.opacity(0.5))
             }
 

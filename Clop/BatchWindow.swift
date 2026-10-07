@@ -55,7 +55,7 @@ final class BatchWindowController: NSWindowController {
             styleMask: [.titled, .closable, .resizable, .miniaturizable, .fullSizeContentView],
             backing: .buffered, defer: false
         )
-        window.title = "Batch optimisation"
+        window.title = "批量优化"
         window.identifier = BATCH_WINDOW_IDENTIFIER
         window.isReleasedWhenClosed = false
         window.tabbingMode = .disallowed

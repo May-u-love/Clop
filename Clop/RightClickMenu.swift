@@ -24,7 +24,7 @@ struct OpenWithMenuView: View {
     let fileURL: URL
 
     var body: some View {
-        Menu("Open with...") {
+        Menu("用其他应用打开…") {
             let appsDict: [String: [Bundle]] = NSWorkspace.shared
                 .urlsForApplications(toOpen: fileURL)
                 .compactMap { Bundle(url: $0) }
@@ -102,7 +102,7 @@ struct EditWithAppButton: View {
         if let appURL = editorAppURL(for: optimiser.type), optimiser.url != nil || optimiser.originalURL != nil {
             Button(action: { optimiser.editWithConfiguredApp() }) {
                 SwiftUI.Image(nsImage: appMenuIcon(appURL))
-                Text("Edit with \(appDisplayName(appURL))")
+                Text("用 \(appDisplayName(appURL)) 编辑")
             }
             .keyboardShortcut("e")
         }
@@ -134,7 +134,7 @@ struct RightClickMenuView: View {
         }
         .keyboardShortcut(.delete)
 
-        Button(optimiser.convertedFromVideo ? "Restore original video" : "Restore original") {
+        Button(optimiser.convertedFromVideo ? "恢复原视频" : "Restore original") {
             optimiser.restoreOriginal()
         }
         .keyboardShortcut("z")
@@ -155,28 +155,28 @@ struct RightClickMenuView: View {
         }
 
         if !optimiser.running {
-            Section("File") {
-                Button("Save as...") {
+            Section("文件") {
+                Button("存储为…") {
                     optimiser.save()
                 }
                 .keyboardShortcut("s")
 
-                Button("Copy to clipboard") {
+                Button("复制到剪贴板") {
                     optimiser.copyToClipboard()
                     optimiser.overlayMessage = "Copied"
                 }
                 .keyboardShortcut("c")
 
-                Button("Show in Finder") {
+                Button("在访达中显示") {
                     optimiser.showInFinder()
                 }
                 .keyboardShortcut("f")
             }
 
             if optimiser.url != nil || optimiser.originalURL != nil {
-                Section("Open") {
+                Section("打开") {
                     if let url = optimiser.url ?? optimiser.originalURL {
-                        // Name and icon the default app so it's obvious what opens (e.g. "Open with Preview").
+                        // Name and icon the default app so it's obvious what opens (e.g. "用「预览」打开").
                         let defaultApp = NSWorkspace.shared.urlForApplication(toOpen: url)
                         Button(action: {
                             if optimiser.existingFileOrNotify() != nil {
@@ -185,9 +185,9 @@ struct RightClickMenuView: View {
                         }) {
                             if let defaultApp {
                                 SwiftUI.Image(nsImage: appMenuIcon(defaultApp))
-                                Text("Open with \(appDisplayName(defaultApp))")
+                                Text("用 \(appDisplayName(defaultApp)) 打开")
                             } else {
-                                Text("Open with default app")
+                                Text("用默认应用打开")
                             }
                         }
                         .keyboardShortcut("o")
@@ -200,67 +200,67 @@ struct RightClickMenuView: View {
             }
 
             if hasEditSection {
-                Section("Transform") {
+                Section("变换") {
                     editButtons
                     editMenus
                 }
             }
 
-            Section("Share") {
+            Section("共享") {
                 if let session = wdm.session(forOptimiser: optimiser) {
-                    Button("Copy send link") {
+                    Button("复制发送链接") {
                         session.copyLink()
                         optimiser.overlayMessage = "Copied link"
                     }
                     .keyboardShortcut("w")
                 } else {
-                    Button("Send file securely") {
+                    Button("安全发送文件") {
                         warpDropSend(optimiser: optimiser)
                     }
                     .keyboardShortcut("w")
                 }
                 if let url = optimiser.url ?? optimiser.originalURL, let airdrop = NSSharingService(named: .sendViaAirDrop) {
-                    Button("Send with AirDrop") {
+                    Button("用隔空投送发送") {
                         guard optimiser.existingFileOrNotify() != nil else { return }
                         airdrop.perform(withItems: [url])
                     }
                     .disabled(!airdrop.canPerform(withItems: [url]))
                 }
-                Button("Upload with Dropshare") {
+                Button("用 Dropshare 上传") {
                     DROPSHARE.open(optimiser: optimiser)
                 }
                 .keyboardShortcut("u")
-                Menu("Add to shelf\u{2026}") {
-                    Button("Add to Yoink") {
+                Menu("添加到暂存区…") {
+                    Button("添加到 Yoink") {
                         YOINK.open(optimiser: optimiser)
                     }
-                    Button("Add to Dockside") {
+                    Button("添加到 Dockside") {
                         DOCKSIDE.open(optimiser: optimiser)
                     }
-                    Button("Add to Dropover") {
+                    Button("添加到 Dropover") {
                         DROPOVER.open(optimiser: optimiser)
                     }
-                    Button("Add to Atoll") {
+                    Button("添加到 Atoll") {
                         ATOLL.open(optimiser: optimiser)
                     }
                 }
             }
 
-            Section("Advanced") {
+            Section("高级") {
                 if !optimiser.type.isPDF, !optimiser.type.isAudio {
-                    Button("Strip EXIF metadata") {
+                    Button("去除 EXIF 元数据") {
                         guard optimiser.existingFileOrNotify() != nil else { return }
                         optimiser.path?.stripExif()
                         optimiser.overlayMessage = "Stripped"
                     }
                 }
-                Menu("Fit under size") {
+                Menu("压到指定体积") {
                     TargetSizeMenuItems(optimiser: optimiser)
                 }
-                Menu("Pass file through pipeline") {
+                Menu("通过管线处理文件") {
                     RunPipelineMenu(optimiser: optimiser)
                 }
-                Menu("Pass file through Shortcut") {
+                Menu("通过快捷指令处理文件") {
                     WorkflowMenu(optimiser: optimiser)
                 }
             }
@@ -273,24 +273,24 @@ struct RightClickMenuView: View {
     /// Transform section never alternates between flat items and submenus.
     @ViewBuilder var editButtons: some View {
         if optimiser.canCrop() {
-            Button("Crop and resize...") {
+            Button("裁剪并缩放…") {
                 optimiser.showCropWindow()
             }
             .keyboardShortcut("k")
         }
         if optimiser.type.isVideo {
-            Button("Remove audio") {
+            Button("移除音轨") {
                 optimiser.removeAudio()
             }
             .disabled(!optimiser.canRemoveAudio())
         }
         if optimiser.type.isAudio {
-            Button("Extract cover art") {
+            Button("提取封面图") {
                 extractAudioCoverArt(optimiser: optimiser)
             }
         }
         if optimiser.canReoptimise(), !optimiser.type.isVideo {
-            Button("Aggressive optimisation") {
+            Button("激进优化") {
                 if optimiser.downscaleFactor < 1 {
                     optimiser.downscale(toFactor: optimiser.downscaleFactor, aggressiveOptimisation: true)
                 } else {
@@ -301,7 +301,7 @@ struct RightClickMenuView: View {
             .disabled(optimiser.aggressive)
         }
         if optimiser.canConvertHDRToSDR() {
-            Button("Convert HDR to SDR") {
+            Button("将 HDR 转换为 SDR") {
                 optimiser.convertHDRToSDR()
             }
         }
@@ -312,11 +312,11 @@ struct RightClickMenuView: View {
     @ViewBuilder var editMenus: some View {
         if optimiser.canDownscale() {
             if optimiser.type.isAudio, optimiser.type.utType != .wav {
-                Menu("Change bitrate") {
+                Menu("更改码率") {
                     LowerBitrateMenu(optimiser: optimiser)
                 }
             } else if !optimiser.type.isAudio {
-                Menu("Downscale") {
+                Menu("缩小") {
                     DownscaleMenu(optimiser: optimiser)
                 }
                 .disabled(optimiser.downscaleFactor <= 0.1)
@@ -326,55 +326,55 @@ struct RightClickMenuView: View {
         // Mirrors the floating card's compression slider. Audio keeps "Change bitrate" above
         // (the bitrate is its compression axis), so this is image/video only.
         if optimiser.canCompress(), !optimiser.type.isAudio {
-            Menu("Compression") {
+            Menu("压缩") {
                 CompressionMenu(optimiser: optimiser)
             }
         }
 
         if optimiser.type.isAudio {
-            Menu("Normalise loudness") {
+            Menu("响度标准化") {
                 LoudnessMenu(optimiser: optimiser)
             }
-            Menu("Downscale cover art") {
+            Menu("缩小封面图") {
                 CoverArtDownscaleMenu(optimiser: optimiser)
             }
         }
 
         if optimiser.canChangePlaybackSpeed() {
-            Menu("Change playback speed") {
+            Menu("更改播放速度") {
                 ChangePlaybackSpeedMenu(optimiser: optimiser)
             }
             .disabled(optimiser.changePlaybackSpeedFactor >= 10)
         }
 
         if optimiser.type.isVideo {
-            Menu("Convert to GIF") {
+            Menu("转换为 GIF") {
                 ConvertToGIFMenu(optimiser: optimiser)
             }
         }
 
         if optimiser.canReoptimise(), optimiser.type.isVideo {
-            Menu("Re-optimise with encoder") {
+            Menu("用编码器重新优化") {
                 ReoptimiseWithEncoderMenu(optimiser: optimiser)
             }
         }
 
         if optimiser.type.isPDF, let pdf = optimiser.pdf, pdf.pageCount > 0 {
             if pdf.pageCount == 1 {
-                Menu("Convert to image") {
-                    Section("Best for photos and illustrations") {
+                Menu("转换为图像") {
+                    Section("适合照片和插画") {
                         Button("JPEG") { convertSinglePagePDFToImage(optimiser: optimiser, pdf: pdf, format: .jpeg) }
                     }
-                    Section("Best for text and low-detail images") {
+                    Section("适合文字和低细节图像") {
                         Button("PNG") { convertSinglePagePDFToImage(optimiser: optimiser, pdf: pdf, format: .png) }
                     }
                 }
             } else {
-                Menu("Extract pages as images") {
-                    Section("Best for photos and illustrations") {
+                Menu("将页面导出为图像") {
+                    Section("适合照片和插画") {
                         Button("JPEG") { extractPDFPagesAsImages(optimiser: optimiser, pdf: pdf, format: .jpeg) }
                     }
-                    Section("Best for text and low-detail images") {
+                    Section("适合文字和低细节图像") {
                         Button("PNG") { extractPDFPagesAsImages(optimiser: optimiser, pdf: pdf, format: .png) }
                     }
                 }
@@ -382,7 +382,7 @@ struct RightClickMenuView: View {
         }
 
         if optimiser.convertibleTypes.isNotEmpty {
-            Menu("Convert to…") {
+            Menu("转换为…") {
                 ConvertMenu(optimiser: optimiser)
             }
         }
@@ -394,7 +394,7 @@ struct RightClickMenuView: View {
     /// Wrapped in a Section so the title+subtitle button's action still fires (a bare top-level menu
     /// button drops its action once it has a subtitle).
     @ViewBuilder var pipelineJumpSection: some View {
-        // Prefer the named pipeline that ran (automation or "Pass through pipeline"); otherwise fall back
+        // Prefer the named pipeline that ran (automation or "经管线处理"); otherwise fall back
         // to the accumulated manual steps (downscale, compression, convert…) so ad-hoc edits also show as
         // a temp pipeline. A lone "optimise" is just the default pass, so it isn't worth surfacing.
         let pipeline = optimiser.automationPipeline
@@ -453,19 +453,19 @@ struct BatchRightClickMenuView: View {
     var body: some View {
         let optimisers = sm.optimisers
 
-        Button("Save all to folder") {
+        Button("全部存储到文件夹") {
             sm.save()
             sm.selection = []
         }
 
-        Button("Copy to clipboard") {
+        Button("复制到剪贴板") {
             sm.copyToClipboard()
             sm.selection = []
         }
 
         Divider()
 
-        Button("Restore original") {
+        Button("恢复原件") {
             sm.restoreOriginal()
             sm.selection = []
         }
@@ -477,25 +477,25 @@ struct BatchRightClickMenuView: View {
 
         Divider()
         if optimisers.contains(where: { !$0.type.isAudio }) {
-            Menu("Downscale") {
+            Menu("缩小") {
                 BatchDownscaleMenu(optimisers: optimisers.filter { !$0.type.isAudio })
             }
             .disabled(optimisers.filter { !$0.type.isAudio }.allSatisfy { $0.downscaleFactor <= 0.1 })
         }
         if optimisers.contains(where: { $0.type.isAudio && $0.type.utType != .wav }) {
-            Menu("Change bitrate") {
+            Menu("更改码率") {
                 BatchBitrateMenu(optimisers: optimisers.filter { $0.type.isAudio && $0.type.utType != .wav })
             }
         }
 
         if optimisers.allSatisfy({ $0.canChangePlaybackSpeed() }) {
-            Menu("Change playback speed") {
+            Menu("更改播放速度") {
                 BatchChangePlaybackSpeedMenu(optimisers: optimisers)
             }
             .disabled(optimisers.allSatisfy { $0.changePlaybackSpeedFactor >= 10 })
         }
 
-        Button("Aggressive optimisation") {
+        Button("激进优化") {
             for optimiser in optimisers {
                 if optimiser.downscaleFactor < 1 {
                     optimiser.downscale(toFactor: optimiser.downscaleFactor, aggressiveOptimisation: true)
@@ -509,7 +509,7 @@ struct BatchRightClickMenuView: View {
 
         let hdrOptimisers = optimisers.filter { $0.canConvertHDRToSDR() }
         if hdrOptimisers.isNotEmpty {
-            Button("Convert HDR to SDR") {
+            Button("将 HDR 转换为 SDR") {
                 for optimiser in hdrOptimisers {
                     optimiser.convertHDRToSDR()
                 }
@@ -520,7 +520,7 @@ struct BatchRightClickMenuView: View {
         Divider()
 
         if sm.optimisers.allSatisfy({ wdm.session(forOptimiser: $0) != nil }) {
-            Button("Copy all send links") {
+            Button("复制全部发送链接") {
                 let links = sm.optimisers.compactMap { wdm.session(forOptimiser: $0)?.shareURL }
                 withGeneralPasteboard { pb in
                     pb.clearContents()
@@ -529,29 +529,29 @@ struct BatchRightClickMenuView: View {
                 sm.selection = []
             }
         } else {
-            Button("Send files securely") {
+            Button("安全发送文件") {
                 warpDropSend(optimisers: sm.optimisers)
                 sm.selection = []
             }
         }
-        Button("Upload with Dropshare") {
+        Button("用 Dropshare 上传") {
             DROPSHARE.open(optimisers: sm.optimisers)
             sm.selection = []
         }
-        Menu("Add to shelf\u{2026}") {
-            Button("Add to Yoink") {
+        Menu("添加到暂存区…") {
+            Button("添加到 Yoink") {
                 YOINK.open(optimisers: sm.optimisers)
                 sm.selection = []
             }
-            Button("Add to Dockside") {
+            Button("添加到 Dockside") {
                 DOCKSIDE.open(optimisers: sm.optimisers)
                 sm.selection = []
             }
-            Button("Add to Dropover") {
+            Button("添加到 Dropover") {
                 DROPOVER.open(optimisers: sm.optimisers)
                 sm.selection = []
             }
-            Button("Add to Atoll") {
+            Button("添加到 Atoll") {
                 ATOLL.open(optimisers: sm.optimisers)
                 sm.selection = []
             }
@@ -559,7 +559,7 @@ struct BatchRightClickMenuView: View {
 
         Divider()
 
-        Button("Strip EXIF metadata") {
+        Button("去除 EXIF 元数据") {
             for optimiser in optimisers {
                 optimiser.path?.stripExif()
             }
@@ -593,8 +593,8 @@ struct RunPipelineMenu: View {
 
     var body: some View {
         if applicablePipelines.isEmpty {
-            Text("No saved pipelines")
-            Text("Save a pipeline in Settings > Automation")
+            Text("没有已保存的管线")
+            Text("在 设置 > 自动化 中保存管线")
         } else {
             ForEach(applicablePipelines) { pipeline in
                 Button(pipeline.name ?? pipeline.id) {
@@ -726,10 +726,10 @@ struct DownscaleMenu: View {
 
     var body: some View {
         let factors = Array(stride(from: 0.9, to: 0.0, by: -0.1))
-        Button("Restore original size (100%)") {
+        Button("恢复原始尺寸(100%)") {
             optimiser.downscale(toFactor: 1)
         }.disabled(optimiser.downscaleFactor == 1)
-        Section("Downscale resolution to") {
+        Section("分辨率降低到") {
             ForEach(factors, id: \.self) { factor in
                 Button("\((factor * 100).intround)%") {
                     optimiser.downscale(toFactor: factor)
@@ -744,10 +744,10 @@ struct CoverArtDownscaleMenu: View {
 
     var body: some View {
         let factors = Array(stride(from: 0.9, to: 0.0, by: -0.1))
-        Button("Restore original size (100%)") {
+        Button("恢复原始尺寸(100%)") {
             downscaleAudioCoverArt(optimiser: optimiser, toFactor: 1)
         }.disabled(optimiser.coverDownscaleFactor == 1)
-        Section("Downscale cover art to") {
+        Section("封面图缩小到") {
             ForEach(factors, id: \.self) { factor in
                 Button("\((factor * 100).intround)%") {
                     downscaleAudioCoverArt(optimiser: optimiser, toFactor: factor)
@@ -788,10 +788,10 @@ struct CompressionMenu: View {
         let current = currentCompressionQuality(for: optimiser)
 
         if optimiser.type.isImage {
-            Button("Adaptive (best size and quality)") {
+            Button("自适应(体积与画质最佳)") {
                 optimiser.reoptimise(compression: CompressionQuality(tier: .adaptive, factor: 5))
             }.disabled(current.tier == .adaptive)
-            Section("Compression factor") {
+            Section("压缩系数") {
                 ForEach(factors, id: \.self) { factor in
                     Button("\(factor)%") {
                         optimiser.reoptimise(compression: CompressionQuality(tier: .custom, factor: factor))
@@ -799,10 +799,10 @@ struct CompressionMenu: View {
                 }
             }
         } else if optimiser.type.isVideo {
-            Button("Lossless") {
+            Button("无损") {
                 optimiser.reoptimise(compression: CompressionQuality(tier: .lossless, factor: 5))
             }.disabled(current.tier == .lossless)
-            Section("Compression factor") {
+            Section("压缩系数") {
                 ForEach(factors, id: \.self) { factor in
                     Button("\(factor)%") {
                         optimiser.reoptimise(compression: CompressionQuality(tier: .smaller, factor: factor))
@@ -850,13 +850,13 @@ struct BatchDownscaleMenu: View {
 
     var body: some View {
         let factors = Array(stride(from: 0.9, to: 0.0, by: -0.1))
-        Button("Restore original size (\(downscaleFactorLabel(1)))") {
+        Button("恢复原始尺寸(\(downscaleFactorLabel(1)))") {
             for optimiser in optimisers {
                 optimiser.downscale(toFactor: 1)
             }
             SM.selection = []
         }.disabled(optimisers.allSatisfy { $0.downscaleFactor == 1 })
-        Section("Downscale resolution to") {
+        Section("分辨率降低到") {
             ForEach(factors, id: \.self) { factor in
                 Button(downscaleFactorLabel(factor)) {
                     for optimiser in optimisers {
@@ -878,7 +878,7 @@ struct ConvertToGIFMenu: View {
         ForEach(frames, id: \.self) { fps in
             Section("\(fps)fps") {
                 ForEach(widths, id: \.self) { width in
-                    Button("\(width)px max width @ \(fps)fps\(fps == 20 && width == 800 ? " (recommended)" : "")") {
+                    Button("最大宽度 \(width)px @ \(fps)fps\(fps == 20 && width == 800 ? "(推荐)" : "")") {
                         convertToGIF(width: width, fps: fps)
                     }
                 }
@@ -901,7 +901,7 @@ struct ConvertToGIFMenu: View {
                     optimiser.running = true
                     optimiser.progress.completedUnitCount = 0
                     optimiser.isOriginal = false
-                    optimiser.operation = "Converting to GIF"
+                    optimiser.operation = "正在转换为 GIF"
                 }
 
                 let gif = try video.convertToGIF(optimiser: optimiser, maxWidth: width, fps: fps)
@@ -1044,18 +1044,18 @@ struct ChangePlaybackSpeedMenu: View {
         let changePlaybackSpeedFactors = [1.25, 1.5, 1.75] + Array(stride(from: 2.0, to: 10.1, by: 1.0))
         let slowDownFactors = [0.25, 0.5, 0.75]
 
-        Button("Restore normal playback speed (1x)") {
+        Button("恢复正常播放速度(1x)") {
             optimiser.changePlaybackSpeed(byFactor: 1)
         }.disabled(optimiser.changePlaybackSpeedFactor == 1)
 
-        Section("Playback speed up") {
+        Section("播放加速") {
             ForEach(changePlaybackSpeedFactors, id: \.self) { factor in
                 Button("\(factor < 2 ? String(format: "%.2f", factor) : factor.i.s)x") {
                     optimiser.changePlaybackSpeed(byFactor: factor)
                 }.disabled(factor == optimiser.changePlaybackSpeedFactor)
             }
         }
-        Section("Playback slow down") {
+        Section("播放减速") {
             ForEach(slowDownFactors, id: \.self) { factor in
                 Button("\(String(format: "%.2f", factor))x") {
                     optimiser.changePlaybackSpeed(byFactor: factor)
@@ -1072,14 +1072,14 @@ struct BatchChangePlaybackSpeedMenu: View {
         let changePlaybackSpeedFactors = [1.25, 1.5, 1.75] + Array(stride(from: 2.0, to: 10.1, by: 1.0))
         let slowDownFactors = [0.25, 0.5, 0.75]
 
-        Button("Restore normal playback speed (1x)") {
+        Button("恢复正常播放速度(1x)") {
             for optimiser in optimisers {
                 optimiser.changePlaybackSpeed(byFactor: 1)
             }
             SM.selection = []
         }.disabled(optimisers.allSatisfy { $0.changePlaybackSpeedFactor == 1 })
 
-        Section("Playback speed up") {
+        Section("播放加速") {
             ForEach(changePlaybackSpeedFactors, id: \.self) { factor in
                 Button("\(factor < 2 ? String(format: "%.2f", factor) : factor.i.s)x") {
                     for optimiser in optimisers {
@@ -1089,7 +1089,7 @@ struct BatchChangePlaybackSpeedMenu: View {
                 }.disabled(optimisers.allSatisfy { $0.changePlaybackSpeedFactor == factor })
             }
         }
-        Section("Playback slow down") {
+        Section("播放减速") {
             ForEach(slowDownFactors, id: \.self) { factor in
                 Button("\(String(format: "%.2f", factor))x") {
                     for optimiser in optimisers {

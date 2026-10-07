@@ -167,8 +167,8 @@ struct PresetZoneRow: View {
             .font(.regular(10))
         }
         .menuStyle(.button).buttonStyle(.plain).menuIndicator(.hidden).fixedSize()
-        .help("Move to another file type")
-        .accessibilityLabel("Move to another file type")
+        .help("移到其他文件类型")
+        .accessibilityLabel("移到其他文件类型")
     }
 
     var confirmCancel: some View {
@@ -176,11 +176,11 @@ struct PresetZoneRow: View {
             Button(action: commit) {
                 SwiftUI.Image(systemName: "checkmark").font(.regular(11)).foregroundColor(.green.opacity(0.8))
                     .padding(.horizontal, 7).padding(.vertical, 3)
-            }.buttonStyle(.plain).help("Done").accessibilityLabel("Done")
+            }.buttonStyle(.plain).help("完成").accessibilityLabel("完成")
             Button(action: cancel) {
                 SwiftUI.Image(systemName: "xmark").font(.regular(11)).foregroundColor(.red.opacity(0.8))
                     .padding(.horizontal, 7).padding(.vertical, 3)
-            }.buttonStyle(.plain).help("Cancel").accessibilityLabel("Cancel")
+            }.buttonStyle(.plain).help("取消").accessibilityLabel("取消")
         }
         .background(Capsule().fill(Color.primary.opacity(0.05)))
     }
@@ -213,7 +213,7 @@ struct PresetZoneRow: View {
                     help: PipelineFlagCopy.skipOptimisation, tint: .orange
                 ) { idx in setFlag(skip: idx == 1) }
                 PipelineFlagSegmentedToggle(
-                    leading: nil, options: ("Show", "Hide"), trailing: "floating result",
+                    leading: nil, options: ("Show", "Hide"), trailing: "悬浮结果",
                     selection: resolved.hideResult ? 1 : 0,
                     help: PipelineFlagCopy.hideResult, tint: .red
                 ) { idx in setFlag(hide: idx == 1) }

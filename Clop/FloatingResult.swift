@@ -167,7 +167,7 @@ struct FloatingResultList: View {
             .modifier(FloatingActionChip(hovered: hovered))
             // A real multi-item AppKit drag so the drop lands EVERY file. SwiftUI's `.onDrag` returns one
             // provider == one item, which is why "drag all" used to drop a single file. See onDragAllFiles.
-            .onDragAllFiles(help: "Drag all") { preview ? [] : optimisers }
+            .onDragAllFiles(help: "拖动全部") { preview ? [] : optimisers }
     }
 
     var copyAllButton: some View {
@@ -188,7 +188,7 @@ struct FloatingResultList: View {
     }
 
     var clearAllButton: some View {
-        Button("Clear all") {
+        Button("全部清空") {
             guard !preview else { return }
             // Explicit user action: drop the hover state and force removal so it fires immediately even
             // while the cursor is over the list (the hover deferral is only meant for auto-hide timers).
@@ -573,7 +573,7 @@ struct OnboardingFloatingPreview: View {
             } label: {
                 HStack(spacing: 3) {
                     SwiftUI.Image(systemName: "folder")
-                    Text("Open folder with pages")
+                    Text("打开页面所在文件夹")
                 }
                 .font(.medium(8))
             }
@@ -1340,13 +1340,13 @@ struct FloatingResult: View {
                             .lineLimit(3)
                     }
                     HStack(spacing: 8) {
-                        Button("Get Clop Pro") {
+                        Button("获取 Clop Pro") {
                             manageLicenceInSettings()
                         }
                         .buttonStyle(FlatButton(color: .inverted, textColor: .mauvish, radius: 6, verticalPadding: 3))
                         .font(.round(11, weight: .semibold))
 
-                        Button("Never show this again") {
+                        Button("不再显示") {
                             neverShowProError = true
                             hoveredOptimiserID = nil
                             optimiser.remove(after: 200, withAnimation: true)
@@ -1542,7 +1542,7 @@ struct FloatingResult: View {
             } label: {
                 SwiftUI.Image(systemName: "ellipsis")
             }
-            .accessibilityLabel("Actions")
+            .accessibilityLabel("操作")
             .menuButtonStyle(BorderlessButtonMenuButtonStyle())
             .menuIndicator(.hidden)
             .buttonStyle(FloatingCornerButtonStyle())
@@ -1942,7 +1942,7 @@ struct FloatingPreviewAllStates: View {
 
         let proError = Optimiser(id: Optimiser.IDs.pro, type: .image(.png))
         proError.isPreview = true
-        proError.finish(error: "You've optimised 5 files this session", notice: "Get Clop Pro to remove the limit and unlock all features. Relaunch the app to reset the counter.")
+        proError.finish(error: "You've optimised 5 files this session", notice: "获取 Clop Pro 解除限制并解锁全部功能。重启应用可重置计数。")
 
         o.optimisers = [clipEnd, videoOpt, cropped, errorOpt, proError]
         for opt in o.optimisers {
@@ -2019,15 +2019,15 @@ struct SizeNotificationView_Previews: PreviewProvider {
         FloatingResult(optimiser: Optimiser(id: Optimiser.IDs.clipboardImage, type: .image(.png)))
             .padding()
             .background(LinearGradient(colors: [Color.red, Color.orange, Color.blue], startPoint: .topLeading, endPoint: .bottomTrailing))
-            .previewDisplayName("Optimising Clipboard")
+            .previewDisplayName("正在优化剪贴板")
         FloatingResult(optimiser: finishedOpt)
             .padding()
             .background(LinearGradient(colors: [.red, .orange, .blue], startPoint: .topLeading, endPoint: .bottomTrailing))
-            .previewDisplayName("Finished Clipboard Optimisation")
+            .previewDisplayName("剪贴板优化已完成")
 
         FloatingResult(optimiser: Optimiser(id: "~/Desktop/Screen Recording 2023-07-09 at 15.32.07.mov", type: .video(.quickTimeMovie), running: true, progress: videoProgress))
             .padding()
             .background(LinearGradient(colors: [.red, .orange, .blue], startPoint: .topLeading, endPoint: .bottomTrailing))
-            .previewDisplayName("Optimising Video")
+            .previewDisplayName("正在优化视频")
     }
 }

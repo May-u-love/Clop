@@ -19,16 +19,16 @@ struct MCPSettingsView: View {
                     proRow
                 }
                 Toggle(isOn: $mcpEnabled) {
-                    Text("Enable MCP").regular(13)
-                        + Text("\nAllow agents to control Clop, run file optimisations, change settings, write pipelines").round(11, weight: .regular).foregroundColor(.secondary)
+                    Text("启用 MCP").regular(13)
+                        + Text("\n允许智能体控制 Clop、执行文件优化、修改设置、编写管线").round(11, weight: .regular).foregroundColor(.secondary)
                 }
                 .disabled(!proactive)
                 .onChange(of: mcpEnabled) { _ in MCPInstaller.writeServerCard() }
                 .searchAnchor("mcp.main.mcpEnabled", namesControl: true)
 
                 Toggle(isOn: $mcpAllowScriptSteps) {
-                    Text("Allow agents to write arbitrary scripts in pipelines").regular(13)
-                        + Text("\nUsing scripts in pipelines allows for flexible operations but can be dangerous if not properly verified").round(11, weight: .regular).foregroundColor(.secondary)
+                    Text("允许智能体在管线中写入任意脚本").regular(13)
+                        + Text("\n在管线中使用脚本很灵活,但未经核实可能有风险").round(11, weight: .regular).foregroundColor(.secondary)
                 }
                 .disabled(!proactive || !mcpEnabled)
                 .onChange(of: mcpAllowScriptSteps) { on in
@@ -40,19 +40,19 @@ struct MCPSettingsView: View {
                 .searchAnchor("mcp.main.mcpAllowScriptSteps", namesControl: true)
             }
 
-            Section(header: SectionHeader(title: "Install in")) {
+            Section(header: SectionHeader(title: "安装到")) {
                 clientRows(MCPInstaller.featuredClients)
                 DisclosureGroup(isExpanded: $showMoreClients) {
                     clientRows(MCPInstaller.moreClients)
                 } label: {
-                    Text("See more").regular(13)
+                    Text("查看更多").regular(13)
                 }
             }
 
-            Section(header: SectionHeader(title: "Install by hand")) {
+            Section(header: SectionHeader(title: "手动安装")) {
                 VStack(alignment: .leading, spacing: 12) {
-                    CopyableValueRow(title: "Command line", value: MCPInstaller.cliCommand)
-                    CopyableValueRow(title: "Server", value: MCPInstaller.cliPath + " " + MCPInstaller.serveArgs.joined(separator: " "))
+                    CopyableValueRow(title: "命令行", value: MCPInstaller.cliCommand)
+                    CopyableValueRow(title: "服务器", value: MCPInstaller.cliPath + " " + MCPInstaller.serveArgs.joined(separator: " "))
                 }
                 .padding(.vertical, 4)
             }
@@ -70,9 +70,9 @@ struct MCPSettingsView: View {
 
     private var proRow: some View {
         HStack(alignment: .firstTextBaseline) {
-            Text("Needs Clop Pro").regular(13)
+            Text("需要 Clop Pro").regular(13)
             Spacer()
-            Button("Manage Licence") { manageLicenceInSettings() }
+            Button("管理许可") { manageLicenceInSettings() }
         }
     }
 
@@ -98,14 +98,14 @@ struct MCPSettingsView: View {
             Spacer()
             switch states[client.id] ?? .notInstalled {
             case .installed:
-                Button("Remove") { apply(MCPInstaller.remove(client), to: client) }
+                Button("移除") { apply(MCPInstaller.remove(client), to: client) }
                     .tint(.red)
             case .unusable:
                 // Not a disabled Install: there is no members list to write into, so the only move left
                 // is to open the file.
-                Button("Show file") { MCPInstaller.revealConfig(client) }
+                Button("显示文件") { MCPInstaller.revealConfig(client) }
             case .notInstalled:
-                Button("Install") { apply(MCPInstaller.install(client), to: client) }
+                Button("安装") { apply(MCPInstaller.install(client), to: client) }
             }
         }
     }
@@ -132,7 +132,7 @@ struct MCPSettingsView: View {
             // Once it is added, the useful detail is where it landed.
             return client.isPresent || states[client.id] == .installed
                 ? client.path
-                : "Not installed on this Mac."
+                : "此 Mac 上未安装。"
         }
     }
 
@@ -201,7 +201,7 @@ private struct CopyablePill: View {
             .overlay(Capsule().strokeBorder(Color.primary.opacity(0.10), lineWidth: 1))
         }
         .buttonStyle(.plain)
-        .help("Copies the line")
+        .help("复制该行")
     }
 
     @State private var copied = false

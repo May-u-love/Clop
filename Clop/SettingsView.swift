@@ -143,7 +143,7 @@ struct DirListView: View {
     @ViewBuilder var ignoreRulesView: some View {
         if selectedDirs.count == 1, let dir = selectedDirs.first {
             HStack {
-                Text("Ignore rules").semibold(12).fixedSize()
+                Text("忽略规则").semibold(12).fixedSize()
                 Spacer()
                 Text("\(dir.replacingOccurrences(of: HOME.string, with: "~"))/.clopignore-\(fileType.rawValue)")
                     .mono(11)
@@ -159,8 +159,8 @@ struct DirListView: View {
                 })
                 .frame(height: 100)
             HStack {
-                Text("Follows the standard .gitignore rules.").regular(10)
-                Button("\(SwiftUI.Image(systemName: "arrowtriangle.down.square")) Click for more info") {
+                Text("遵循标准 .gitignore 规则。").regular(10)
+                Button("\(SwiftUI.Image(systemName: "arrowtriangle.down.square")) 点按查看详情") {
                     clopignoreHelpVisible.toggle()
                 }
                 .buttonStyle(.plain)
@@ -211,7 +211,7 @@ struct DirListView: View {
                 .roundbg(color: .black.opacity(0.05))
             }
         } else {
-            (Text("Select a single path to edit its ") + Text("Ignore rules").bold())
+            (Text("选择单个路径以编辑其 ") + Text("忽略规则").bold())
                 .padding(.top, 6)
                 .opacity(0.8)
         }
@@ -224,15 +224,15 @@ struct DirListView: View {
                 Table(dirs.sorted(), selection: $selectedDirs) {
                     TableColumn("Path") { dir in Text(dir.replacingOccurrences(of: HOME.string, with: "~")).mono(12) }
                     TableColumn("Show floating results") { dir in
-                        Toggle("Show floating results", isOn: showFloatingBinding(for: dir))
+                        Toggle("显示悬浮结果", isOn: showFloatingBinding(for: dir))
                             .toggleStyle(.checkbox)
                             .controlSize(.mini)
                             .labelsHidden()
-                            .help("Show the floating thumbnail and progress when files in this folder are optimised")
+                            .help("优化此文件夹中的文件时显示悬浮缩略图与进度")
                     }
                     .width(130)
                     TableColumn("") { dir in
-                        Button(dirHasAutomation(dir) ? "Edit automation" : "Add automation") {
+                        Button(dirHasAutomation(dir) ? "编辑自动化" : "Add automation") {
                             showAutomations(folder: dir, addNew: !dirHasAutomation(dir))
                         }
                         .font(.round(10))
@@ -275,7 +275,7 @@ struct DirListView: View {
                 )
                 .disabled(selectedDirs.isEmpty || !enabled)
                 Spacer()
-                Toggle(" Enable **\(fileType == .pdf ? "PDF" : fileType.rawValue)** auto-optimiser", isOn: $enabled)
+                Toggle(" 启用 **\(fileType == .pdf ? "PDF" : fileType.rawValue)** 自动优化", isOn: $enabled)
                     .font(.round(11, weight: .regular))
                     .controlSize(.mini)
                     .toggleStyle(.checkbox)
@@ -388,7 +388,7 @@ struct FolderAutomationsSection: View {
                 HStack(spacing: 5) {
                     SwiftUI.Image(systemName: expanded ? "chevron.down" : "chevron.right")
                         .font(.semibold(9)).foregroundColor(.secondary)
-                    Text("Automations").semibold(12)
+                    Text("自动化").semibold(12)
                     if count > 0 {
                         Text("\(count)").mono(10)
                             .padding(.horizontal, 5).padding(.vertical, 1)
@@ -486,19 +486,19 @@ struct PDFSettingsView: View {
 
     var body: some View {
         Form {
-            Section(header: SectionHeader(title: "Watch paths", subtitle: "Optimise PDFs as they appear in these folders")) {
+            Section(header: SectionHeader(title: "监视路径", subtitle: "这些文件夹里出现的 PDF 会被自动优化")) {
                 DirListView(fileType: .pdf, dirs: $pdfDirs, enabled: $enableAutomaticPDFOptimisations)
             }
             .searchAnchor("pdf.watchpaths.pdfDirs")
-            Section(header: SectionHeader(title: "Optimisation rules")) {
+            Section(header: SectionHeader(title: "优化规则")) {
                 HStack(spacing: 4) {
                     SwiftUI.Image(systemName: "folder.badge.gearshape")
-                    Text("Where files go is set in").foregroundColor(.secondary)
-                    Button("File handling") { settingsViewManager.tab = .files }.buttonStyle(.link)
+                    Text("文件去向设置于").foregroundColor(.secondary)
+                    Button("文件处理") { settingsViewManager.tab = .files }.buttonStyle(.link)
                 }.font(.system(size: 11))
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 8) {
-                        Text("Compression").regular(13)
+                        Text("压缩").regular(13)
                             .searchAnchor("pdf.optimisationrules.pdfDPI")
                         Slider(
                             value: Binding(
@@ -507,13 +507,13 @@ struct PDFSettingsView: View {
                             ),
                             in: 0 ... Double(PDF_DPI_STOPS.count - 1), step: 1
                         )
-                        .accessibilityLabel("Compression")
+                        .accessibilityLabel("压缩")
                         .disabled(pdfDPI == PDF_DPI_ADAPTIVE)
                         Text("\(pdfDPI == PDF_DPI_ADAPTIVE ? lastPDFDPI : pdfDPI) DPI")
                             .mono(11).foregroundColor(.secondary)
                             .opacity(pdfDPI == PDF_DPI_ADAPTIVE ? 0.2 : 1)
                             .frame(width: 56, alignment: .trailing)
-                        Button("Adaptive") {
+                        Button("自适应") {
                             if pdfDPI == PDF_DPI_ADAPTIVE {
                                 pdfDPI = lastPDFDPI
                             } else {
@@ -527,7 +527,7 @@ struct PDFSettingsView: View {
                     Text(pdfCompressionSubtitle).round(10, weight: .regular).foregroundColor(.secondary)
                 }
             }
-            Section(header: SectionHeader(title: "Watched file filters", subtitle: "Only files within these limits are optimised")) {
+            Section(header: SectionHeader(title: "监视文件过滤", subtitle: "只有在此范围内的文件会被优化")) {
                 FileSizeRangeRow(minKB: $minPDFSizeKB, maxMB: $maxPDFSizeMB)
                     .searchAnchor("pdf.watchedfilefilters.minPDFSizeKB")
                 CountSliderRow(count: $maxPDFFileCount, caption: { "Skips optimisation when more than \($0) \($0 == 1 ? "PDF is" : "PDFs are") copied or moved at once" })
@@ -545,7 +545,7 @@ struct PDFSettingsView: View {
             return "Clop automatically picks a per-PDF DPI from the source image density and downscales images above it"
         }
         if pdfDPI >= PDF_DPI_NO_DOWNSAMPLE {
-            return "Lossless compression, tries to save space on metadata and reencoding. May not yield significant size reductions."
+            return "无损压缩,从元数据和重编码中省空间;体积可能减少有限。"
         }
         return "Downscales high resolution images to \(pdfDPI) DPI; lower-resolution images are left untouched"
     }
@@ -589,18 +589,18 @@ struct VideoSettingsView: View {
 
     var body: some View {
         CompatibilityScrollForm {
-            Section(header: SectionHeader(title: "Watch paths", subtitle: "Optimise videos as they appear in these folders")) {
+            Section(header: SectionHeader(title: "监视路径", subtitle: "这些文件夹里出现的视频会被自动优化")) {
                 DirListView(fileType: .video, dirs: $videoDirs, enabled: $enableAutomaticVideoOptimisations)
             }
             .searchAnchor("video.watchpaths.videoDirs")
-            Section(header: SectionHeader(title: "Optimisation rules")) {
+            Section(header: SectionHeader(title: "优化规则")) {
                 HStack(spacing: 4) {
                     SwiftUI.Image(systemName: "folder.badge.gearshape")
-                    Text("Where files go is set in").foregroundColor(.secondary)
-                    Button("File handling") { settingsViewManager.tab = .files }.buttonStyle(.link)
+                    Text("文件去向设置于").foregroundColor(.secondary)
+                    Button("文件处理") { settingsViewManager.tab = .files }.buttonStyle(.link)
                 }.font(.system(size: 11))
                 HStack(spacing: 8) {
-                    Text("Compression").regular(13)
+                    Text("压缩").regular(13)
                         .searchAnchor("video.optimisationrules.videoCompression")
                     Spacer()
                     Menu {
@@ -626,7 +626,7 @@ struct VideoSettingsView: View {
                 if videoCompression.tier == .smaller || videoCompression.tier == .custom {
                     VStack(alignment: .leading, spacing: 4) {
                         HStack(spacing: 8) {
-                            Button("Auto") {
+                            Button("自动") {
                                 if videoCompression.videoUsesAutoCRF {
                                     videoCompression = CompressionQuality(tier: .smaller, factor: lastVideoFactor)
                                 } else {
@@ -645,30 +645,30 @@ struct VideoSettingsView: View {
                             ) {
                                 EmptyView()
                             } minimumValueLabel: {
-                                Text("Better quality").round(9, weight: .regular).foregroundColor(.secondary)
+                                Text("更佳画质").round(9, weight: .regular).foregroundColor(.secondary)
                             } maximumValueLabel: {
-                                Text("Smaller size").round(9, weight: .regular).foregroundColor(.secondary)
+                                Text("更小体积").round(9, weight: .regular).foregroundColor(.secondary)
                             }
-                            .accessibilityLabel("Compression")
+                            .accessibilityLabel("压缩")
                             .frame(maxWidth: .infinity)
                             .disabled(videoCompression.videoUsesAutoCRF)
-                            .help("Drag toward Better quality for better-looking video, toward Smaller size for a smaller file")
+                            .help("向「更佳画质」拖动画质更好,向「更小体积」拖动文件更小")
                             Text("\(videoCompression.videoUsesAutoCRF ? lastVideoFactor : videoCompression.factor)%")
                                 .mono(11).foregroundColor(.secondary)
                                 .opacity(videoCompression.videoUsesAutoCRF ? 0.2 : 1)
                                 .frame(width: 38, alignment: .trailing)
                         }
                         if videoCompression.videoUsesAutoCRF {
-                            Text("The encoder will choose the best compression factor based on the video contents")
+                            Text("编码器将根据视频内容选择最佳压缩系数")
                                 .round(10, weight: .regular).foregroundColor(.secondary)
                         }
                     }
                 }
-                Toggle("Remove audio on optimised videos", isOn: $removeAudioFromVideos)
+                Toggle("移除优化后视频的音轨", isOn: $removeAudioFromVideos)
                     .searchAnchor("video.optimisationrules.removeAudioFromVideos", namesControl: true)
                 Toggle(isOn: $capVideoFPS.animation(.spring())) {
                     HStack {
-                        Text("Cap frames per second to").regular(13).padding(.trailing, 10)
+                        Text("帧率上限设为").regular(13).padding(.trailing, 10)
                         Spacer()
 
                         Button("30fps") {
@@ -677,19 +677,19 @@ struct VideoSettingsView: View {
                         Button("60fps") {
                             withAnimation(.spring()) { targetVideoFPS = 60 }
                         }.buttonStyle(ToggleButton(isOn: .oneway { targetVideoFPS == 60 }))
-                        Button("1/2 of source") {
+                        Button("原片的 1/2") {
                             withAnimation(.spring()) { targetVideoFPS = -2 }
                         }.buttonStyle(ToggleButton(isOn: .oneway { targetVideoFPS == -2 }))
-                        Button("1/4 of source") {
+                        Button("原片的 1/4") {
                             withAnimation(.spring()) { targetVideoFPS = -4 }
                         }.buttonStyle(ToggleButton(isOn: .oneway { targetVideoFPS == -4 }))
                     }.disabled(!capVideoFPS)
                 }
-                .accessibilityLabel("Cap frames per second")
+                .accessibilityLabel("限制帧率")
                 .searchAnchor("video.optimisationrules.capVideoFPS")
                 if targetVideoFPS < 0, capVideoFPS {
                     HStack {
-                        Text("but no less than").regular(13).padding(.trailing, 10)
+                        Text("但不低于").regular(13).padding(.trailing, 10)
                             .searchAnchor("video.optimisationrules.minVideoFPS")
                         Spacer()
 
@@ -709,16 +709,16 @@ struct VideoSettingsView: View {
                     .padding(.leading, 10)
                 }
                 Picker(selection: $playbackSpeedFrameBehaviour) {
-                    Text("Keep frames (smoother, higher fps)").tag(PlaybackSpeedFrameBehaviour.keepFrames)
-                    Text("Drop frames (smaller file)").tag(PlaybackSpeedFrameBehaviour.dropFrames)
+                    Text("保留帧(更流畅,帧率更高)").tag(PlaybackSpeedFrameBehaviour.keepFrames)
+                    Text("丢帧(文件更小)").tag(PlaybackSpeedFrameBehaviour.dropFrames)
                 } label: {
-                    Text("Playback speed change").regular(13)
+                    Text("播放速度调整").regular(13)
                 }
-                .accessibilityLabel("Playback speed change")
+                .accessibilityLabel("播放速度调整")
                 .searchAnchor("video.optimisationrules.playbackSpeedFrameBehaviour")
 
             }
-            Section(header: SectionHeader(title: "Watched file filters", subtitle: "Only files within these limits are optimised")) {
+            Section(header: SectionHeader(title: "监视文件过滤", subtitle: "只有在此范围内的文件会被优化")) {
                 FileSizeRangeRow(minKB: $minVideoSizeKB, maxMB: $maxVideoSizeMB)
                     .searchAnchor("video.watchedfilefilters.minVideoSizeKB")
                 ResolutionRangeRow(label: "Resolution", minRes: $minVideoResolution, maxRes: $maxVideoResolution)
@@ -726,7 +726,7 @@ struct VideoSettingsView: View {
                 CountSliderRow(count: $maxVideoFileCount, caption: { "Skips optimisation when more than \($0) \($0 == 1 ? "video is" : "videos are") copied or moved at once" })
                     .searchAnchor("video.watchedfilefilters.maxVideoFileCount")
                 HStack {
-                    Text("Ignore videos with extension").regular(13).padding(.trailing, 10)
+                    Text("忽略这些扩展名的视频").regular(13).padding(.trailing, 10)
                         .searchAnchor("video.watchedfilefilters.videoFormatsToSkip")
                     Spacer()
 
@@ -738,9 +738,9 @@ struct VideoSettingsView: View {
                     }
                 }
             }
-            Section(header: SectionHeader(title: "Compatibility", subtitle: "Converts less known formats to more compatible ones before optimisation")) {
+            Section(header: SectionHeader(title: "兼容性", subtitle: "优化前把小众格式转换为更兼容的格式")) {
                 HStack {
-                    (Text("Convert to ").regular(13) + Text("mp4").mono(13)).padding(.trailing, 10)
+                    (Text("转换为 ").regular(13) + Text("mp4").mono(13)).padding(.trailing, 10)
                         .searchAnchor("video.compatibility.formatsToConvertToMP4")
                     Spacer()
 
@@ -751,7 +751,7 @@ struct VideoSettingsView: View {
                             .font(.mono(11))
                     }
                 }
-                Toggle("Convert audio to AAC", isOn: $convertAudioToAAC)
+                Toggle("将音频转换为 AAC", isOn: $convertAudioToAAC)
                     .searchAnchor("video.compatibility.convertAudioToAAC", namesControl: true)
             }
             .id("compatibility")
@@ -772,9 +772,9 @@ struct VideoSettingsView: View {
     func videoCompressionSubtitle(_ tier: CompressionTier) -> String {
         switch tier {
         case .adaptive: "Picks the best encoder and amount of compression for each file"
-        case .lossless: "No perceptible quality loss"
-        case .fast: "Fast, battery efficient, no CPU usage, modest size gains"
-        default: "Slower, higher CPU usage, better quality and size gains"
+        case .lossless: "无可感知的画质损失"
+        case .fast: "快速省电,几乎不占 CPU,体积收益一般"
+        default: "更慢、更占 CPU,画质与体积收益更好"
         }
     }
 
@@ -833,7 +833,7 @@ struct CompactSameFolderTemplate: View {
     var body: some View {
         HStack(alignment: .center, spacing: 8) {
             TextField("", text: $template, prompt: Text(DEFAULT_SAME_FOLDER_NAME_TEMPLATE))
-                .accessibilityLabel("File name template")
+                .accessibilityLabel("文件名模板")
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 6)
                 .frame(height: 24)
@@ -892,7 +892,7 @@ struct CompactSpecificFolderTemplate: View {
     var body: some View {
         HStack(alignment: .center, spacing: 8) {
             TextField("", text: portableTemplate, prompt: Text(DEFAULT_SPECIFIC_FOLDER_NAME_TEMPLATE))
-                .accessibilityLabel("Folder template")
+                .accessibilityLabel("文件夹模板")
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 6)
                 .frame(height: 24)
@@ -950,12 +950,12 @@ private struct ExampleContainer: View {
 
     var body: some View {
         HStack(spacing: 4) {
-            Text("Example:")
+            Text("示例:")
                 .font(.round(11))
                 .foregroundColor(.secondary)
                 .fixedSize()
             ExampleFilePill(name: inputName, tint: tint(for: inputExt))
-            Text("becomes")
+            Text("变为")
                 .font(.round(11))
                 .foregroundColor(.secondary)
                 .fixedSize()
@@ -1057,7 +1057,7 @@ private struct AutoConvertPills: View {
     var body: some View {
         if !groups.isEmpty {
             HStack(spacing: 6) {
-                Text("Converts:")
+                Text("转换为:")
                     .round(11)
                     .foregroundColor(.secondary)
                 ForEach(groups.indices, id: \.self) { idx in
@@ -1079,8 +1079,8 @@ private struct AutoConvertPills: View {
                     settingsViewManager.scrollToCompatibility = true
                 } label: {
                     HStack(spacing: 3) {
-                        Text("Configured in")
-                        Text("Compatibility").underline()
+                        Text("配置于")
+                        Text("兼容性").underline()
                     }
                     .foregroundColor(.secondary.opacity(0.65))
                     .contentShape(Rectangle())
@@ -1100,7 +1100,7 @@ private struct AutoConvertPills: View {
 }
 
 /// A `Form` that scrolls down to the Section tagged `.id("compatibility")` when the
-/// "Configured in Compatibility" link in File Handling requests it. Drop-in replacement
+/// "在「兼容性」中配置" link in File Handling requests it. Drop-in replacement
 /// for `Form` in the Video / Audio / Images tabs; per-tab modifiers (formStyle,
 /// scrollContentBackground, padding) still reach the form via the environment.
 private struct CompatibilityScrollForm<Content: View>: View {
@@ -1212,17 +1212,17 @@ struct FileHandlingSettingsView: View {
         Form {
             // MARK: Images
 
-            Section(header: SectionHeader(title: "Images")) {
+            Section(header: SectionHeader(title: "图像")) {
                 // Optimise row: picker + optional template in a single Form row (no divider between them).
                 VStack(alignment: .leading, spacing: 6) {
                     Picker(selection: $optimisedImageBehaviour) {
-                        Text("Temporary folder").tag(FileBehaviour.temporary)
-                        Text("In place (replace original)").tag(FileBehaviour.inPlace)
-                        Text("Same folder as original").tag(FileBehaviour.sameFolder)
-                        Text("Specific folder").tag(FileBehaviour.specificFolder)
+                        Text("临时文件夹").tag(FileBehaviour.temporary)
+                        Text("原位(替换原件)").tag(FileBehaviour.inPlace)
+                        Text("与原件同文件夹").tag(FileBehaviour.sameFolder)
+                        Text("指定文件夹").tag(FileBehaviour.specificFolder)
                     } label: {
-                        Text("Optimised file placement").regular(13)
-                            + Text("\nWhere the smaller file is saved, and whether it replaces the original").round(11, weight: .regular).foregroundColor(.secondary)
+                        Text("优化后文件的存放位置").regular(13)
+                            + Text("\n较小的文件保存到哪里,以及是否替换原件").round(11, weight: .regular).foregroundColor(.secondary)
                     }
                     .searchAnchor("files.images.optimisedImageBehaviour", namesControl: true)
                     if optimisedImageBehaviour == .sameFolder {
@@ -1237,13 +1237,13 @@ struct FileHandlingSettingsView: View {
                 // Auto-convert row: picker + Converts pills + optional template in a single Form row.
                 VStack(alignment: .leading, spacing: 6) {
                     Picker(selection: $convertedImageBehaviour) {
-                        Text("Temporary folder").tag(FileBehaviour.temporary)
-                        Text("In place (replace original)").tag(FileBehaviour.inPlace)
-                        Text("Same folder as original").tag(FileBehaviour.sameFolder)
-                        Text("Specific folder").tag(FileBehaviour.specificFolder)
+                        Text("临时文件夹").tag(FileBehaviour.temporary)
+                        Text("原位(替换原件)").tag(FileBehaviour.inPlace)
+                        Text("与原件同文件夹").tag(FileBehaviour.sameFolder)
+                        Text("指定文件夹").tag(FileBehaviour.specificFolder)
                     } label: {
-                        Text("Auto-conversion behaviour for compatible formats").regular(13)
-                            + Text("\nFormats that many apps cannot open well are converted to a widely supported one automatically before optimising.").round(11, weight: .regular).foregroundColor(.secondary)
+                        Text("兼容格式的自动转换行为").regular(13)
+                            + Text("\n许多应用难以打开的格式会先自动转换为支持广泛的格式再优化。").round(11, weight: .regular).foregroundColor(.secondary)
                     }
                     .searchAnchor("files.images.convertedImageBehaviour", namesControl: true)
                     AutoConvertPills(groups: imageAutoConvertGroups, compatibilityTab: .images)
@@ -1259,13 +1259,13 @@ struct FileHandlingSettingsView: View {
                 // Manual-convert row: picker + optional template in a single Form row.
                 VStack(alignment: .leading, spacing: 6) {
                     Picker(selection: $manualConvertedImageBehaviour) {
-                        Text("Temporary folder").tag(FileBehaviour.temporary)
-                        Text("In place (replace original)").tag(FileBehaviour.inPlace)
-                        Text("Same folder as original").tag(FileBehaviour.sameFolder)
-                        Text("Specific folder").tag(FileBehaviour.specificFolder)
+                        Text("临时文件夹").tag(FileBehaviour.temporary)
+                        Text("原位(替换原件)").tag(FileBehaviour.inPlace)
+                        Text("与原件同文件夹").tag(FileBehaviour.sameFolder)
+                        Text("指定文件夹").tag(FileBehaviour.specificFolder)
                     } label: {
-                        Text("Manual conversion behaviour").regular(13)
-                            + Text("\nWhen you pick a new format by clicking the file extension on a floating result, or via the submenu **Convert to...** in the right-click menu.").round(11, weight: .regular).foregroundColor(.secondary)
+                        Text("手动转换行为").regular(13)
+                            + Text("\n通过点按悬浮结果上的扩展名,或右键菜单中的 **转换为...** 子菜单选择新格式。").round(11, weight: .regular).foregroundColor(.secondary)
                     }
                     .searchAnchor("files.images.manualConvertedImageBehaviour", namesControl: true)
                     if manualConvertedImageBehaviour == .sameFolder {
@@ -1282,16 +1282,16 @@ struct FileHandlingSettingsView: View {
 
             // MARK: Videos
 
-            Section(header: SectionHeader(title: "Videos")) {
+            Section(header: SectionHeader(title: "视频")) {
                 VStack(alignment: .leading, spacing: 6) {
                     Picker(selection: $optimisedVideoBehaviour) {
-                        Text("Temporary folder").tag(FileBehaviour.temporary)
-                        Text("In place (replace original)").tag(FileBehaviour.inPlace)
-                        Text("Same folder as original").tag(FileBehaviour.sameFolder)
-                        Text("Specific folder").tag(FileBehaviour.specificFolder)
+                        Text("临时文件夹").tag(FileBehaviour.temporary)
+                        Text("原位(替换原件)").tag(FileBehaviour.inPlace)
+                        Text("与原件同文件夹").tag(FileBehaviour.sameFolder)
+                        Text("指定文件夹").tag(FileBehaviour.specificFolder)
                     } label: {
-                        Text("Optimised file placement").regular(13)
-                            + Text("\nWhere the smaller file is saved, and whether it replaces the original").round(11, weight: .regular).foregroundColor(.secondary)
+                        Text("优化后文件的存放位置").regular(13)
+                            + Text("\n较小的文件保存到哪里,以及是否替换原件").round(11, weight: .regular).foregroundColor(.secondary)
                     }
                     .searchAnchor("files.videos.optimisedVideoBehaviour", namesControl: true)
                     if optimisedVideoBehaviour == .sameFolder {
@@ -1305,13 +1305,13 @@ struct FileHandlingSettingsView: View {
 
                 VStack(alignment: .leading, spacing: 6) {
                     Picker(selection: $convertedVideoBehaviour) {
-                        Text("Temporary folder").tag(FileBehaviour.temporary)
-                        Text("In place (replace original)").tag(FileBehaviour.inPlace)
-                        Text("Same folder as original").tag(FileBehaviour.sameFolder)
-                        Text("Specific folder").tag(FileBehaviour.specificFolder)
+                        Text("临时文件夹").tag(FileBehaviour.temporary)
+                        Text("原位(替换原件)").tag(FileBehaviour.inPlace)
+                        Text("与原件同文件夹").tag(FileBehaviour.sameFolder)
+                        Text("指定文件夹").tag(FileBehaviour.specificFolder)
                     } label: {
-                        Text("Auto-conversion behaviour for compatible formats").regular(13)
-                            + Text("\nFormats that many apps cannot open well are converted to a widely supported one automatically before optimising.").round(11, weight: .regular).foregroundColor(.secondary)
+                        Text("兼容格式的自动转换行为").regular(13)
+                            + Text("\n许多应用难以打开的格式会先自动转换为支持广泛的格式再优化。").round(11, weight: .regular).foregroundColor(.secondary)
                     }
                     .searchAnchor("files.videos.convertedVideoBehaviour", namesControl: true)
                     AutoConvertPills(groups: videoAutoConvertGroups, compatibilityTab: .video)
@@ -1326,13 +1326,13 @@ struct FileHandlingSettingsView: View {
 
                 VStack(alignment: .leading, spacing: 6) {
                     Picker(selection: $manualConvertedVideoBehaviour) {
-                        Text("Temporary folder").tag(FileBehaviour.temporary)
-                        Text("In place (replace original)").tag(FileBehaviour.inPlace)
-                        Text("Same folder as original").tag(FileBehaviour.sameFolder)
-                        Text("Specific folder").tag(FileBehaviour.specificFolder)
+                        Text("临时文件夹").tag(FileBehaviour.temporary)
+                        Text("原位(替换原件)").tag(FileBehaviour.inPlace)
+                        Text("与原件同文件夹").tag(FileBehaviour.sameFolder)
+                        Text("指定文件夹").tag(FileBehaviour.specificFolder)
                     } label: {
-                        Text("Manual conversion behaviour").regular(13)
-                            + Text("\nWhen you pick a new format by clicking the file extension on a floating result, or via the submenu **Convert to...** in the right-click menu.").round(11, weight: .regular).foregroundColor(.secondary)
+                        Text("手动转换行为").regular(13)
+                            + Text("\n通过点按悬浮结果上的扩展名,或右键菜单中的 **转换为...** 子菜单选择新格式。").round(11, weight: .regular).foregroundColor(.secondary)
                     }
                     .searchAnchor("files.videos.manualConvertedVideoBehaviour", namesControl: true)
                     if manualConvertedVideoBehaviour == .sameFolder {
@@ -1349,16 +1349,16 @@ struct FileHandlingSettingsView: View {
 
             // MARK: Audio
 
-            Section(header: SectionHeader(title: "Audio")) {
+            Section(header: SectionHeader(title: "音频")) {
                 VStack(alignment: .leading, spacing: 6) {
                     Picker(selection: $optimisedAudioBehaviour) {
-                        Text("Temporary folder").tag(FileBehaviour.temporary)
-                        Text("In place (replace original)").tag(FileBehaviour.inPlace)
-                        Text("Same folder as original").tag(FileBehaviour.sameFolder)
-                        Text("Specific folder").tag(FileBehaviour.specificFolder)
+                        Text("临时文件夹").tag(FileBehaviour.temporary)
+                        Text("原位(替换原件)").tag(FileBehaviour.inPlace)
+                        Text("与原件同文件夹").tag(FileBehaviour.sameFolder)
+                        Text("指定文件夹").tag(FileBehaviour.specificFolder)
                     } label: {
-                        Text("Optimised file placement").regular(13)
-                            + Text("\nWhere the smaller file is saved, and whether it replaces the original").round(11, weight: .regular).foregroundColor(.secondary)
+                        Text("优化后文件的存放位置").regular(13)
+                            + Text("\n较小的文件保存到哪里,以及是否替换原件").round(11, weight: .regular).foregroundColor(.secondary)
                     }
                     .searchAnchor("files.audio.optimisedAudioBehaviour", namesControl: true)
                     if optimisedAudioBehaviour == .sameFolder {
@@ -1372,13 +1372,13 @@ struct FileHandlingSettingsView: View {
 
                 VStack(alignment: .leading, spacing: 6) {
                     Picker(selection: $convertedAudioBehaviour) {
-                        Text("Temporary folder").tag(FileBehaviour.temporary)
-                        Text("In place (replace original)").tag(FileBehaviour.inPlace)
-                        Text("Same folder as original").tag(FileBehaviour.sameFolder)
-                        Text("Specific folder").tag(FileBehaviour.specificFolder)
+                        Text("临时文件夹").tag(FileBehaviour.temporary)
+                        Text("原位(替换原件)").tag(FileBehaviour.inPlace)
+                        Text("与原件同文件夹").tag(FileBehaviour.sameFolder)
+                        Text("指定文件夹").tag(FileBehaviour.specificFolder)
                     } label: {
-                        Text("Auto-conversion behaviour for compatible formats").regular(13)
-                            + Text("\nFormats that many apps cannot open well are converted to a widely supported one automatically before optimising.").round(11, weight: .regular).foregroundColor(.secondary)
+                        Text("兼容格式的自动转换行为").regular(13)
+                            + Text("\n许多应用难以打开的格式会先自动转换为支持广泛的格式再优化。").round(11, weight: .regular).foregroundColor(.secondary)
                     }
                     .searchAnchor("files.audio.convertedAudioBehaviour", namesControl: true)
                     AutoConvertPills(groups: audioAutoConvertGroups, compatibilityTab: .audio)
@@ -1393,13 +1393,13 @@ struct FileHandlingSettingsView: View {
 
                 VStack(alignment: .leading, spacing: 6) {
                     Picker(selection: $manualConvertedAudioBehaviour) {
-                        Text("Temporary folder").tag(FileBehaviour.temporary)
-                        Text("In place (replace original)").tag(FileBehaviour.inPlace)
-                        Text("Same folder as original").tag(FileBehaviour.sameFolder)
-                        Text("Specific folder").tag(FileBehaviour.specificFolder)
+                        Text("临时文件夹").tag(FileBehaviour.temporary)
+                        Text("原位(替换原件)").tag(FileBehaviour.inPlace)
+                        Text("与原件同文件夹").tag(FileBehaviour.sameFolder)
+                        Text("指定文件夹").tag(FileBehaviour.specificFolder)
                     } label: {
-                        Text("Manual conversion behaviour").regular(13)
-                            + Text("\nWhen you pick a new format by clicking the file extension on a floating result, or via the submenu **Convert to...** in the right-click menu.").round(11, weight: .regular).foregroundColor(.secondary)
+                        Text("手动转换行为").regular(13)
+                            + Text("\n通过点按悬浮结果上的扩展名,或右键菜单中的 **转换为...** 子菜单选择新格式。").round(11, weight: .regular).foregroundColor(.secondary)
                     }
                     .searchAnchor("files.audio.manualConvertedAudioBehaviour", namesControl: true)
                     if manualConvertedAudioBehaviour == .sameFolder {
@@ -1419,13 +1419,13 @@ struct FileHandlingSettingsView: View {
             Section(header: SectionHeader(title: "PDF")) {
                 VStack(alignment: .leading, spacing: 6) {
                     Picker(selection: $optimisedPDFBehaviour) {
-                        Text("Temporary folder").tag(FileBehaviour.temporary)
-                        Text("In place (replace original)").tag(FileBehaviour.inPlace)
-                        Text("Same folder as original").tag(FileBehaviour.sameFolder)
-                        Text("Specific folder").tag(FileBehaviour.specificFolder)
+                        Text("临时文件夹").tag(FileBehaviour.temporary)
+                        Text("原位(替换原件)").tag(FileBehaviour.inPlace)
+                        Text("与原件同文件夹").tag(FileBehaviour.sameFolder)
+                        Text("指定文件夹").tag(FileBehaviour.specificFolder)
                     } label: {
-                        Text("Optimised file placement").regular(13)
-                            + Text("\nWhere the smaller file is saved, and whether it replaces the original").round(11, weight: .regular).foregroundColor(.secondary)
+                        Text("优化后文件的存放位置").regular(13)
+                            + Text("\n较小的文件保存到哪里,以及是否替换原件").round(11, weight: .regular).foregroundColor(.secondary)
                     }
                     .searchAnchor("files.pdf.optimisedPDFBehaviour", namesControl: true)
                     if optimisedPDFBehaviour == .sameFolder {
@@ -1596,7 +1596,7 @@ struct FileHandlingSettingsView: View {
                 HStack(spacing: 5) {
                     SwiftUI.Image(systemName: expanded ? "chevron.down" : "chevron.right")
                         .font(.semibold(9)).foregroundColor(.secondary)
-                    Text("Template variables").semibold(12)
+                    Text("模板变量").semibold(12)
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -1660,19 +1660,19 @@ struct AudioSettingsView: View {
 
     var body: some View {
         CompatibilityScrollForm {
-            Section(header: SectionHeader(title: "Watch paths", subtitle: "Optimise audio files as they appear in these folders")) {
+            Section(header: SectionHeader(title: "监视路径", subtitle: "这些文件夹里出现的音频会被自动优化")) {
                 DirListView(fileType: .audio, dirs: $audioDirs, enabled: $enableAutomaticAudioOptimisations)
             }
             .searchAnchor("audio.watchpaths.audioDirs")
-            Section(header: SectionHeader(title: "Optimisation rules")) {
+            Section(header: SectionHeader(title: "优化规则")) {
                 HStack(spacing: 4) {
                     SwiftUI.Image(systemName: "folder.badge.gearshape")
-                    Text("Where files go is set in").foregroundColor(.secondary)
-                    Button("File handling") { settingsViewManager.tab = .files }.buttonStyle(.link)
+                    Text("文件去向设置于").foregroundColor(.secondary)
+                    Button("文件处理") { settingsViewManager.tab = .files }.buttonStyle(.link)
                 }.font(.system(size: 11))
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 8) {
-                        Text("Compression").regular(13)
+                        Text("压缩").regular(13)
                             .searchAnchor("audio.optimisationrules.audioCompression")
                         Slider(
                             value: Binding(
@@ -1681,7 +1681,7 @@ struct AudioSettingsView: View {
                             ),
                             in: 5 ... 100, step: 1
                         )
-                        .accessibilityLabel("Compression")
+                        .accessibilityLabel("压缩")
                         Text("\(audioCompression.factor)%")
                             .mono(11).foregroundColor(.secondary).frame(width: 38, alignment: .trailing)
                     }
@@ -1693,23 +1693,23 @@ struct AudioSettingsView: View {
                             Text(behaviour.name).tag(behaviour)
                         }
                     } label: {
-                        Text("Cover art").regular(13)
+                        Text("封面图").regular(13)
                             .searchAnchor("audio.optimisationrules.audioCoverArt")
                     }
-                    .accessibilityLabel("Cover art")
-                    Text("Cover art is kept only for formats that can store it (AAC, MP3, FLAC); it is dropped for others.")
+                    .accessibilityLabel("封面图")
+                    Text("仅 AAC、MP3、FLAC 等可存储封面的格式会保留封面图,其余格式会丢弃。")
                         .round(10, weight: .regular).foregroundColor(.secondary)
                 }
             }
-            Section(header: SectionHeader(title: "Watched file filters", subtitle: "Only files within these limits are optimised")) {
+            Section(header: SectionHeader(title: "监视文件过滤", subtitle: "只有在此范围内的文件会被优化")) {
                 FileSizeRangeRow(minKB: $minAudioSizeKB, maxMB: $maxAudioSizeMB)
                     .searchAnchor("audio.watchedfilefilters.minAudioSizeKB")
                 CountSliderRow(count: $maxAudioFileCount, caption: { "Skips optimisation when more than \($0) \($0 == 1 ? "audio file is" : "audio files are") copied or moved at once" })
                     .searchAnchor("audio.watchedfilefilters.maxAudioFileCount")
             }
-            Section(header: SectionHeader(title: "Compatibility", subtitle: "Convert less compatible formats to AAC or MP3 before optimisation; anything not picked keeps its own format")) {
+            Section(header: SectionHeader(title: "兼容性", subtitle: "优化前把兼容性差的格式转换为 AAC 或 MP3;未勾选的格式保持原样")) {
                 HStack {
-                    (Text("Convert to ").regular(13) + Text("AAC (M4A)").mono(13)).padding(.trailing, 10)
+                    (Text("转换为 ").regular(13) + Text("AAC (M4A)").mono(13)).padding(.trailing, 10)
                     Spacer()
                     ForEach(FORMATS_CONVERTIBLE_TO_COMPRESSED_AUDIO, id: \.identifier) { format in
                         Button(format.preferredFilenameExtension ?? format.identifier) {
@@ -1722,7 +1722,7 @@ struct AudioSettingsView: View {
                     }
                 }
                 HStack {
-                    (Text("Convert to ").regular(13) + Text("MP3").mono(13)).padding(.trailing, 10)
+                    (Text("转换为 ").regular(13) + Text("MP3").mono(13)).padding(.trailing, 10)
                     Spacer()
                     ForEach(FORMATS_CONVERTIBLE_TO_COMPRESSED_AUDIO, id: \.identifier) { format in
                         Button(format.preferredFilenameExtension ?? format.identifier) {
@@ -1788,12 +1788,12 @@ struct ImagesSettingsView: View {
 
     var customNameTemplate: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Custom name template").regular(13)
-                + Text("\nRename the file using this template before copying the path to the clipboard").round(11, weight: .regular).foregroundColor(.secondary)
+            Text("自定义命名模板").regular(13)
+                + Text("\n复制路径到剪贴板前,按此模板重命名文件").round(11, weight: .regular).foregroundColor(.secondary)
 
             VStack(alignment: .leading) {
                 TextField("", text: $customNameTemplateForClipboardImages, prompt: Text(DEFAULT_NAME_TEMPLATE))
-                    .accessibilityLabel("Custom name template")
+                    .accessibilityLabel("自定义命名模板")
                     .frame(width: TEXT_FIELD_WIDTH, height: 18, alignment: .leading)
                     .padding(6)
                     .background(
@@ -1803,7 +1803,7 @@ struct ImagesSettingsView: View {
                     .disabled(!useCustomNameTemplateForClipboardImages)
                     .searchAnchor("images.main.customNameTemplateForClipboardImages", namesControl: true)
                 if useCustomNameTemplateForClipboardImages {
-                    Text("Result: " + generateFileName(template: customNameTemplateForClipboardImages ?! DEFAULT_NAME_TEMPLATE, autoIncrementingNumber: &Defaults[.lastAutoIncrementingNumber]))
+                    Text("结果:" + generateFileName(template: customNameTemplateForClipboardImages ?! DEFAULT_NAME_TEMPLATE, autoIncrementingNumber: &Defaults[.lastAutoIncrementingNumber]))
                         .round(12)
                         .lineLimit(1)
                         .allowsTightening(true)
@@ -1834,13 +1834,13 @@ struct ImagesSettingsView: View {
     }
 
     var cropOrientationPicker: some View {
-        Picker("Orientation", selection: $photoCropOrientation) {
-            Label("height", systemImage: "rectangle.portrait").tag(CropOrientation.portrait)
-                .help("Resize images until the height is equal or lower than the specified size.")
-            Label("longest edge", systemImage: "sparkles.rectangle.stack").tag(CropOrientation.adaptive)
-                .help("Resize images until the longest edge is equal or lower than the specified size.")
-            Label("width", systemImage: "rectangle").tag(CropOrientation.landscape)
-                .help("Resize images until the width is equal or lower than the specified size.")
+        Picker("方向", selection: $photoCropOrientation) {
+            Label("高度", systemImage: "rectangle.portrait").tag(CropOrientation.portrait)
+                .help("缩放图像直到高度不大于指定值。")
+            Label("最长边", systemImage: "sparkles.rectangle.stack").tag(CropOrientation.adaptive)
+                .help("缩放图像直到最长边不大于指定值。")
+            Label("宽度", systemImage: "rectangle").tag(CropOrientation.landscape)
+                .help("缩放图像直到宽度不大于指定值。")
         }
         .labelsHidden()
         .fixedSize()
@@ -1852,26 +1852,26 @@ struct ImagesSettingsView: View {
 
     var body: some View {
         CompatibilityScrollForm {
-            Section(header: SectionHeader(title: "Watch paths", subtitle: "Optimise images as they appear in these folders")) {
+            Section(header: SectionHeader(title: "监视路径", subtitle: "这些文件夹里出现的图像会被自动优化")) {
                 DirListView(fileType: .image, dirs: $imageDirs, enabled: $enableAutomaticImageOptimisations)
             }
             .searchAnchor("images.watchpaths.imageDirs")
-            Section(header: SectionHeader(title: "File name handling")) {
+            Section(header: SectionHeader(title: "文件名处理")) {
                 Toggle(isOn: $copyImageFilePath) {
-                    Text("Copy image paths").regular(13)
-                        + Text("\nWhen copying optimised image data, also copy the path of the image file").round(11, weight: .regular).foregroundColor(.secondary)
+                    Text("复制图像路径").regular(13)
+                        + Text("\n拷贝优化后的图像数据时,同时复制图像文件路径").round(11, weight: .regular).foregroundColor(.secondary)
                 }
                 .searchAnchor("images.filenamehandling.copyImageFilePath", namesControl: true)
                 Toggle(isOn: $useCustomNameTemplateForClipboardImages.animation(.default)) {
                     customNameTemplate
                 }.disabled(!copyImageFilePath)
-                    .accessibilityLabel("Custom name template")
+                    .accessibilityLabel("自定义命名模板")
                     .searchAnchor("images.filenamehandling.useCustomNameTemplateForClipboardImages")
             }
 
-            Section(header: SectionHeader(title: "Photos integration", subtitle: "Handle images copied from the Photos app")) {
+            Section(header: SectionHeader(title: "「照片」集成", subtitle: "处理从「照片」应用拷贝的图像")) {
                 Toggle(isOn: $enablePhotosIntegration.animation(.spring())) {
-                    Text("Optimise images copied from Photos.app").regular(13)
+                    Text("优化从「照片」应用拷贝的图像").regular(13)
                 }
                 .searchAnchor("images.photosintegration.enablePhotosIntegration", namesControl: true)
 
@@ -1880,12 +1880,12 @@ struct ImagesSettingsView: View {
                     .searchAnchor("images.photosintegration.maxCopiedPhotosCount")
 
                 HStack(spacing: 6) {
-                    Text("Downscale to").regular(13).lineLimit(1).fixedSize()
+                    Text("缩小到").regular(13).lineLimit(1).fixedSize()
                         .searchAnchor("images.photosintegration.maxPhotosLength")
                     // No .fixedSize() here: it collapses the field to its ideal width, which is ~0
                     // while the value is unset, leaving nothing to click inside the 70pt frame.
                     TextField("", text: maxPhotosLengthBinding)
-                        .accessibilityLabel("Downscale to")
+                        .accessibilityLabel("缩小到")
                         .lineLimit(1)
                         .multilineTextAlignment(.trailing)
                         .frame(width: 70, alignment: .trailing)
@@ -1899,16 +1899,16 @@ struct ImagesSettingsView: View {
                 .disabled(!enablePhotosIntegration)
             }
 
-            Section(header: SectionHeader(title: "Optimisation rules")) {
+            Section(header: SectionHeader(title: "优化规则")) {
                 HStack(spacing: 4) {
                     SwiftUI.Image(systemName: "folder.badge.gearshape")
-                    Text("Where files go is set in").foregroundColor(.secondary)
-                    Button("File handling") { settingsViewManager.tab = .files }.buttonStyle(.link)
+                    Text("文件去向设置于").foregroundColor(.secondary)
+                    Button("文件处理") { settingsViewManager.tab = .files }.buttonStyle(.link)
                 }.font(.system(size: 11))
 
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 8) {
-                        Text("Compression").regular(13)
+                        Text("压缩").regular(13)
                             .searchAnchor("images.optimisationrules.imageCompression")
                         Slider(
                             value: Binding(
@@ -1917,46 +1917,46 @@ struct ImagesSettingsView: View {
                             ),
                             in: 5 ... 100, step: 1
                         )
-                        .accessibilityLabel("Compression")
+                        .accessibilityLabel("压缩")
                         .disabled(imageCompression.tier == .adaptive)
                         Text("\(imageCompression.factor)%")
                             .mono(11).foregroundColor(.secondary)
                             .opacity(imageCompression.tier == .adaptive ? 0.2 : 1)
                             .frame(width: 38, alignment: .trailing)
-                        Button("Adaptive") {
+                        Button("自适应") {
                             imageCompression.tier = imageCompression.tier == .adaptive ? .custom : .adaptive
                         }
                         .buttonStyle(ToggleButton(isOn: .oneway { imageCompression.tier == .adaptive }))
                         .font(.mono(11))
-                        .help("Convert detail heavy images to JPEG and low-detail ones to PNG, ignoring the compression factor's format")
+                        .help("细节丰富的图像转为 JPEG、低细节的转为 PNG,忽略压缩系数所指的格式")
                     }
                     if imageCompression.tier == .adaptive {
-                        Text("Clop will automatically pick between JPEG or PNG conversion based on image entropy, and choose a fitting compression factor adaptively")
+                        Text("Clop 会根据图像信息量自动在 JPEG 和 PNG 之间选择,并自适应地选取合适的压缩系数")
                             .round(10, weight: .regular).foregroundColor(.secondary)
                     }
                 }
                 Picker(selection: $gifFrameDropBehaviour) {
-                    Text("Play faster").tag(GIFFrameDropBehaviour.playFaster)
-                    Text("Keep duration (choppier motion)").tag(GIFFrameDropBehaviour.keepDuration)
+                    Text("加速播放").tag(GIFFrameDropBehaviour.playFaster)
+                    Text("保持时长(动作更卡顿)").tag(GIFFrameDropBehaviour.keepDuration)
                 } label: {
-                    Text("GIF frame dropping").regular(13)
-                        + Text("\nCompression factors above 80% drop every 4th, 3rd or 2nd frame of animated GIFs. The animation can either play faster with the remaining frames, or keep its duration by showing each frame longer").round(
+                    Text("GIF 丢帧").regular(13)
+                        + Text("\n压缩系数高于 80% 时,动图 GIF 会每 4、3 或 2 帧丢 1 帧:可让动画用剩余帧播得更快,也可保持时长、每帧显示更久").round(
                             11,
                             weight: .regular
                         ).foregroundColor(.secondary)
                 }
                 .searchAnchor("images.optimisationrules.gifFrameDropBehaviour", namesControl: true)
                 Toggle(isOn: $convertHDRToSDR) {
-                    Text("Convert HDR to SDR").regular(13)
+                    Text("将 HDR 转换为 SDR").regular(13)
                 }
                 .searchAnchor("images.optimisationrules.convertHDRToSDR", namesControl: true)
                 // Toggle(isOn: $downscaleRetinaImages) {
-                //     Text("Downscale HiDPI images to 72 DPI").regular(13)
-                //         + Text("\nScales down images taken on HiDPI screens to the standard DPI for web (e.g. Retina to 1x)").round(11, weight: .regular).foregroundColor(.secondary)
+                //     Text("将 HiDPI 图像降采样到 72 DPI").regular(13)
+                //         + Text("\n把 HiDPI 屏幕拍摄的图像缩到网页标准 DPI(如 Retina 降到 1x)").round(11, weight: .regular).foregroundColor(.secondary)
                 // }
 
             }
-            Section(header: SectionHeader(title: "Watched file filters", subtitle: "Only files within these limits are optimised")) {
+            Section(header: SectionHeader(title: "监视文件过滤", subtitle: "只有在此范围内的文件会被优化")) {
                 FileSizeRangeRow(minKB: $minImageSizeKB, maxMB: $maxImageSizeMB)
                     .searchAnchor("images.watchedfilefilters.minImageSizeKB")
                 ResolutionRangeRow(label: "Resolution", minRes: $minImageResolution, maxRes: $maxImageResolution)
@@ -1964,7 +1964,7 @@ struct ImagesSettingsView: View {
                 CountSliderRow(count: $maxImageFileCount, caption: { "Skips optimisation when more than \($0) \($0 == 1 ? "image is" : "images are") copied or moved at once" })
                     .searchAnchor("images.watchedfilefilters.maxImageFileCount")
                 HStack {
-                    Text("Ignore images with extension").regular(13).padding(.trailing, 10)
+                    Text("忽略这些扩展名的图像").regular(13).padding(.trailing, 10)
                         .searchAnchor("images.watchedfilefilters.imageFormatsToSkip")
                     Spacer()
 
@@ -1976,9 +1976,9 @@ struct ImagesSettingsView: View {
                     }
                 }
             }
-            Section(header: SectionHeader(title: "Compatibility", subtitle: "Converts less known formats to more compatible ones before optimisation")) {
+            Section(header: SectionHeader(title: "兼容性", subtitle: "优化前把小众格式转换为更兼容的格式")) {
                 HStack {
-                    (Text("Convert to ").regular(13) + Text("jpeg").mono(13)).padding(.trailing, 10)
+                    (Text("转换为 ").regular(13) + Text("jpeg").mono(13)).padding(.trailing, 10)
                         .searchAnchor("images.compatibility.formatsToConvertToJPEG")
                     Spacer()
 
@@ -1993,7 +1993,7 @@ struct ImagesSettingsView: View {
                     }
                 }
                 HStack {
-                    (Text("Convert to ").regular(13) + Text("png").mono(13)).padding(.trailing, 10)
+                    (Text("转换为 ").regular(13) + Text("png").mono(13)).padding(.trailing, 10)
                         .searchAnchor("images.compatibility.formatsToConvertToPNG")
                     Spacer()
 
@@ -2078,34 +2078,34 @@ struct KeysSettingsView: View {
 
     var body: some View {
         Form {
-            Section(header: SectionHeader(title: "Trigger keys")) {
+            Section(header: SectionHeader(title: "触发键")) {
                 DirectionalModifierView(triggerKeys: $keyComboModifiers, showFnCaps: false, allowShiftAlone: false)
             }
             .searchAnchor("keys.triggerkeys.keyComboModifiers")
-            Section(header: SectionHeader(title: "Action keys")) {
-                keyToggle(.minus, actionName: "Downscale", description: "Decrease resolution of the last image or video")
-                keyToggle(.x, actionName: "Speed up video", description: "Make video playback faster by dropping frames")
-                keyToggle(.delete, actionName: "Stop and Dismiss", description: "Stop the last running action and dismiss the floating result")
-                keyToggle(.escape, actionName: "Stop and Clear All", description: "Stop running optimisations and clear all floating results")
-                keyToggle(.equal, actionName: "Bring Back", description: "Bring back the last removed floating result")
-                keyToggle(.space, actionName: "QuickLook", description: "Preview the latest image or video")
-                keyToggle(.r, actionName: "Rename", description: "Rename the file of the latest image or video")
-                keyToggle(.z, actionName: "Restore original", description: "Revert optimisations and downscaling actions done on the latest image or video")
-                keyToggle(.p, actionName: "Pause optimisations", description: "Pause or stop automatic optimisations")
-                keyToggle(.c, actionName: "Optimise current clipboard", description: "Apply optimisations on the copied image, URL or path")
-                keyToggle(.a, actionName: "Optimise aggressively", description: "Apply aggressive optimisations on the copied image, URL or path")
+            Section(header: SectionHeader(title: "操作键")) {
+                keyToggle(.minus, actionName: "Downscale", description: "降低最近图像或视频的分辨率")
+                keyToggle(.x, actionName: "Speed up video", description: "丢帧加速视频播放")
+                keyToggle(.delete, actionName: "停止并关闭", description: "停止上一个操作并关闭悬浮结果")
+                keyToggle(.escape, actionName: "停止并全部清空", description: "停止正在运行的优化并清空全部悬浮结果")
+                keyToggle(.equal, actionName: "Bring Back", description: "找回上个被移除的悬浮结果")
+                keyToggle(.space, actionName: "QuickLook", description: "预览最近的图像或视频")
+                keyToggle(.r, actionName: "Rename", description: "重命名最近的图像或视频")
+                keyToggle(.z, actionName: "Restore original", description: "撤销对最近图像或视频的优化与缩放")
+                keyToggle(.p, actionName: "暂停优化", description: "暂停或停止自动优化")
+                keyToggle(.c, actionName: "优化当前剪贴板", description: "对拷贝的图像、URL 或路径执行优化")
+                keyToggle(.a, actionName: "激进优化", description: "对拷贝的图像、URL 或路径执行激进优化")
             }.padding(.leading, 20)
                 .searchAnchor("keys.actionkeys.enabledKeys")
-            Section(header: SectionHeader(title: "Resize keys")) {
+            Section(header: SectionHeader(title: "缩放键")) {
                 HStack(alignment: .bottom, spacing: 10) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Hold the trigger keys and").round(12, weight: .regular)
-                        Text("press a number to downscale to").mono(10).foregroundColor(.secondary)
+                        Text("按住触发键并").round(12, weight: .regular)
+                        Text("按数字键缩放到").mono(10).foregroundColor(.secondary)
                     }
                     VStack(spacing: 1) {
                         triggerKeyCap
                         // Kept for vertical alignment with the number keys' percentage labels, but hidden.
-                        Text("hold").mono(10).foregroundColor(.secondary).hidden()
+                        Text("按住").mono(10).foregroundColor(.secondary).hidden()
                     }
                     resizeKeys
                 }.fixedSize()
@@ -2169,7 +2169,7 @@ struct MadeBy: View {
                 .scaledToFit()
                 .frame(width: 24, height: 24)
                 .opacity(0.7)
-            Text("by")
+            Text("按")
             Link("The low-tech guys", destination: "https://lowtechguys.com/".url!)
                 .bold()
                 .foregroundColor(.primary)
@@ -2228,7 +2228,7 @@ struct IconPickerView: View {
         } label: {
             SwiftUI.Image(systemName: icon)
         }
-        .accessibilityLabel("Icon")
+        .accessibilityLabel("图标")
         .sheet(isPresented: $iconPickerPresented) {
             // Keeps the category this picker has always opened on: the default became `all` in
             // SymbolPicker 2.1.0.
@@ -2250,23 +2250,23 @@ struct DropZoneSettingsView: View {
 
     var toggles: some View {
         VStack(alignment: .leading, spacing: 0) {
-            SectionHeader(title: "Drop zone", subtitle: "Drag files, paths and URLs onto a global zone to optimise them")
+            SectionHeader(title: "投放区", subtitle: "把文件、路径和 URL 拖到全局投放区即可优化")
             VStack(alignment: .leading, spacing: 10) {
                 Toggle(isOn: $enableDragAndDrop) {
-                    Text("Enable drop zone").regular(13)
-                        + Text("\nAllows dragging files, paths and URLs to a global drop zone for optimisation").round(11, weight: .regular).foregroundColor(.secondary)
+                    Text("启用投放区").regular(13)
+                        + Text("\n允许把文件、路径和 URL 拖到全局投放区进行优化").round(11, weight: .regular).foregroundColor(.secondary)
                 }
                 .searchAnchor("dropzone.dropzone.enableDragAndDrop")
                 Toggle(isOn: $onlyShowDropZoneOnOption) {
-                    Text("Require pressing ⌥ Option to show drop zone").regular(13)
-                        + Text("\nHide drop zone by default to avoid distractions while dragging files, show it by manually pressing ⌥ Option once").round(11, weight: .regular).foregroundColor(.secondary)
+                    Text("需要按住 ⌥ Option 才显示投放区").regular(13)
+                        + Text("\n默认隐藏投放区,拖文件时不打扰;按一次 ⌥ Option 手动显示").round(11, weight: .regular).foregroundColor(.secondary)
                 }
                 .padding(.leading, 20)
                 .disabled(!enableDragAndDrop)
                 .searchAnchor("dropzone.dropzone.onlyShowDropZoneOnOption")
                 Toggle(isOn: $autoCopyToClipboard) {
-                    Text("Auto Copy optimised files to clipboard").regular(13)
-                        + Text("\nCopy files resulting from drop zone or file watch optimisation\nso they can be pasted right after optimisation ends").round(11, weight: .regular).foregroundColor(.secondary)
+                    Text("自动将优化后的文件复制到剪贴板").regular(13)
+                        + Text("\n复制投放区或文件夹监视优化产生的文件,\n优化结束后即可直接粘贴").round(11, weight: .regular).foregroundColor(.secondary)
                 }
                 .searchAnchor("dropzone.dropzone.autoCopyToClipboard")
             }
@@ -2285,7 +2285,7 @@ struct DropZoneSettingsView: View {
                 .background(RoundedRectangle(cornerRadius: 8, style: .continuous).stroke(Color.gray.opacity(0.2), lineWidth: 2))
                 .fixedSize()
 
-            Text("Drag files onto the drop zone\nto optimise them")
+            Text("把文件拖到投放区即可优化")
                 .font(.system(size: 12))
                 .multilineTextAlignment(.center)
                 .foregroundColor(.secondary)
@@ -2308,26 +2308,26 @@ struct DropZoneSettingsView: View {
                 Divider()
 
                 VStack(alignment: .leading, spacing: 0) {
-                    SectionHeader(title: "Batch mode", subtitle: "Process a large drop in a fast native window instead of one floating result per file")
+                    SectionHeader(title: "批量模式", subtitle: "大量拖入时在原生窗口中快速处理,而非每个文件一个悬浮结果")
                     VStack(alignment: .leading, spacing: 10) {
                         Toggle(isOn: $useBatchModeForFolders) {
-                            Text("Use batch mode for large drops").regular(13)
-                                + Text("\nDropping many files at once (or a folder with many files) opens a single batch window that optimises them all efficiently. Originals are backed up first and can be restored.").round(
+                            Text("大量拖入时使用批量模式").regular(13)
+                                + Text("\n一次拖入大量文件(或含大量文件的文件夹)会打开一个批量窗口统一高效优化。原件会先备份,可随时恢复。").round(
                                     11,
                                     weight: .regular
                                 ).foregroundColor(.secondary)
                         }
                         .searchAnchor("dropzone.batchmode.useBatchModeForFolders")
                         HStack {
-                            Text("Switch to batch mode when dropping more than").regular(13)
+                            Text("拖入超过此数量时切换为批量模式").regular(13)
                             Spacer()
                             TextField("", value: $batchModeFileCountThreshold, format: .number)
-                                .accessibilityLabel("Switch to batch mode when dropping more than")
+                                .accessibilityLabel("拖入超过此数量时切换为批量模式")
                                 .multilineTextAlignment(.center)
                                 .font(.mono(12))
                                 .frame(width: 60)
                                 .searchAnchor("dropzone.batchmode.batchModeFileCountThreshold", namesControl: true)
-                            Text("files").regular(13)
+                            Text("个文件").regular(13)
                         }
                         .disabled(!useBatchModeForFolders)
                         .opacity(useBatchModeForFolders ? 1 : 0.6)
@@ -2342,7 +2342,7 @@ struct DropZoneSettingsView: View {
                 Divider()
 
                 VStack(alignment: .leading, spacing: 0) {
-                    SectionHeader(title: "Automation", subtitle: "Run actions on files dropped here: convert, crop, copy, rename and more")
+                    SectionHeader(title: "自动化", subtitle: "对拖到这里 的文件执行操作:转换、裁剪、复制、重命名等")
                     SourceAutomationsSection(source: .dropZone)
                         .disabled(!enableDragAndDrop)
                         .padding(.bottom, 8)
@@ -2384,16 +2384,16 @@ struct PresetZonesSettingsView: View {
     var body: some View {
         ScrollViewReader { proxy in
             Form {
-                Section(header: SectionHeader(title: "Showing preset zones", subtitle: "How the preset zones reveal themselves over the drop zone")) {
-                    Picker("Show preset zones by holding or tapping the **⌃ Control** key", selection: $onlyShowPresetZonesOnControlTapped) {
-                        Text("Hold").tag(false)
-                        Text("Tap").tag(true)
+                Section(header: SectionHeader(title: "预设区显示方式", subtitle: "预设区在投放区上的呈现方式")) {
+                    Picker("按住或点按 **⌃ Control** 键显示预设区", selection: $onlyShowPresetZonesOnControlTapped) {
+                        Text("按住").tag(false)
+                        Text("点按").tag(true)
                     }
                     .pickerStyle(.segmented)
                     .searchAnchor("presetZones.showingpresetzones.onlyShowPresetZonesOnControlTapped")
                 }
 
-                Section(header: SectionHeader(title: "Preset zones", subtitle: "Click a zone to assign or create a pipeline. Drag files onto a zone to run its actions.")) {
+                Section(header: SectionHeader(title: "预设区", subtitle: "点按预设区可指派或新建管线;把文件拖到预设区即运行其操作。")) {
                     previews
 
                     if let id = svm.editingPresetZoneID, let zone = presetZones.first(where: { $0.id == id }) {
@@ -2466,115 +2466,115 @@ struct FloatingSettingsView: View {
     var settings: some View {
         Form {
             Toggle(isOn: $enableFloatingResults) {
-                Text("Show floating results").regular(13)
-                    + Text("\n\nDisabling this will make Clop run in an UI-less mode, but keep optimising files in the background. Drop zone can be disabled separately in the Drop zone tab")
+                Text("显示悬浮结果").regular(13)
+                    + Text("\n\n关闭后 Clop 将以无界面模式运行,但仍会在后台优化文件。投放区可在「投放区」标签页单独关闭")
                     .round(10, weight: .regular)
                     .foregroundColor(.secondary)
             }
             .searchAnchor("floating.main.enableFloatingResults", namesControl: true)
-            Section(header: SectionHeader(title: "Layout")) {
-                Picker("Position on screen", selection: $floatingResultsCorner) {
-                    Text("Bottom right").tag(ScreenCorner.bottomRight)
-                    Text("Bottom left").tag(ScreenCorner.bottomLeft)
-                    Text("Top right").tag(ScreenCorner.topRight)
-                    Text("Top left").tag(ScreenCorner.topLeft)
+            Section(header: SectionHeader(title: "布局")) {
+                Picker("屏幕位置", selection: $floatingResultsCorner) {
+                    Text("右下").tag(ScreenCorner.bottomRight)
+                    Text("左下").tag(ScreenCorner.bottomLeft)
+                    Text("右上").tag(ScreenCorner.topRight)
+                    Text("左上").tag(ScreenCorner.topLeft)
                 }
                 .searchAnchor("floating.layout.floatingResultsCorner", namesControl: true)
                 Toggle(isOn: $followCursorScreen) {
-                    Text("Follow the cursor across screens").regular(13)
-                        + Text("\n\nWhen the cursor stays on another screen for a couple of seconds, move the results to that screen")
+                    Text("跟随光标跨屏幕移动").regular(13)
+                        + Text("\n\n光标在另一块屏幕停留几秒后,结果会自动移过去")
                         .round(10, weight: .regular)
                         .foregroundColor(.secondary)
                 }
                 .searchAnchor("floating.layout.followCursorScreen", namesControl: true)
                 Toggle(isOn: $hideFloatingResultTooltips) {
-                    Text("Hide button tooltips").regular(13)
-                        + Text("\n\nDon't show the action name labels that pop up while hovering result buttons")
+                    Text("隐藏按钮提示").regular(13)
+                        + Text("\n\n悬停结果按钮上时不弹出操作名称标签")
                         .round(10, weight: .regular)
                         .foregroundColor(.secondary)
                 }
                 .searchAnchor("floating.layout.hideFloatingResultTooltips", namesControl: true)
                 Toggle(isOn: $alwaysShowCompactResults) {
-                    Text("Always use compact layout").regular(13)
-                        + Text("\n\nBy default, the layout switches to compact automatically when there are more than 5 results on the screen")
+                    Text("始终使用紧凑布局").regular(13)
+                        + Text("\n\n默认情况下,屏幕上结果超过 5 个时自动切换为紧凑布局")
                         .round(10, weight: .regular)
                         .foregroundColor(.secondary)
                 }
                 .searchAnchor("floating.layout.alwaysShowCompactResults", namesControl: true)
             }.disabled(!enableFloatingResults)
 
-            Section(header: SectionHeader(title: "Full layout")) {
+            Section(header: SectionHeader(title: "完整布局")) {
                 // Subtitle sits under both the label and the picker so it can wrap across the whole
                 // row width instead of being squeezed into the label column by the picker.
                 VStack(alignment: .leading, spacing: 4) {
                     Picker(selection: $formatPickerStyle) {
-                        Text("format bar at the bottom").tag(FormatPickerStyle.bar)
-                        Text("hover on the file extension").tag(FormatPickerStyle.extensionHover)
+                        Text("底部格式栏").tag(FormatPickerStyle.bar)
+                        Text("悬停在扩展名上").tag(FormatPickerStyle.extensionHover)
                     } label: {
-                        Text("Change format by").regular(13)
+                        Text("切换格式的方式").regular(13)
                     }
                     .searchAnchor("floating.fulllayout.formatPickerStyle", namesControl: true)
-                    Text("The format bar shows all convertible formats as one-click segments at the bottom of the result; the extension chip pops the formats up on hover")
+                    Text("格式栏把所有可转换格式作为一键分段显示在结果底部;扩展名标签悬停时弹出格式列表")
                         .round(10, weight: .regular)
                         .foregroundColor(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                Toggle("Show Copy all / Clear all buttons", isOn: $showCopyClearButtons)
+                Toggle("显示「全部复制 / 全部清空」按钮", isOn: $showCopyClearButtons)
                     .searchAnchor("floating.fulllayout.showCopyClearButtons", namesControl: true)
-                Text("Dismiss result after")
-                Toggle("drag and drop outside", isOn: $dismissFloatingResultOnDrop).padding(.leading, 20)
+                Text("结果消失时间")
+                Toggle("拖到外部时", isOn: $dismissFloatingResultOnDrop).padding(.leading, 20)
                     .searchAnchor("floating.fulllayout.dismissFloatingResultOnDrop", namesControl: true)
-                Toggle("upload to Dropshare", isOn: $dismissFloatingResultOnUpload).padding(.leading, 20)
+                Toggle("上传到 Dropshare", isOn: $dismissFloatingResultOnUpload).padding(.leading, 20)
                     .searchAnchor("floating.fulllayout.dismissFloatingResultOnUpload", namesControl: true)
 
-                Toggle("Auto hide", isOn: $autoHideFloatingResults)
+                Toggle("自动隐藏", isOn: $autoHideFloatingResults)
                     .searchAnchor("floating.fulllayout.autoHideFloatingResults", namesControl: true)
-                Picker("files after", selection: $autoHideFloatingResultsAfter) {
-                    Text("5 seconds").tag(5)
-                    Text("10 seconds").tag(10)
-                    Text("15 seconds").tag(15)
-                    Text("30 seconds").tag(30)
-                    Text("1 minute").tag(60)
-                    Text("2 minutes").tag(120)
-                    Text("5 minutes").tag(300)
-                    Text("10 minutes").tag(600)
-                    Text("never").tag(0)
+                Picker("个文件后", selection: $autoHideFloatingResultsAfter) {
+                    Text("5 秒").tag(5)
+                    Text("10 秒").tag(10)
+                    Text("15 秒").tag(15)
+                    Text("30 秒").tag(30)
+                    Text("1 分钟").tag(60)
+                    Text("2 分钟").tag(120)
+                    Text("5 分钟").tag(300)
+                    Text("10 分钟").tag(600)
+                    Text("从不").tag(0)
                 }.disabled(!autoHideFloatingResults).padding(.leading, 20)
                     .searchAnchor("floating.fulllayout.autoHideFloatingResultsAfter", namesControl: true)
-                Picker("clipboard after", selection: $autoHideClipboardResultAfter) {
-                    Text("1 seconds").tag(1)
-                    Text("2 seconds").tag(2)
-                    Text("3 seconds").tag(3)
-                    Text("4 seconds").tag(4)
-                    Text("5 seconds").tag(5)
-                    Text("10 seconds").tag(10)
-                    Text("30 seconds").tag(30)
-                    Text("same as non-clipboard").tag(-1)
-                    Text("never").tag(0)
+                Picker("剪贴板新内容后", selection: $autoHideClipboardResultAfter) {
+                    Text("1 秒").tag(1)
+                    Text("2 秒").tag(2)
+                    Text("3 秒").tag(3)
+                    Text("4 秒").tag(4)
+                    Text("5 秒").tag(5)
+                    Text("10 秒").tag(10)
+                    Text("30 秒").tag(30)
+                    Text("与常规优化相同").tag(-1)
+                    Text("从不").tag(0)
                 }.disabled(!autoHideFloatingResults).padding(.leading, 20)
                     .searchAnchor("floating.fulllayout.autoHideClipboardResultAfter", namesControl: true)
             }.disabled(!enableFloatingResults)
 
-            Section(header: SectionHeader(title: "Compact layout")) {
-                Toggle("Show images", isOn: $showCompactImages)
+            Section(header: SectionHeader(title: "紧凑布局")) {
+                Toggle("显示图像", isOn: $showCompactImages)
                     .searchAnchor("floating.compactlayout.showCompactImages", namesControl: true)
-                Text("Dismiss result after")
-                Toggle("drag and drop outside", isOn: $dismissCompactResultOnDrop).padding(.leading, 20)
+                Text("结果消失时间")
+                Toggle("拖到外部时", isOn: $dismissCompactResultOnDrop).padding(.leading, 20)
                     .searchAnchor("floating.compactlayout.dismissCompactResultOnDrop", namesControl: true)
-                Toggle("upload to Dropshare", isOn: $dismissCompactResultOnUpload).padding(.leading, 20)
+                Toggle("上传到 Dropshare", isOn: $dismissCompactResultOnUpload).padding(.leading, 20)
                     .searchAnchor("floating.compactlayout.dismissCompactResultOnUpload", namesControl: true)
 
-                Picker("Auto clear all after", selection: $autoClearAllCompactResultsAfter) {
-                    Text("5 seconds").tag(5)
-                    Text("10 seconds").tag(10)
-                    Text("15 seconds").tag(15)
-                    Text("30 seconds").tag(30)
-                    Text("1 minute").tag(60)
-                    Text("2 minutes").tag(120)
-                    Text("5 minutes").tag(300)
-                    Text("10 minutes").tag(600)
-                    Text("30 minutes").tag(1800)
-                    Text("never").tag(0)
+                Picker("全部清空时间", selection: $autoClearAllCompactResultsAfter) {
+                    Text("5 秒").tag(5)
+                    Text("10 秒").tag(10)
+                    Text("15 秒").tag(15)
+                    Text("30 秒").tag(30)
+                    Text("1 分钟").tag(60)
+                    Text("2 分钟").tag(120)
+                    Text("5 分钟").tag(300)
+                    Text("10 分钟").tag(600)
+                    Text("30 分钟").tag(1800)
+                    Text("从不").tag(0)
                 }
                 .searchAnchor("floating.compactlayout.autoClearAllCompactResultsAfter", namesControl: true)
             }.disabled(!enableFloatingResults)
@@ -2621,12 +2621,12 @@ struct FloatingSettingsView: View {
                         }
                     }
                 }
-                Picker("Layout", selection: $compact) {
-                    Text("Compact").tag(true)
-                    Text("Full").tag(false)
+                Picker("布局", selection: $compact) {
+                    Text("紧凑").tag(true)
+                    Text("完整").tag(false)
                 }.pickerStyle(.segmented).frame(width: 200)
                     .labelsHidden()
-                Text("only for preview")
+                Text("仅用于预览")
                     .round(10)
                     .foregroundColor(.secondary)
 
@@ -2678,10 +2678,10 @@ struct EditorAppRow: View {
                     SwiftUI.Image(systemName: "xmark.circle.fill").foregroundColor(.secondary)
                 }
                 .buttonStyle(.borderless)
-                .help("Remove")
-                .accessibilityLabel("Remove")
+                .help("移除")
+                .accessibilityLabel("移除")
             } else {
-                Button("Choose app…", action: pick)
+                Button("选择应用…", action: pick)
             }
         }
         .onAppear { appPath = Defaults[key].resolvedPath }
@@ -2751,45 +2751,45 @@ struct ClipboardSettingsView: View {
 
     var body: some View {
         Form {
-            Section(header: SectionHeader(title: "Clipboard", subtitle: "Watch for copied data and optimise it automatically")) {
+            Section(header: SectionHeader(title: "剪贴板", subtitle: "监视拷贝的数据并自动优化")) {
                 Toggle(isOn: $enableClipboardOptimiser) {
-                    Text("Enable clipboard optimiser").regular(13)
-                        + Text("\nWatch for copied data and optimise it automatically").round(11, weight: .regular).foregroundColor(.secondary)
+                    Text("启用剪贴板优化器").regular(13)
+                        + Text("\n监视拷贝的数据并自动优化").round(11, weight: .regular).foregroundColor(.secondary)
                 }
                 .searchAnchor("clipboard.clipboard.enableClipboardOptimiser", namesControl: true)
                 Group {
                     Toggle(isOn: .constant(true)) {
-                        Text("Image data").regular(13)
-                            + Text("\nCopied image data (e.g. screenshots)").round(11, weight: .regular).foregroundColor(.secondary)
+                        Text("图像数据").regular(13)
+                            + Text("\n拷贝的图像数据(如截屏)").round(11, weight: .regular).foregroundColor(.secondary)
                     }.disabled(true)
-                        .accessibilityLabel("Image data")
+                        .accessibilityLabel("图像数据")
                     Toggle(isOn: $optimiseTIFF) {
-                        Text("TIFF data").regular(13)
-                            + Text("\nUsually from graphical design apps, sometimes better left alone").round(11, weight: .regular).foregroundColor(.secondary)
+                        Text("TIFF 数据").regular(13)
+                            + Text("\n通常来自设计类应用,有时保持原样更好").round(11, weight: .regular).foregroundColor(.secondary)
                     }
                     .searchAnchor("clipboard.clipboard.optimiseTIFF", namesControl: true)
                     Toggle(isOn: $optimiseHEICAVIFClipboard) {
-                        Text("HEIC and AVIF data").regular(13)
+                        Text("HEIC 与 AVIF 数据").regular(13)
                     }
                     .searchAnchor("clipboard.clipboard.optimiseHEICAVIFClipboard", namesControl: true)
                     Toggle(isOn: $optimiseImagePathClipboard) {
-                        Text("Image files").regular(13)
-                            + Text("\nCopying images from Finder results in file paths instead of image data").round(11, weight: .regular).foregroundColor(.secondary)
+                        Text("图像文件").regular(13)
+                            + Text("\n从访达拷贝图像时,得到的是文件路径而非图像数据").round(11, weight: .regular).foregroundColor(.secondary)
                     }
                     .searchAnchor("clipboard.clipboard.optimiseImagePathClipboard", namesControl: true)
                     Toggle(isOn: $optimiseVideoClipboard) {
-                        Text("Video files").regular(13)
-                            + Text("\nOptimise copied video file paths").round(11, weight: .regular).foregroundColor(.secondary)
+                        Text("视频文件").regular(13)
+                            + Text("\n优化拷贝的视频文件路径").round(11, weight: .regular).foregroundColor(.secondary)
                     }
                     .searchAnchor("clipboard.clipboard.optimiseVideoClipboard", namesControl: true)
                     Toggle(isOn: $optimiseAudioClipboard) {
-                        Text("Audio files").regular(13)
-                            + Text("\nOptimise copied audio file paths").round(11, weight: .regular).foregroundColor(.secondary)
+                        Text("音频文件").regular(13)
+                            + Text("\n优化拷贝的音频文件路径").round(11, weight: .regular).foregroundColor(.secondary)
                     }
                     .searchAnchor("clipboard.clipboard.optimiseAudioClipboard", namesControl: true)
                     Toggle(isOn: $optimisePDFClipboard) {
-                        Text("PDF files").regular(13)
-                            + Text("\nOptimise copied PDF file paths").round(11, weight: .regular).foregroundColor(.secondary)
+                        Text("PDF 文件").regular(13)
+                            + Text("\n优化拷贝的 PDF 文件路径").round(11, weight: .regular).foregroundColor(.secondary)
                     }
                     .searchAnchor("clipboard.clipboard.optimisePDFClipboard", namesControl: true)
                 }
@@ -2797,14 +2797,14 @@ struct ClipboardSettingsView: View {
                 .padding(.leading, 20)
 
                 Toggle(isOn: $appendClipboardResults) {
-                    Text("Keep all clipboard results").regular(13)
-                        + Text("\nShow each clipboard optimisation as a separate result instead of replacing the previous one").round(11, weight: .regular).foregroundColor(.secondary)
+                    Text("保留全部剪贴板结果").regular(13)
+                        + Text("\n每次剪贴板优化都单独显示一个结果,而非替换上一个").round(11, weight: .regular).foregroundColor(.secondary)
                 }.disabled(!enableClipboardOptimiser)
                     .searchAnchor("clipboard.clipboard.appendClipboardResults", namesControl: true)
                 if appendClipboardResults {
                     Toggle(isOn: $copyConsecutiveClipboardImages) {
-                        Text("Accumulate optimised images in clipboard").regular(13)
-                            + Text("\nEach new optimised image is added to a file list in the clipboard, so you can paste them all at once into image editor apps like Pixelmator or Affinity, or into notes").round(11, weight: .regular)
+                        Text("在剪贴板中累积优化后的图像").regular(13)
+                            + Text("\n每张新优化的图像都会加入剪贴板中的文件列表,可在 Pixelmator、Affinity 等图像编辑器或笔记里一次性全部粘贴").round(11, weight: .regular)
                             .foregroundColor(.secondary)
                     }
                     .disabled(!enableClipboardOptimiser)
@@ -2812,25 +2812,25 @@ struct ClipboardSettingsView: View {
                     .searchAnchor("clipboard.clipboard.copyConsecutiveClipboardImages", namesControl: true)
 
                     HStack {
-                        Text("Reset after").regular(13)
-                        Picker("Reset after", selection: $clipboardAccumulationTimeout) {
-                            Text("10 seconds").tag(10)
-                            Text("30 seconds").tag(30)
-                            Text("1 minute").tag(60)
-                            Text("2 minutes").tag(120)
-                            Text("5 minutes").tag(300)
-                            Text("Never").tag(0)
+                        Text("重置时间").regular(13)
+                        Picker("重置时间", selection: $clipboardAccumulationTimeout) {
+                            Text("10 秒").tag(10)
+                            Text("30 秒").tag(30)
+                            Text("1 分钟").tag(60)
+                            Text("2 分钟").tag(120)
+                            Text("5 分钟").tag(300)
+                            Text("从不").tag(0)
                         }
                         .labelsHidden()
                         .frame(width: 140)
                         .searchAnchor("clipboard.clipboard.clipboardAccumulationTimeout")
-                        Text("of inactivity").regular(13)
+                        Text("无操作后").regular(13)
                     }
                     .padding(.leading, 20)
                 }
             }
 
-            Section(header: SectionHeader(title: "Ignored apps", subtitle: "Skip clipboard optimisation while one of these apps is in front")) {
+            Section(header: SectionHeader(title: "忽略的应用", subtitle: "这些应用在前台时跳过剪贴板优化")) {
                 VStack(alignment: .leading, spacing: 4) {
                     IgnoredAppsPicker(bundleIds: $clipboardIgnoredAppBundleIds, enabled: enableClipboardOptimiser)
                         .padding(.top, 2)
@@ -2841,7 +2841,7 @@ struct ClipboardSettingsView: View {
             }
             .searchAnchor("clipboard.ignoredapps.clipboardIgnoredAppBundleIds")
 
-            Section(header: SectionHeader(title: "Automation", subtitle: "Run actions on every file you copy")) {
+            Section(header: SectionHeader(title: "自动化", subtitle: "对拷贝的每个文件自动执行操作")) {
                 SourceAutomationsSection(source: .clipboard, disabledTypes: disabledClipboardTypes)
             }
             .id("automation")
@@ -2910,7 +2910,7 @@ struct GeneralSettingsView: View {
     var body: some View {
         Form {
             HStack {
-                Text("Menubar icon")
+                Text("菜单栏图标")
                     .searchAnchor("general.main.showMenubarIcon")
                 Spacer()
                 menubarIconButton(.new) { SwiftUI.Image(nsImage: Self.menubarIconNew).resizable() }
@@ -2919,25 +2919,25 @@ struct GeneralSettingsView: View {
                 menubarIconButton(.hidden) { SwiftUI.Image(systemName: "eye.slash").resizable() }
             }
             LaunchAtLogin.Toggle()
-                .accessibilityLabel("Launch at login")
-            Toggle("Sync settings with other Macs via iCloud", isOn: $syncSettingsCloud)
+                .accessibilityLabel("登录时启动")
+            Toggle("通过 iCloud 在多台 Mac 间同步设置", isOn: $syncSettingsCloud)
                 .searchAnchor("general.main.syncSettingsCloud", namesControl: true)
             HStack {
-                Text("Secure send links expire after")
+                Text("安全发送链接有效期")
                 Spacer()
-                Picker("Secure send links expire after", selection: $defaultLinkExpiration) {
+                Picker("安全发送链接有效期", selection: $defaultLinkExpiration) {
                     ForEach(LINK_EXPIRATION_PRESETS, id: \.self) { preset in
                         Text(expirationDurationLabel(preset)).tag(preset)
                     }
                     Divider()
-                    Text("Never").tag(LINK_EXPIRATION_NEVER)
+                    Text("从不").tag(LINK_EXPIRATION_NEVER)
                 }
                 .labelsHidden()
                 .frame(width: 150)
                 .searchAnchor("general.main.defaultLinkExpiration")
             }
 
-            Section(header: SectionHeader(title: "Edit with external app", subtitle: "Hand an optimised file to an editor of your choice with ⌘E or the right-click menu")) {
+            Section(header: SectionHeader(title: "用外部应用编辑", subtitle: "按 ⌘E 或通过右键菜单把优化后的文件交给自选编辑器")) {
                 EditorAppRow(label: "Images", systemImage: "photo", key: .editorAppImage)
                     .searchAnchor("general.editwithexternalapp.editorAppImage")
                 EditorAppRow(label: "Videos", systemImage: "video", key: .editorAppVideo)
@@ -2948,71 +2948,71 @@ struct GeneralSettingsView: View {
                     .searchAnchor("general.editwithexternalapp.editorAppPDF")
             }
 
-            Section(header: SectionHeader(title: "Working directory", subtitle: "Where temporary files and backups are stored and where the optimised files are saved")) {
+            Section(header: SectionHeader(title: "工作目录", subtitle: "临时文件、备份与优化后文件的存放位置")) {
                 HStack {
-                    Text("Path").regular(13).padding(.trailing, 10)
+                    Text("路径").regular(13).padding(.trailing, 10)
                         .searchAnchor("general.workingdirectory.workdir")
                     TextField("", text: workdirBinding)
-                        .accessibilityLabel("Working directory")
+                        .accessibilityLabel("工作目录")
                         .multilineTextAlignment(.center)
                         .font(.mono(12))
                         .background(RoundedRectangle(cornerRadius: 6, style: .continuous).stroke(Color.gray, lineWidth: 1).scaleEffect(y: TEXT_FIELD_SCALE).offset(x: TEXT_FIELD_OFFSET))
-                    Button("Reset") {
+                    Button("重置") {
                         workdir = Defaults.Keys.workdir.defaultValue
                     }
                     .buttonStyle(.bordered)
                     .font(.regular(11))
                 }
 
-                Picker("Periodically cleanup files older than", selection: $workdirCleanupInterval) {
-                    Text("10 minutes").tag(CleanupInterval.every10Minutes)
-                    Text("1 hour").tag(CleanupInterval.hourly)
-                    Text("12 hours").tag(CleanupInterval.every12Hours)
-                    Text("1 day").tag(CleanupInterval.daily)
-                    Text("3 days").tag(CleanupInterval.every3Days)
-                    Text("1 week").tag(CleanupInterval.weekly)
-                    Text("1 month").tag(CleanupInterval.monthly)
-                    Text("never clean up").tag(CleanupInterval.never)
+                Picker("定期清理早于此时间的文件", selection: $workdirCleanupInterval) {
+                    Text("10 分钟").tag(CleanupInterval.every10Minutes)
+                    Text("1 小时").tag(CleanupInterval.hourly)
+                    Text("12 小时").tag(CleanupInterval.every12Hours)
+                    Text("1 天").tag(CleanupInterval.daily)
+                    Text("3 天").tag(CleanupInterval.every3Days)
+                    Text("1 周").tag(CleanupInterval.weekly)
+                    Text("1 个月").tag(CleanupInterval.monthly)
+                    Text("从不清理").tag(CleanupInterval.never)
                 }
                 .searchAnchor("general.workingdirectory.workdirCleanupInterval", namesControl: true)
             }
 
-            Section(header: SectionHeader(title: "Optimisation")) {
+            Section(header: SectionHeader(title: "优化")) {
                 Toggle(isOn: $stripMetadata) {
-                    Text("Strip EXIF Metadata").regular(13)
-                        + Text("\nDeleted identifiable metadata from files (e.g. camera that took the photo, location, date and time etc.)").round(11, weight: .regular).foregroundColor(.secondary)
+                    Text("去除 EXIF 元数据").regular(13)
+                        + Text("\n删除文件中可识别的元数据(如拍摄设备、位置、日期时间等)").round(11, weight: .regular).foregroundColor(.secondary)
                 }
                 .searchAnchor("general.optimisation.stripMetadata", namesControl: true)
                 Toggle(isOn: $preserveColorMetadata) {
-                    Text("Preserve color profile metadata").regular(13)
-                        + Text("\nKeep color profile metadata tags untouched when stripping EXIF metadata").round(11, weight: .regular).foregroundColor(.secondary)
+                    Text("保留色彩配置元数据").regular(13)
+                        + Text("\n去除 EXIF 元数据时不改动色彩配置标签").round(11, weight: .regular).foregroundColor(.secondary)
                 }
                 .padding(.leading, 20)
                 .disabled(!stripMetadata)
                 .searchAnchor("general.optimisation.preserveColorMetadata", namesControl: true)
 
                 Toggle(isOn: $preserveDates) {
-                    Text("Preserve file creation and modification dates").regular(13)
-                        + Text("\nThe optimised file will have the same creation and modification dates as the original file").round(11, weight: .regular).foregroundColor(.secondary)
+                    Text("保留文件的创建与修改时间").regular(13)
+                        + Text("\n优化后的文件将保留与原件相同的创建和修改时间").round(11, weight: .regular).foregroundColor(.secondary)
                 }
                 .searchAnchor("general.optimisation.preserveDates", namesControl: true)
 
                 Picker(selection: $optimisedFileProtectionMs) {
-                    Text("3 seconds").tag(3000)
-                    Text("10 seconds").tag(10000)
-                    Text("30 seconds").tag(30000)
-                    Text("60 seconds").tag(60000)
+                    Text("3 秒").tag(3000)
+                    Text("10 秒").tag(10000)
+                    Text("30 秒").tag(30000)
+                    Text("60 秒").tag(60000)
                 } label: {
-                    Text("Re-optimisation loop detection window").regular(13)
-                        + Text("\nIncrease if files on iCloud Drive get optimised twice").round(11, weight: .regular).foregroundColor(.secondary)
+                    Text("重复优化检测窗口").regular(13)
+                        + Text("\n如果 iCloud Drive 上的文件被重复优化,调大此项").round(11, weight: .regular).foregroundColor(.secondary)
                 }
                 .searchAnchor("general.optimisation.optimisedFileProtectionMs", namesControl: true)
             }
 
-            Section(header: SectionHeader(title: "Privacy")) {
+            Section(header: SectionHeader(title: "隐私")) {
                 SentryToggleRow(
-                    title: "Send error reports",
-                    subtitle: "Help improve Clop by sending anonymous crash and error reports to the developer"
+                    title: "发送错误报告",
+                    subtitle: "向开发者发送匿名崩溃与错误报告,帮助改进 Clop"
                 )
             }
         }
@@ -3053,7 +3053,7 @@ struct GeneralSettingsView: View {
         .accessibilityAddTraits(selected ? .isSelected : [])
         .help({
             switch style {
-            case .hidden: "Hide the menubar icon"
+            case .hidden: "隐藏菜单栏图标"
             case .classic: "Use the classic menubar icon"
             case .geometric: "Use the geometric menubar icon"
             case .new: "Use the new menubar icon"
@@ -3085,7 +3085,7 @@ class SettingsViewManager: ObservableObject {
     @Published var highlightedEntry: String? = nil
     @Published var windowOpen = false
     @Published var scrollToFileType: ClopFileType?
-    /// Set by the "Configured in Compatibility" link in File Handling to scroll the destination
+    /// Set by the "在「兼容性」中配置" link in File Handling to scroll the destination
     /// tab down to its Compatibility section. Cleared once that section has reacted.
     @Published var scrollToCompatibility = false
     /// Set by an assignment pill's "Go to" (clipboard / drop zone) to scroll the destination tab down
@@ -3155,7 +3155,7 @@ struct SettingsView: View {
             case .dropzone: "Drop Zone"
             case .presetZones: "Preset Zones"
             case .floating: "Floating Results"
-            case .keys: "Keyboard Shortcuts"
+            case .keys: "键盘快捷键"
             case .pipelines: "Pipelines"
             case .automation: "Automation"
             case .mcp: "MCP"
@@ -3249,11 +3249,11 @@ struct SettingsView: View {
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(.secondary)
                 .accessibilityHidden(true)
-            TextField("Search settings", text: $svm.searchQuery)
+            TextField("搜索设置", text: $svm.searchQuery)
                 .textFieldStyle(.plain)
                 .focused($searchFocused)
                 // The placeholder is not a name: without this the field is announced as nothing.
-                .accessibilityLabel("Search settings")
+                .accessibilityLabel("搜索设置")
             if !svm.searchQuery.isEmpty {
                 Button { svm.searchQuery = "" } label: {
                     SwiftUI.Image(systemName: "xmark.circle.fill")
@@ -3261,7 +3261,7 @@ struct SettingsView: View {
                         .foregroundStyle(.tertiary)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Clear search")
+                .accessibilityLabel("清除搜索")
             }
         }
         .padding(.horizontal, 8)
@@ -3282,7 +3282,7 @@ struct SettingsView: View {
         let results = SettingsSearchIndex.search(svm.searchQuery)
         if results.isEmpty {
             List {
-                Text("Nothing matches \"\(svm.searchQuery)\"")
+                Text("没有与「\(svm.searchQuery)」匹配的内容")
                     .round(12)
                     .foregroundColor(.secondary)
             }
@@ -3307,7 +3307,7 @@ struct SettingsView: View {
                     }
                     .buttonStyle(.plain)
                     .contextMenu {
-                        Button("Copy deep link") {
+                        Button("复制深链") {
                             let link = SettingsURL.link(to: entry)
                             withGeneralPasteboard { pb in
                                 pb.clearContents()
@@ -3325,22 +3325,22 @@ struct SettingsView: View {
             ForEach(Self.topTabs, id: \.self) { tab in
                 SettingsSidebarRow(tab: tab)
             }
-            Section("File types") {
+            Section("文件类型") {
                 ForEach(Self.fileTypeTabs, id: \.self) { tab in
                     SettingsSidebarRow(tab: tab)
                 }
             }
-            Section("Drops & Results") {
+            Section("投放与结果") {
                 ForEach(Self.dropTabs, id: \.self) { tab in
                     SettingsSidebarRow(tab: tab)
                 }
             }
-            Section("Shortcuts & Automation") {
+            Section("快捷指令与自动化") {
                 ForEach(Self.automationTabs, id: \.self) { tab in
                     SettingsSidebarRow(tab: tab)
                 }
             }
-            Section("Support") {
+            Section("支持") {
                 ForEach(Self.supportTabs, id: \.self) { tab in
                     SettingsSidebarRow(tab: tab)
                 }
@@ -3358,7 +3358,7 @@ struct SettingsView: View {
                 // accessibility and Mission Control. `.windowStyle(.hiddenTitleBar)` keeps it
                 // from being drawn in the titlebar. Using the tab name here (as before) leaked
                 // the selected tab into the window title.
-                .navigationTitle("Settings")
+                .navigationTitle("设置")
                 .background(PreventSidebarCollapse())
         }
         .navigationSplitViewStyle(.balanced)
@@ -3753,7 +3753,7 @@ struct SkipSliderPreview: View {
 
     var body: some View {
         Form {
-            Section(header: Text("Skip rules preview")) {
+            Section(header: Text("跳过规则预览")) {
                 FileSizeRangeRow(minKB: $minKB, maxMB: $maxMB)
                 ResolutionRangeRow(minRes: $minRes, maxRes: $maxRes)
                 CountSliderRow(count: $count, caption: { "Skips optimisation when more than \($0) \($0 == 1 ? "image is" : "images are") copied or moved at once" })

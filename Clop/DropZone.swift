@@ -296,34 +296,34 @@ struct DropZonePresetsView: View {
     @ViewBuilder
     func zoneMenuContent(zone: PresetZone?) -> some View {
         if let zone {
-            Button("Edit pipeline") { settingsViewManager.editingPresetZoneID = zone.id }
+            Button("编辑管线") { settingsViewManager.editingPresetZoneID = zone.id }
             if zone.pipeline.isLibraryReference, let libID = zone.pipeline.libraryID {
-                Button("Go to pipeline") {
+                Button("前往管线") {
                     settingsViewManager.tab = .pipelines
                     settingsViewManager.highlightPipelineID = libID
                 }
             }
             if !applicableLibraryPipelines.isEmpty {
-                Menu("Replace with") {
+                Menu("替换为") {
                     ForEach(applicableLibraryPipelines) { lib in
                         Button { assignPresetZone(library: lib, type: zone.type, replacing: zone) } label: { libMenuLabel(lib) }
                     }
                 }
             }
             Divider()
-            Button("Create new \(typeLabel(type)) pipeline") { settingsViewManager.editingPresetZoneID = appendPresetZone(type: type) }
+            Button("新建\(typeLabel(type))管线") { settingsViewManager.editingPresetZoneID = appendPresetZone(type: type) }
             Divider()
-            Button("Remove from zone", role: .destructive) { removePresetZone(zone) }
+            Button("从投放区移除", role: .destructive) { removePresetZone(zone) }
         } else {
             if !applicableLibraryPipelines.isEmpty {
-                Section("Assign existing pipeline") {
+                Section("指派现有管线") {
                     ForEach(applicableLibraryPipelines) { lib in
                         Button { assignPresetZone(library: lib, type: type) } label: { libMenuLabel(lib) }
                     }
                 }
                 Divider()
             }
-            Button("Create new \(typeLabel(type)) pipeline") { settingsViewManager.editingPresetZoneID = appendPresetZone(type: type) }
+            Button("新建\(typeLabel(type))管线") { settingsViewManager.editingPresetZoneID = appendPresetZone(type: type) }
         }
     }
 
@@ -477,7 +477,7 @@ struct DropZoneView: View {
             if dragManager.showPresetZones || presetFileType != nil {
                 DropZonePresetsView(type: presetFileType ?? dragManager.fileType, selectedPreset: $selectedPreset)
             } else {
-                Text("Drop to optimise")
+                Text("拖入即优化")
                     .round(14, weight: .heavy)
                     .padding(.top, 10)
 
@@ -499,7 +499,7 @@ struct DropZoneView: View {
                     }
 
                 VStack(spacing: -1) {
-                    Text("^: show preset zones")
+                    Text("^:显示预设区")
                         .medium(10)
                         .foregroundColor(.primary)
                         .opacity(0.8)
@@ -507,7 +507,7 @@ struct DropZoneView: View {
                         .medium(10)
                         .foregroundColor(.primary)
                         .opacity(0.8)
-                    Text("⌘: use aggressive optimisation")
+                    Text("⌘:使用激进优化")
                         .medium(10)
                         .foregroundColor(keysManager.flags.sideIndependentModifiers.contains(.command) ? .red : .primary)
                         .opacity(0.8)
@@ -716,7 +716,7 @@ private func skipOptimiseAndRunPipelineIfEncoding(
             // Steps rendered into this card (it morphed through the pipeline). The last
             // renderable step already finished it; settle it if anything left it running.
             if optimiser.running {
-                optimiser.finish(notice: "Pipeline completed")
+                optimiser.finish(notice: "管线已完成")
             }
         } else if didWork, isRenderableResult(resultFile, from: path) {
             // No step surfaced a result and the pipeline produced a renderable file: turn
@@ -739,7 +739,7 @@ private func skipOptimiseAndRunPipelineIfEncoding(
         }
     } catch {
         log.error("Pipeline: preset pipeline failed: \(error)")
-        optimiser.finish(error: "Pipeline failed")
+        optimiser.finish(error: "管线失败")
     }
     return true
 }
@@ -782,7 +782,7 @@ func optimiseDroppedItems(_ itemProviders: [NSItemProvider], copy: Bool, preset:
         guard proactive else {
             let optimiser = OM.optimiser(id: Optimiser.IDs.pro, type: .unknown, operation: "")
             optimiser.finish(
-                error: "Batch optimisation is a Pro feature",
+                error: "批量优化是 Pro 功能",
                 notice: "Get Clop Pro to optimise large drops in one window,\nor drop fewer than \(Defaults[.batchModeFileCountThreshold]) files at a time.",
                 keepFor: 7000
             )
@@ -822,7 +822,7 @@ func optimiseDroppedItems(_ itemProviders: [NSItemProvider], copy: Bool, preset:
     if !proactive, droppedItemCount > 5 {
         let optimiser = OM.optimiser(id: Optimiser.IDs.pro, type: .unknown, operation: "")
         optimiser.finish(
-            error: "Optimising more than 5 files at once is a Pro feature",
+            error: "一次优化超过 5 个文件是 Pro 功能",
             notice: "Get Clop Pro to remove the limit,\nor drop 5 or fewer files at a time.",
             keepFor: 7000
         )

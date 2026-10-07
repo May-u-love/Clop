@@ -237,7 +237,7 @@ enum AudioCoverArtBehaviour: String, CaseIterable, Codable {
         switch self {
         case .optimise: "Optimise"
         case .remove: "Remove"
-        case .keep: "Leave untouched"
+        case .keep: "保持原样"
         }
     }
 }
